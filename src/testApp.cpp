@@ -1,8 +1,23 @@
 #include "testApp.h"
 
+//
+//	オタックギャモン (Otakku Gyamon)
+//		https://github.com/mie-kaken-a2d/kaken/
+//
+//	Version: 0.01 Beta
+//	Build: 1.21.01.13
+//	Latest coder: Ogura Deko
+//
+//	Copyright (C) 2021 MIE-Kaken-A2D
+//
+
+string appname = "Otakku Gyamon Beta Ver.0.01";
+
 //--------------------------------------------------------------
 void testApp::setup(){
-
+	ofSetWindowTitle(appname);
+	ofBackground(227, 225, 218);
+	ofSetWindowShape(1280, 720);
 }
 
 //--------------------------------------------------------------
