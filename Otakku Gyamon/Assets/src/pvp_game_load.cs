@@ -9,14 +9,16 @@ public class pvp_game_load : MonoBehaviour
     bool gameready = false; //ready to game
     bool ongame = false;    //playing game
     bool canroll = false;   //ダイスロールの可否
+    bool dup = false;       //ゾロ目か
     int turn = 0;   //経過ターン
-    int dice = 0;   //ダイスの目
     int remain = 0; //残りの移動回数
     const int komakazu = 7; //コマの数
     int[] lkoma;    //左側コマの位置
     int[] rkoma;    //右側コマの位置
     int[] ground;   //フィールドのコマの数
-    int roll1 = 0, roll2 = 0;
+    int roll1 = 0, roll2 = 0;   //ダイスの出た値
+    int selected = 0;   //選択中のダイス
+    bool activedice1, activedice2, activedice3, activedice4;    //ダイス使用済みか
 
     public GameObject lkoma0_obj;
     public GameObject lkoma1_obj;
@@ -43,12 +45,12 @@ public class pvp_game_load : MonoBehaviour
     public Material di3;
     public Text turntext;
     public Text todotext;
+    public Text turnuser;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("[Function (Enter)] void Start()");
         /* フィールド初期化 */
         ground = new int[16];
         for (int i = 0; i < 16; i++)
@@ -109,6 +111,7 @@ public class pvp_game_load : MonoBehaviour
         rkoma = new int[8];
         lkoma[0] = new int();
         lkoma[0] = 2;
+
         lkoma[1] = new int();
         lkoma[1] = 2;
         rkoma[0] = new int();
@@ -141,96 +144,213 @@ public class pvp_game_load : MonoBehaviour
         rkoma[7] = 13;
 
         /* Ready! */
+        diceview1_obj.GetComponent<Image>().material = null;
+        diceview2_obj.GetComponent<Image>().material = null;
+        diceview3_obj.GetComponent<Image>().material = null;
+        diceview4_obj.GetComponent<Image>().material = null;
         turn = 0;   //ターン数初期化
-        dice = 0;   //ダイスの値初期化
         remain = 0; //残りダイス数初期化
+        roll1 = 0;  //ダイス初期化
+        roll2 = 0;  //ダイス初期化
+        activedice1 = false;
+        activedice2 = false;
+        activedice3 = false;
+        activedice4 = false;
         user = false;
         ongame = false;
         canroll = false;
         gameready = true;
-        Debug.Log("[Function (Finish)] void Start()");
+        todotext.text = "先攻を決めます。\n[D]キーを押してね。";
     }
 
     // Update is called once per frame
     void Update()
     {
-        Debug.Log("[Function (Enter)] void Update()");
         if (ongame)
         {
-            Debug.Log("[Sub] ongame");
-            //playing game
             if (canroll)
             {
-                Debug.Log("[Sub] canroll");
+                //ダイスロールフェーズ
                 if (Input.GetKeyDown(KeyCode.D))
                 {
-                    Debug.Log("[Sub] keydown(D)");
-                    //dice roll
                     canroll = false;
+
                     turn++;
                     turntext.text = "Turn: " + turn.ToString();
-                    canroll = true;
-                }
-            }
-        }else if (gameready)
-        {
-            Debug.Log("[Sub] gameready");
-            //順番決め
-            todotext.text = "先攻を決めています…";
-            do
-            {
-                roll1 = diceroll();
-                switch (roll1)
-                {
-                    case 0:
-                            diceview1_obj.GetComponent<Image>().material = di1;
-                        break;
-                    case 1:
-                            diceview1_obj.GetComponent<Image>().material = di2;
-                        break;
-                    default:
-                            diceview1_obj.GetComponent<Image>().material = di3;
-                        break;
-                }
 
-                roll2 = diceroll();
-                switch (roll2)
-                {
-                    case 0:
-                            diceview2_obj.GetComponent<Image>().material = di1;
-                        break;
-                    case 1:
-                            diceview2_obj.GetComponent<Image>().material = di2;
-                        break;
-                    default:
-                            diceview2_obj.GetComponent<Image>().material = di3;
-                        break;
-                }
-            } while (roll1 == roll2);
+                    todotext.text = "ダイスを振っています…";
+                    roll1 = diceroll();
+                    roll2 = diceroll();
+                    todotext.text = "ダイスを振りました。";
 
-            if(roll1 > roll2)
-            {
-                user = true;
-                todotext.text = "←　先攻が決まりました！";
+                    if (user)
+                    {
+                        turnuser.transform.localPosition = new Vector3(330, 160, 0);
+                    }
+                    else
+                    {
+                        turnuser.transform.localPosition = new Vector3(-330, 160, 0);
+                    }
+
+                    if (roll1 == roll2)
+                    {
+                        todotext.text += "[ゾロ目]";
+                        remain = 4;
+                        dup = true;
+                        diceapply(roll1, roll2, true);
+                    }
+                    else
+                    {
+                        remain = 2;
+                        dup = false;
+                        diceapply(roll1, roll2);
+                    }
+                }
             }
             else
             {
-                user = false;
-                todotext.text = "先攻が決まりました！　→";
-            }
+                //コマ移動フェーズ
+                if(remain > 0)
+                {
+                    //移動可能なコマがある場合
 
-            canroll = true;
-            ongame = true;
-            gameready = false;
+                }
+                else
+                {
+                    //移動フェーズが終わった場合
+                    user = !user;
+                    canroll = true;
+                }
+            }
+        }
+        else if (gameready)
+        {
+            if (Input.GetKeyDown(KeyCode.D))
+            {
+                //順番決め
+                todotext.text = "先攻を決めています…";
+                do
+                {
+                    roll1 = diceroll();
+                    switch (roll1)
+                    {
+                        case 0:
+                            diceview1_obj.GetComponent<Image>().material = di1;
+                            break;
+                        case 1:
+                            diceview1_obj.GetComponent<Image>().material = di2;
+                            break;
+                        default:
+                            diceview1_obj.GetComponent<Image>().material = di3;
+                            break;
+                    }
+
+                    roll2 = diceroll();
+                    switch (roll2)
+                    {
+                        case 0:
+                            diceview2_obj.GetComponent<Image>().material = di1;
+                            break;
+                        case 1:
+                            diceview2_obj.GetComponent<Image>().material = di2;
+                            break;
+                        default:
+                            diceview2_obj.GetComponent<Image>().material = di3;
+                            break;
+                    }
+                } while (roll1 == roll2);
+
+                if (roll1 > roll2)
+                {
+                    user = true;
+                    turnuser.transform.localPosition = new Vector3(-330, 160, 0);
+                    todotext.text = "←　先攻が決まりました！";
+                }
+                else
+                {
+                    user = false;
+                    turnuser.transform.localPosition = new Vector3(330, 160, 0);
+                    todotext.text = "先攻が決まりました！　→";
+                }
+                todotext.text += "\n[D]キーを押してダイスを振りましょう。[" + roll1.ToString() + "/" + roll2.ToString() + "]";
+                canroll = true;
+                ongame = true;
+                gameready = false;
+            }
         }
     }
 
     int diceroll()
     {
-        Debug.Log("[Function (Enter)] int diceroll()");
         int diceval;
         diceval = Random.Range(0, 3);
         return diceval;
+    }
+
+    void diceapply(int dice1, int dice2, bool zoro = false)
+    {
+        if (zoro)
+        {
+            switch (dice1)
+            {
+                case 0:
+                    diceview1_obj.GetComponent<Image>().material = di1;
+                    diceview2_obj.GetComponent<Image>().material = di1;
+                    diceview3_obj.GetComponent<Image>().material = di1;
+                    diceview4_obj.GetComponent<Image>().material = di1;
+                    break;
+                case 1:
+                    diceview1_obj.GetComponent<Image>().material = di2;
+                    diceview2_obj.GetComponent<Image>().material = di2;
+                    diceview3_obj.GetComponent<Image>().material = di2;
+                    diceview4_obj.GetComponent<Image>().material = di2;
+                    break;
+                default:
+                    diceview1_obj.GetComponent<Image>().material = di3;
+                    diceview2_obj.GetComponent<Image>().material = di3;
+                    diceview3_obj.GetComponent<Image>().material = di3;
+                    diceview4_obj.GetComponent<Image>().material = di3;
+                    break;
+            }
+            activedice1 = true;
+            activedice2 = true;
+            activedice3 = true;
+            activedice4 = true;
+        }
+        else
+        {
+            switch (dice1)
+            {
+                case 0:
+                    diceview1_obj.GetComponent<Image>().material = di1;
+                    break;
+                case 1:
+                    diceview1_obj.GetComponent<Image>().material = di2;
+                    break;
+                default:
+                    diceview1_obj.GetComponent<Image>().material = di3;
+                    break;
+            }
+            switch (dice2)
+            {
+                case 0:
+                    diceview2_obj.GetComponent<Image>().material = di1;
+                    break;
+                case 1:
+                    diceview2_obj.GetComponent<Image>().material = di2;
+                    break;
+                default:
+                    diceview2_obj.GetComponent<Image>().material = di3;
+                    break;
+            }
+            diceview3_obj.GetComponent<Image>().material = null;
+            diceview4_obj.GetComponent<Image>().material = null;
+            activedice1 = true;
+            activedice2 = true;
+            activedice3 = false;
+            activedice4 = false;
+        }
+        return;
     }
 
 }
