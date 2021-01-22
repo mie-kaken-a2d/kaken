@@ -9,7 +9,6 @@ public class pvp_game_load : MonoBehaviour
     bool gameready = false; //ready to game
     bool ongame = false;    //playing game
     bool canroll = false;   //ダイスロールの可否
-    bool dup = false;       //ゾロ目か
     int turn = 0;   //経過ターン
     int remain = 0; //残りの移動回数
     const int komakazu = 7; //コマの数
@@ -46,6 +45,16 @@ public class pvp_game_load : MonoBehaviour
     public Text turntext;
     public Text todotext;
     public Text turnuser;
+    public Text l_goal_label;
+    public Text r_goal_label;
+    public Text l_kick_label;
+    public Text r_kick_label;
+    public Text selected_dice_1;
+    public Text selected_dice_2;
+    public Text selected_dice_3;
+    public Text selected_dice_4;
+    public Text remaintext;
+
 
 
     // Start is called before the first frame update
@@ -111,37 +120,52 @@ public class pvp_game_load : MonoBehaviour
         rkoma = new int[8];
         lkoma[0] = new int();
         lkoma[0] = 2;
-
+        lkoma0_obj.transform.localPosition = new Vector3(-275, -45, 0);
         lkoma[1] = new int();
         lkoma[1] = 2;
+        lkoma1_obj.transform.localPosition = new Vector3(-275, 5, 0);
         rkoma[0] = new int();
         rkoma[0] = 4;
+        rkoma0_obj.transform.localPosition = new Vector3(275, -45, 0);
         rkoma[1] = new int();
         rkoma[1] = 4;
+        rkoma1_obj.transform.localPosition = new Vector3(275, 5, 0);
         rkoma[2] = new int();
         rkoma[2] = 4;
+        rkoma2_obj.transform.localPosition = new Vector3(25, -20, 0);
         lkoma[2] = new int();
         lkoma[2] = 7;
+        lkoma2_obj.transform.localPosition = new Vector3(-25, -20, 0);
         lkoma[3] = new int();
         lkoma[3] = 7;
+        lkoma3_obj.transform.localPosition = new Vector3(-25, 30, 0);
         lkoma[4] = new int();
         lkoma[4] = 7;
+        lkoma4_obj.transform.localPosition = new Vector3(-25, 80, 0);
         rkoma[3] = new int();
         rkoma[3] = 8;
+        rkoma3_obj.transform.localPosition = new Vector3(25, 30, 0);
         rkoma[4] = new int();
         rkoma[4] = 8;
+        rkoma4_obj.transform.localPosition = new Vector3(25, 80, 0);
         rkoma[5] = new int();
         rkoma[5] = 8;
+        rkoma5_obj.transform.localPosition = new Vector3(-175, 55, 0);
         lkoma[5] = new int();
         lkoma[5] = 11;
+        lkoma5_obj.transform.localPosition = new Vector3(175, 55, 0);
         lkoma[6] = new int();
         lkoma[6] = 11;
+        lkoma6_obj.transform.localPosition = new Vector3(175, 105, 0);
         lkoma[7] = new int();
         lkoma[7] = 11;
+        lkoma7_obj.transform.localPosition = new Vector3(175, 55, 0);
         rkoma[6] = new int();
         rkoma[6] = 13;
+        rkoma6_obj.transform.localPosition = new Vector3(-175, 105, 0);
         rkoma[7] = new int();
         rkoma[7] = 13;
+        rkoma7_obj.transform.localPosition = new Vector3(-175, 55, 0);
 
         /* Ready! */
         diceview1_obj.GetComponent<Image>().material = null;
@@ -152,6 +176,7 @@ public class pvp_game_load : MonoBehaviour
         remain = 0; //残りダイス数初期化
         roll1 = 0;  //ダイス初期化
         roll2 = 0;  //ダイス初期化
+        selected = 1;
         activedice1 = false;
         activedice2 = false;
         activedice3 = false;
@@ -161,6 +186,11 @@ public class pvp_game_load : MonoBehaviour
         canroll = false;
         gameready = true;
         todotext.text = "先攻を決めます。\n[D]キーを押してね。";
+        turntext.text = "Turn: " + turn.ToString();
+        l_goal_label.text = "0/8";
+        r_goal_label.text = "0/8";
+        l_kick_label.text = "残り：" + ground[1].ToString();
+        r_kick_label.text = "残り：" + ground[14].ToString();
     }
 
     // Update is called once per frame
@@ -170,8 +200,7 @@ public class pvp_game_load : MonoBehaviour
         {
             if (canroll)
             {
-                //ダイスロールフェーズ
-                if (Input.GetKeyDown(KeyCode.D))
+                if (Input.GetKeyDown(KeyCode.D))    /* ダイスロール */
                 {
                     canroll = false;
 
@@ -181,28 +210,17 @@ public class pvp_game_load : MonoBehaviour
                     todotext.text = "ダイスを振っています…";
                     roll1 = diceroll();
                     roll2 = diceroll();
-                    todotext.text = "ダイスを振りました。";
+                    todotext.text = "ダイスを振りました。\n数字キーとスペースキーでコマを移動しましょう。";
 
-                    if (user)
-                    {
-                        turnuser.transform.localPosition = new Vector3(330, 160, 0);
-                    }
-                    else
-                    {
-                        turnuser.transform.localPosition = new Vector3(-330, 160, 0);
-                    }
 
                     if (roll1 == roll2)
                     {
-                        todotext.text += "[ゾロ目]";
                         remain = 4;
-                        dup = true;
                         diceapply(roll1, roll2, true);
                     }
                     else
                     {
                         remain = 2;
-                        dup = false;
                         diceapply(roll1, roll2);
                     }
                 }
@@ -213,14 +231,54 @@ public class pvp_game_load : MonoBehaviour
                 if(remain > 0)
                 {
                     //移動可能なコマがある場合
-
+                    if (Input.GetKeyDown(KeyCode.Alpha1))
+                    {
+                        selected_dice_change(1);
+                    }else if (Input.GetKeyDown(KeyCode.Alpha2))
+                    {
+                        selected_dice_change(2);
+                    }else if (Input.GetKeyDown(KeyCode.Alpha3))
+                    {
+                        selected_dice_change(3);
+                    }else if (Input.GetKeyDown(KeyCode.Alpha4))
+                    {
+                        selected_dice_change(4);
+                    }else if (Input.GetKeyDown(KeyCode.Space))
+                    {
+                        //決定
+                        remain--;
+                    }
                 }
                 else
                 {
                     //移動フェーズが終わった場合
+                    if(ground[0] == 8 || ground[15] == 8) /* 勝利判定 */
+                    {
+                        if(ground[0] == 8)
+                        {
+                            //Left側の勝利
+                                /* 勝利イベントここ */
+                        }
+                        else
+                        {
+                            //Right側の勝利
+                                /* 勝利イベントここ */
+                        }
+                    }
+                    /* プレイヤー交代 */
                     user = !user;
+                    if (user)
+                    {
+                        turnuser.transform.localPosition = new Vector3(350, 170, 0);
+                    }
+                    else
+                    {
+                        turnuser.transform.localPosition = new Vector3(-345, 170, 0);
+                    }
+                    todotext.text = "ターンチェンジ。\n[D]キーを押してダイスを振りましょう。";
                     canroll = true;
                 }
+                remaintext.text = "Remain:" + remain.ToString();
             }
         }
         else if (gameready)
@@ -232,47 +290,23 @@ public class pvp_game_load : MonoBehaviour
                 do
                 {
                     roll1 = diceroll();
-                    switch (roll1)
-                    {
-                        case 0:
-                            diceview1_obj.GetComponent<Image>().material = di1;
-                            break;
-                        case 1:
-                            diceview1_obj.GetComponent<Image>().material = di2;
-                            break;
-                        default:
-                            diceview1_obj.GetComponent<Image>().material = di3;
-                            break;
-                    }
-
                     roll2 = diceroll();
-                    switch (roll2)
-                    {
-                        case 0:
-                            diceview2_obj.GetComponent<Image>().material = di1;
-                            break;
-                        case 1:
-                            diceview2_obj.GetComponent<Image>().material = di2;
-                            break;
-                        default:
-                            diceview2_obj.GetComponent<Image>().material = di3;
-                            break;
-                    }
+                    diceapply(roll1, roll2);
                 } while (roll1 == roll2);
 
                 if (roll1 > roll2)
                 {
                     user = true;
-                    turnuser.transform.localPosition = new Vector3(-330, 160, 0);
+                    turnuser.transform.localPosition = new Vector3(-345, 170, 0);
                     todotext.text = "←　先攻が決まりました！";
                 }
                 else
                 {
                     user = false;
-                    turnuser.transform.localPosition = new Vector3(330, 160, 0);
+                    turnuser.transform.localPosition = new Vector3(350, 170, 0);
                     todotext.text = "先攻が決まりました！　→";
                 }
-                todotext.text += "\n[D]キーを押してダイスを振りましょう。[" + roll1.ToString() + "/" + roll2.ToString() + "]";
+                todotext.text += "\n[D]キーを押してダイスを振りましょう。";
                 canroll = true;
                 ongame = true;
                 gameready = false;
@@ -280,14 +314,14 @@ public class pvp_game_load : MonoBehaviour
         }
     }
 
-    int diceroll()
+    int diceroll()  /* do dice rolling */
     {
         int diceval;
         diceval = Random.Range(0, 3);
         return diceval;
     }
 
-    void diceapply(int dice1, int dice2, bool zoro = false)
+    void diceapply(int dice1, int dice2, bool zoro = false) /* dice image update */
     {
         if (zoro)
         {
@@ -349,6 +383,38 @@ public class pvp_game_load : MonoBehaviour
             activedice2 = true;
             activedice3 = false;
             activedice4 = false;
+        }
+        return;
+    }
+
+    void selected_dice_change(int value)
+    {
+        switch (value)
+        {
+            case 1:
+                selected_dice_1.text = "[1]";
+                selected_dice_2.text = "2";
+                selected_dice_3.text = "3";
+                selected_dice_4.text = "4";
+                break;
+            case 2:
+                selected_dice_1.text = "1";
+                selected_dice_2.text = "[2]";
+                selected_dice_3.text = "3";
+                selected_dice_4.text = "4";
+                break;
+            case 3:
+                selected_dice_1.text = "1";
+                selected_dice_2.text = "2";
+                selected_dice_3.text = "[3]";
+                selected_dice_4.text = "4";
+                break;
+            default:
+                selected_dice_1.text = "1";
+                selected_dice_2.text = "2";
+                selected_dice_3.text = "3";
+                selected_dice_4.text = "[4]";
+                break;
         }
         return;
     }
