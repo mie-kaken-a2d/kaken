@@ -9,8 +9,10 @@ public class pvp_game_load : MonoBehaviour
     bool gameready = false; //ready to game
     bool ongame = false;    //playing game
     bool canroll = false;   //ダイスロールの可否
+    bool selectkoma = false;    //コマ選択モードか
     int turn = 0;   //経過ターン
     int remain = 0; //残りの移動回数
+    int remainmax = 0;  //残り移動回数の最大値
     const int komakazu = 7; //コマの数
     int[] lkoma;    //左側コマの位置
     int[] rkoma;    //右側コマの位置
@@ -185,12 +187,13 @@ public class pvp_game_load : MonoBehaviour
         ongame = false;
         canroll = false;
         gameready = true;
+        selectkoma = false;
         todotext.text = "先攻を決めます。\n[D]キーを押してね。";
         turntext.text = "Turn: " + turn.ToString();
-        l_goal_label.text = "0/8";
-        r_goal_label.text = "0/8";
-        l_kick_label.text = "残り：" + ground[1].ToString();
-        r_kick_label.text = "残り：" + ground[14].ToString();
+        l_goal_label.text = ground[0].ToString() + "/8";
+        r_goal_label.text = ground[15].ToString() + "/8";
+        l_kick_label.text = "漂流：" + ground[1].ToString();
+        r_kick_label.text = "漂流：" + ground[14].ToString();
     }
 
     // Update is called once per frame
@@ -210,7 +213,7 @@ public class pvp_game_load : MonoBehaviour
                     todotext.text = "ダイスを振っています…";
                     roll1 = diceroll();
                     roll2 = diceroll();
-                    todotext.text = "ダイスを振りました。\n数字キーとスペースキーでコマを移動しましょう。";
+                    todotext.text = "ダイスを振りました。\n数字／スペースキーでコマを移動しましょう。";
 
 
                     if (roll1 == roll2)
@@ -228,57 +231,89 @@ public class pvp_game_load : MonoBehaviour
             else
             {
                 //コマ移動フェーズ
-                if(remain > 0)
+                if (remain > 0)
                 {
-                    //移動可能なコマがある場合
-                    if (Input.GetKeyDown(KeyCode.Alpha1))
+                    //移動可能コマがある
+                    if (selectkoma)
                     {
-                        selected_dice_change(1);
-                    }else if (Input.GetKeyDown(KeyCode.Alpha2))
+                        if (Input.GetKeyDown(KeyCode.Escape))
+                        {
+                            selected_dice_change(selected);
+                            selectkoma = false;
+                        }
+                        else if (Input.GetKeyDown(KeyCode.Space))
+                        {
+                            //コマの移動ここ//
+                            //komamove(selectedkoma, selected)
+                            activedice_change(selected);
+                            selectkoma = false;
+                            remain--;
+                            selected_dice_change(selected);
+                        }
+                    }
+                    else
                     {
-                        selected_dice_change(2);
-                    }else if (Input.GetKeyDown(KeyCode.Alpha3))
-                    {
-                        selected_dice_change(3);
-                    }else if (Input.GetKeyDown(KeyCode.Alpha4))
-                    {
-                        selected_dice_change(4);
-                    }else if (Input.GetKeyDown(KeyCode.Space))
-                    {
-                        //決定
-                        remain--;
+                        //コマの指定変更ができる
+                        if (Input.GetKeyDown(KeyCode.Alpha1))
+                        {
+                            selected_dice_change(1);
+                        }
+                        else if (Input.GetKeyDown(KeyCode.Alpha2))
+                        {
+                            selected_dice_change(2);
+                        }
+                        else if (Input.GetKeyDown(KeyCode.Alpha3))
+                        {
+                            selected_dice_change(3);
+                        }
+                        else if (Input.GetKeyDown(KeyCode.Alpha4))
+                        {
+                            selected_dice_change(4);
+                        }
+                        else if (Input.GetKeyDown(KeyCode.Space))
+                        {
+                            if (can_select_dice(selected))  /* 選択中のダイスが選択可能か */
+                            {
+                                selected_dice_change(selected, true);
+                                selectkoma = true;
+                            }
+                        }
                     }
                 }
                 else
                 {
                     //移動フェーズが終わった場合
-                    if(ground[0] == 8 || ground[15] == 8) /* 勝利判定 */
+                    if (ground[0] == 8 || ground[15] == 8) /* 勝利判定 */
                     {
-                        if(ground[0] == 8)
+                        if (ground[0] == 8)
                         {
                             //Left側の勝利
-                                /* 勝利イベントここ */
+                            /* 勝利イベントここ */
+                            todotext.text = "青色の勝利！おめでとう！";
+                            return;
                         }
                         else
                         {
                             //Right側の勝利
-                                /* 勝利イベントここ */
+                            /* 勝利イベントここ */
+                            todotext.text = "赤色の勝利！おめでとう！";
+                            return;
                         }
                     }
                     /* プレイヤー交代 */
                     user = !user;
                     if (user)
                     {
-                        turnuser.transform.localPosition = new Vector3(350, 170, 0);
+                        turnuser.transform.localPosition = new Vector3(350, 0, 0);
                     }
                     else
                     {
-                        turnuser.transform.localPosition = new Vector3(-345, 170, 0);
+                        turnuser.transform.localPosition = new Vector3(-345, 0, 0);
                     }
                     todotext.text = "ターンチェンジ。\n[D]キーを押してダイスを振りましょう。";
                     canroll = true;
                 }
-                remaintext.text = "Remain:" + remain.ToString();
+                remaintext.text = "残ダイス数:" + remain.ToString();
             }
         }
         else if (gameready)
@@ -297,13 +332,13 @@ public class pvp_game_load : MonoBehaviour
                 if (roll1 > roll2)
                 {
                     user = true;
-                    turnuser.transform.localPosition = new Vector3(-345, 170, 0);
+                    turnuser.transform.localPosition = new Vector3(-345, 0, 0);
                     todotext.text = "←　先攻が決まりました！";
                 }
                 else
                 {
                     user = false;
-                    turnuser.transform.localPosition = new Vector3(350, 170, 0);
+                    turnuser.transform.localPosition = new Vector3(350, 0, 0);
                     todotext.text = "先攻が決まりました！　→";
                 }
                 todotext.text += "\n[D]キーを押してダイスを振りましょう。";
@@ -339,11 +374,14 @@ public class pvp_game_load : MonoBehaviour
                     diceview3_obj.GetComponent<Image>().material = di2;
                     diceview4_obj.GetComponent<Image>().material = di2;
                     break;
-                default:
+                case 2:
                     diceview1_obj.GetComponent<Image>().material = di3;
                     diceview2_obj.GetComponent<Image>().material = di3;
                     diceview3_obj.GetComponent<Image>().material = di3;
                     diceview4_obj.GetComponent<Image>().material = di3;
+                    break;
+                default:
+                    Debug.Log("[Error] (diceapply:true) switch overflow!!! [" + dice1 + " / " + zoro + "]");
                     break;
             }
             activedice1 = true;
@@ -361,62 +399,170 @@ public class pvp_game_load : MonoBehaviour
                 case 1:
                     diceview1_obj.GetComponent<Image>().material = di2;
                     break;
-                default:
+                case 2:
                     diceview1_obj.GetComponent<Image>().material = di3;
+                    break;
+                default:
+                    Debug.Log("[Error] (diceapply:false:dice1) switch overflow!!! [" + dice1 + " / " + dice2 + " / " + zoro + "]");
                     break;
             }
             switch (dice2)
             {
                 case 0:
-                    diceview2_obj.GetComponent<Image>().material = di1;
+                    diceview4_obj.GetComponent<Image>().material = di1;
                     break;
                 case 1:
-                    diceview2_obj.GetComponent<Image>().material = di2;
+                    diceview4_obj.GetComponent<Image>().material = di2;
+                    break;
+                case 2:
+                    diceview4_obj.GetComponent<Image>().material = di3;
                     break;
                 default:
-                    diceview2_obj.GetComponent<Image>().material = di3;
+                    Debug.Log("[Error] (diceapply:false:dice2) switch overflow!!! [" + dice1 + " / " + dice2 + " / " + zoro + "]");
                     break;
+
             }
+            diceview2_obj.GetComponent<Image>().material = null;
             diceview3_obj.GetComponent<Image>().material = null;
-            diceview4_obj.GetComponent<Image>().material = null;
             activedice1 = true;
-            activedice2 = true;
+            activedice2 = false;
             activedice3 = false;
-            activedice4 = false;
+            activedice4 = true;
         }
         return;
     }
 
-    void selected_dice_change(int value)
+    void selected_dice_change(int value, bool select = false)
+    {
+        if (select)
+        {
+            switch (value)
+            {
+                case 1:
+                    selected_dice_1.text = "(1)";
+                    selected_dice_2.text = "2";
+                    selected_dice_3.text = "3";
+                    selected_dice_4.text = "4";
+                    selected = 1;
+                    break;
+                case 2:
+                    selected_dice_1.text = "1";
+                    selected_dice_2.text = "(2)";
+                    selected_dice_3.text = "3";
+                    selected_dice_4.text = "4";
+                    selected = 2;
+                    break;
+                case 3:
+                    selected_dice_1.text = "1";
+                    selected_dice_2.text = "2";
+                    selected_dice_3.text = "(3)";
+                    selected_dice_4.text = "4";
+                    selected = 3;
+                    break;
+                case 4:
+                    selected_dice_1.text = "1";
+                    selected_dice_2.text = "2";
+                    selected_dice_3.text = "3";
+                    selected_dice_4.text = "(4)";
+                    selected = 4;
+                    break;
+                default:
+                    Debug.Log("[Error] (selected_dice_change:true) switch overflow!!! [" + value + " / " + select + "]");
+                    break;
+            }
+        }
+        else
+        {
+            switch (value)
+            {
+                case 1:
+                    selected_dice_1.text = "[1]";
+                    selected_dice_2.text = "2";
+                    selected_dice_3.text = "3";
+                    selected_dice_4.text = "4";
+                    selected = 1;
+                    break;
+                case 2:
+                    selected_dice_1.text = "1";
+                    selected_dice_2.text = "[2]";
+                    selected_dice_3.text = "3";
+                    selected_dice_4.text = "4";
+                    selected = 2;
+                    break;
+                case 3:
+                    selected_dice_1.text = "1";
+                    selected_dice_2.text = "2";
+                    selected_dice_3.text = "[3]";
+                    selected_dice_4.text = "4";
+                    selected = 3;
+                    break;
+                case 4:
+                    selected_dice_1.text = "1";
+                    selected_dice_2.text = "2";
+                    selected_dice_3.text = "3";
+                    selected_dice_4.text = "[4]";
+                    selected = 4;
+                    break;
+                default:
+                    Debug.Log("[Error] (activedice_change:false) switch overflow!!! [" + value + " / " + select + "]");
+                    break;
+            }
+        }
+        return;
+    }
+
+    bool can_select_dice(int value)
+    {
+        bool canselect = false;
+        switch (value)
+        {
+            case 1:
+                if (activedice1)
+                    canselect = true;
+                break;
+            case 2:
+                if (activedice2)
+                    canselect = true;
+                break;
+            case 3:
+                if (activedice3)
+                    canselect = true;
+                break;
+            case 4:
+                if (activedice4)
+                    canselect = true;
+                break;
+            default:
+                Debug.Log("[Error] (can_select_dice) switch overflow!!! [" + value + "]");
+                break;
+        }
+        return canselect;
+    }
+
+    void activedice_change(int value)
     {
         switch (value)
         {
             case 1:
-                selected_dice_1.text = "[1]";
-                selected_dice_2.text = "2";
-                selected_dice_3.text = "3";
-                selected_dice_4.text = "4";
+                activedice1 = false;
+                diceview1_obj.GetComponent<Image>().material = null;
                 break;
             case 2:
-                selected_dice_1.text = "1";
-                selected_dice_2.text = "[2]";
-                selected_dice_3.text = "3";
-                selected_dice_4.text = "4";
+                activedice2 = false;
+                diceview2_obj.GetComponent<Image>().material = null;
                 break;
             case 3:
-                selected_dice_1.text = "1";
-                selected_dice_2.text = "2";
-                selected_dice_3.text = "[3]";
-                selected_dice_4.text = "4";
+                activedice3 = false;
+                diceview3_obj.GetComponent<Image>().material = null;
+                break;
+            case 4:
+                activedice4 = false;
+                diceview4_obj.GetComponent<Image>().material = null;
                 break;
             default:
-                selected_dice_1.text = "1";
-                selected_dice_2.text = "2";
-                selected_dice_3.text = "3";
-                selected_dice_4.text = "[4]";
+                Debug.Log("[Error] (activedice_change) switch overflow!!! [" + value + "]");
                 break;
         }
         return;
     }
-
 }
