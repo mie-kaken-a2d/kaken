@@ -155,8 +155,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 300, y: -100}
-  m_SizeDelta: {x: 200, y: 80}
+  m_AnchoredPosition: {x: -264, y: 175}
+  m_SizeDelta: {x: 260, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &42118359
 MonoBehaviour:
@@ -171,7 +171,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.71558404, g: 0, b: 0.745283, a: 1}
+  m_Color: {r: 0.6886792, g: 0.48916185, b: 0.4255518, a: 1}
   m_RaycastTarget: 1
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -191,8 +191,9 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: "\u3010\u30AD\u30FC\u30DC\u30FC\u30C9\u64CD\u4F5C\u3011\n[D] \u2192 \u30C0\u30A4\u30B9\u3092\u632F\u308B\n[1]~[4]
-    \u2192 \u30C0\u30A4\u30B9\u3092\u9078\u629E\n[Space] \u2192 \u30C0\u30A4\u30B9\uFF0F\u30B3\u30DE\u6C7A\u5B9A\n[Esc]
-    \u2192 \u9078\u629E\u30C0\u30A4\u30B9\u306E\u53D6\u6D88"
+    \u2192 \u30C0\u30A4\u30B9\u3092\u9078\u629E\n[\u2190] [\u2192] \u2192 \u30B3\u30DE\u3092\u9078\u629E\n[Space]
+    \u2192 \u30C0\u30A4\u30B9\uFF0F\u30B3\u30DE\u6C7A\u5B9A\n[Esc] \u2192 \u9078\u629E\u30C0\u30A4\u30B9\u306E\u53D6\u6D88\n[F]
+    \u2192 \u30BF\u30FC\u30F3\u30B9\u30AD\u30C3\u30D7\uFF08\u8A70\u307F\uFF09"
 --- !u!222 &42118360
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -236,7 +237,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -340, y: -160}
-  m_SizeDelta: {x: 30, y: 40}
+  m_SizeDelta: {x: 27, y: 37}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &46944486
 MonoBehaviour:
@@ -250,7 +251,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: eaa0844612b09b3478166b8c268c8ad2, type: 2}
+  m_Material: {fileID: 2100000, guid: 14f7a7cd5b3a09e49b06549820f66c07, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 0.19607843}
   m_RaycastTarget: 1
   m_Maskable: 1
@@ -310,7 +311,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -10}
+  m_AnchoredPosition: {x: 0, y: 12}
   m_SizeDelta: {x: 800, y: 480}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!212 &105027199
@@ -460,7 +461,7 @@ GameObject:
   - component: {fileID: 131880183}
   - component: {fileID: 131880182}
   m_Layer: 10
-  m_Name: lkoma6
+  m_Name: rkoma6
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -483,7 +484,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 340, y: -160}
-  m_SizeDelta: {x: 30, y: 40}
+  m_SizeDelta: {x: 27, y: 37}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &131880182
 MonoBehaviour:
@@ -497,7 +498,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 14f7a7cd5b3a09e49b06549820f66c07, type: 2}
+  m_Material: {fileID: 2100000, guid: eaa0844612b09b3478166b8c268c8ad2, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 0.19607843}
   m_RaycastTarget: 1
   m_Maskable: 1
@@ -534,7 +535,7 @@ GameObject:
   - component: {fileID: 145797571}
   - component: {fileID: 145797570}
   m_Layer: 10
-  m_Name: lkoma0
+  m_Name: rkoma0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -557,7 +558,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 100, y: -160}
-  m_SizeDelta: {x: 30, y: 40}
+  m_SizeDelta: {x: 27, y: 37}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &145797570
 MonoBehaviour:
@@ -571,7 +572,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 14f7a7cd5b3a09e49b06549820f66c07, type: 2}
+  m_Material: {fileID: 2100000, guid: eaa0844612b09b3478166b8c268c8ad2, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 0.19607843}
   m_RaycastTarget: 1
   m_Maskable: 1
@@ -867,7 +868,7 @@ GameObject:
   - component: {fileID: 273022333}
   - component: {fileID: 273022332}
   m_Layer: 10
-  m_Name: lkoma1
+  m_Name: rkoma1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -890,7 +891,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 140, y: -160}
-  m_SizeDelta: {x: 30, y: 40}
+  m_SizeDelta: {x: 27, y: 37}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &273022332
 MonoBehaviour:
@@ -904,7 +905,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 14f7a7cd5b3a09e49b06549820f66c07, type: 2}
+  m_Material: {fileID: 2100000, guid: eaa0844612b09b3478166b8c268c8ad2, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 0.19607843}
   m_RaycastTarget: 1
   m_Maskable: 1
@@ -1081,7 +1082,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -220, y: -160}
-  m_SizeDelta: {x: 30, y: 40}
+  m_SizeDelta: {x: 27, y: 37}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &406735554
 MonoBehaviour:
@@ -1095,7 +1096,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: eaa0844612b09b3478166b8c268c8ad2, type: 2}
+  m_Material: {fileID: 2100000, guid: 14f7a7cd5b3a09e49b06549820f66c07, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 0.19607843}
   m_RaycastTarget: 1
   m_Maskable: 1
@@ -1640,7 +1641,7 @@ GameObject:
   - component: {fileID: 1102584739}
   - component: {fileID: 1102584738}
   m_Layer: 10
-  m_Name: lkoma3
+  m_Name: rkoma3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1663,7 +1664,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 220, y: -160}
-  m_SizeDelta: {x: 30, y: 40}
+  m_SizeDelta: {x: 27, y: 37}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1102584738
 MonoBehaviour:
@@ -1677,7 +1678,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 14f7a7cd5b3a09e49b06549820f66c07, type: 2}
+  m_Material: {fileID: 2100000, guid: eaa0844612b09b3478166b8c268c8ad2, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 0.19607843}
   m_RaycastTarget: 1
   m_Maskable: 1
@@ -1736,8 +1737,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -380, y: -160}
-  m_SizeDelta: {x: 30, y: 40}
+  m_AnchoredPosition: {x: -375, y: -160}
+  m_SizeDelta: {x: 27, y: 37}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1139480073
 MonoBehaviour:
@@ -1751,7 +1752,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: eaa0844612b09b3478166b8c268c8ad2, type: 2}
+  m_Material: {fileID: 2100000, guid: 14f7a7cd5b3a09e49b06549820f66c07, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 0.19607843}
   m_RaycastTarget: 1
   m_Maskable: 1
@@ -1967,7 +1968,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -260, y: -160}
-  m_SizeDelta: {x: 30, y: 40}
+  m_SizeDelta: {x: 27, y: 37}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1198220045
 MonoBehaviour:
@@ -1981,7 +1982,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: eaa0844612b09b3478166b8c268c8ad2, type: 2}
+  m_Material: {fileID: 2100000, guid: 14f7a7cd5b3a09e49b06549820f66c07, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 0.19607843}
   m_RaycastTarget: 1
   m_Maskable: 1
@@ -2174,7 +2175,7 @@ GameObject:
   - component: {fileID: 1355772366}
   - component: {fileID: 1355772365}
   m_Layer: 10
-  m_Name: lkoma2
+  m_Name: rkoma2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2197,7 +2198,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 180, y: -160}
-  m_SizeDelta: {x: 30, y: 40}
+  m_SizeDelta: {x: 27, y: 37}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1355772365
 MonoBehaviour:
@@ -2211,7 +2212,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 14f7a7cd5b3a09e49b06549820f66c07, type: 2}
+  m_Material: {fileID: 2100000, guid: eaa0844612b09b3478166b8c268c8ad2, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 0.19607843}
   m_RaycastTarget: 1
   m_Maskable: 1
@@ -2271,7 +2272,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -100, y: -160}
-  m_SizeDelta: {x: 30, y: 40}
+  m_SizeDelta: {x: 27, y: 37}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1390707434
 MonoBehaviour:
@@ -2285,7 +2286,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: eaa0844612b09b3478166b8c268c8ad2, type: 2}
+  m_Material: {fileID: 2100000, guid: 14f7a7cd5b3a09e49b06549820f66c07, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 0.19607843}
   m_RaycastTarget: 1
   m_Maskable: 1
@@ -2649,7 +2650,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -140, y: -160}
-  m_SizeDelta: {x: 30, y: 40}
+  m_SizeDelta: {x: 27, y: 37}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1640604850
 MonoBehaviour:
@@ -2663,7 +2664,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: eaa0844612b09b3478166b8c268c8ad2, type: 2}
+  m_Material: {fileID: 2100000, guid: 14f7a7cd5b3a09e49b06549820f66c07, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 0.19607843}
   m_RaycastTarget: 1
   m_Maskable: 1
@@ -2754,6 +2755,10 @@ MonoBehaviour:
   di1: {fileID: 2100000, guid: 772189a71c186444eb01f42fa99a5bbb, type: 2}
   di2: {fileID: 2100000, guid: e59c08c936e19024bafc1e3b1cd4c839, type: 2}
   di3: {fileID: 2100000, guid: 40a9c4988e3751e419dd0b66669231d6, type: 2}
+  lkoma_notselected: {fileID: 2100000, guid: 14f7a7cd5b3a09e49b06549820f66c07, type: 2}
+  rkoma_notselected: {fileID: 2100000, guid: eaa0844612b09b3478166b8c268c8ad2, type: 2}
+  lkoma_selected: {fileID: 2100000, guid: 47b28ba65c55ec94bb24dbea2c6bb66c, type: 2}
+  rkoma_selected: {fileID: 2100000, guid: 563a44f81c948854ea3cf117a3f356f7, type: 2}
   turntext: {fileID: 252478294}
   todotext: {fileID: 1621271215}
   turnuser: {fileID: 287195008}
@@ -2778,7 +2783,7 @@ GameObject:
   - component: {fileID: 1696430128}
   - component: {fileID: 1696430127}
   m_Layer: 10
-  m_Name: lkoma4
+  m_Name: rkoma4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2801,7 +2806,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 260, y: -160}
-  m_SizeDelta: {x: 30, y: 40}
+  m_SizeDelta: {x: 27, y: 37}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1696430127
 MonoBehaviour:
@@ -2815,7 +2820,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 14f7a7cd5b3a09e49b06549820f66c07, type: 2}
+  m_Material: {fileID: 2100000, guid: eaa0844612b09b3478166b8c268c8ad2, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 0.19607843}
   m_RaycastTarget: 1
   m_Maskable: 1
@@ -2852,7 +2857,7 @@ GameObject:
   - component: {fileID: 1811496177}
   - component: {fileID: 1811496176}
   m_Layer: 10
-  m_Name: lkoma5
+  m_Name: rkoma5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2875,7 +2880,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 300, y: -160}
-  m_SizeDelta: {x: 30, y: 40}
+  m_SizeDelta: {x: 27, y: 37}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1811496176
 MonoBehaviour:
@@ -2889,7 +2894,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 14f7a7cd5b3a09e49b06549820f66c07, type: 2}
+  m_Material: {fileID: 2100000, guid: eaa0844612b09b3478166b8c268c8ad2, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 0.19607843}
   m_RaycastTarget: 1
   m_Maskable: 1
@@ -2949,7 +2954,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -300, y: -160}
-  m_SizeDelta: {x: 30, y: 40}
+  m_SizeDelta: {x: 27, y: 37}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1836178823
 MonoBehaviour:
@@ -2963,7 +2968,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: eaa0844612b09b3478166b8c268c8ad2, type: 2}
+  m_Material: {fileID: 2100000, guid: 14f7a7cd5b3a09e49b06549820f66c07, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 0.19607843}
   m_RaycastTarget: 1
   m_Maskable: 1
@@ -3023,7 +3028,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -180, y: -160}
-  m_SizeDelta: {x: 30, y: 40}
+  m_SizeDelta: {x: 27, y: 37}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1892676505
 MonoBehaviour:
@@ -3037,7 +3042,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: eaa0844612b09b3478166b8c268c8ad2, type: 2}
+  m_Material: {fileID: 2100000, guid: 14f7a7cd5b3a09e49b06549820f66c07, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 0.19607843}
   m_RaycastTarget: 1
   m_Maskable: 1
@@ -3117,7 +3122,7 @@ GameObject:
   - component: {fileID: 2118864881}
   - component: {fileID: 2118864880}
   m_Layer: 10
-  m_Name: lkoma7
+  m_Name: rkoma7
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3140,7 +3145,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 380, y: -160}
-  m_SizeDelta: {x: 30, y: 40}
+  m_SizeDelta: {x: 27, y: 37}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2118864880
 MonoBehaviour:
@@ -3154,7 +3159,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 14f7a7cd5b3a09e49b06549820f66c07, type: 2}
+  m_Material: {fileID: 2100000, guid: eaa0844612b09b3478166b8c268c8ad2, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 0.19607843}
   m_RaycastTarget: 1
   m_Maskable: 1
