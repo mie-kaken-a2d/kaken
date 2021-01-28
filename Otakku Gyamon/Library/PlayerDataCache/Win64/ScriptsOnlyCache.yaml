@@ -854,4 +854,5 @@ ScriptsOnlyBuild:
   - Assets/Scenes/title.unity
   - Assets/Scenes/go_soloplay.unity
   - Assets/Scenes/go_multiplay.unity
-  playerPath: "C:/Users/fanta/Documents/MIE/sotuken/Otakku Gyamon/bin/\uFF73\uFF6B\uFF75\uFF75\uFF75\uFF75\uFF75\uFF75\uFF75\uFF75\uFF75\u30BF\u30C3\u30AF\u30AE\u30E3\u30E2\u30F3.exe"
+  playerPath: "C:/Users/fanta/Documents/MIE/sotuken/Otakku Gyamon/bin/\uFF73\uFF6B\uFF75\uFF75\uFF75\uFF75\uFF75\uFF75\uFF75\uFF75\uFF75\u30BF\u30C3\u30AF\u30AE\u30E3\u30E2\u30F3
+    Ver.0.06 (dev).exe"

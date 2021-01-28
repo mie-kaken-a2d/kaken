@@ -8,12 +8,20 @@ public class pvp_game_load : MonoBehaviour
     /*
      [TO DO]
         * 動けるコマがない場合の処理（ターンエンド）
-        * 監禁時、監禁先の座標（y）に移動する
         * 音を入れる
         * クリアイベントの作成
      [BUG]
         * 赤(Right)側の漂流数の数字が表示されないバグ
         * Fキースキップ時にコマが選択色のままになる問題
+     [改善点]
+        * 先攻ターンがどっちか直感的にわからない
+        * Xコン対応、操作方法
+        * 戻れると良い
+        * ダイス選択とコマ選択が同時に行えるようにする
+        * 漂流したコマがある場合はそっちのコマを優先し、ほかのコマを選択できないようにする。
+        * 操作説明の位置
+        * todoが見にくい
+        * ゴールしたコマを
     */
 
     bool user = false;  //プレイヤー(左側がtrue)
@@ -338,24 +346,6 @@ public class pvp_game_load : MonoBehaviour
                 }
                 else
                 {
-                    //移動フェーズが終わった場合
-                    if (ground[0] >= 8 || ground[15] >= 8) /* 勝利判定 */
-                    {
-                        if (ground[0] >= 8)
-                        {
-                            //Left側の勝利
-                            /* 勝利イベントここ */
-                            gamewin(true);
-                            return;
-                        }
-                        else
-                        {
-                            //Right側の勝利
-                            /* 勝利イベントここ */
-                            gamewin(false);
-                            return;
-                        }
-                    }
                     /* プレイヤー交代 */
                     user = !user;
                     if (user)
@@ -370,6 +360,25 @@ public class pvp_game_load : MonoBehaviour
                     canroll = true;
                 }
                 remaintext.text = "残ダイス数:" + remain.ToString();
+
+                //勝利しましたか？
+                if (ground[0] >= 8 || ground[15] >= 8) /* 勝利判定 */
+                {
+                    if (ground[0] >= 8)
+                    {
+                        //Left側の勝利
+                        /* 勝利イベントここ */
+                        gamewin(true);
+                        return;
+                    }
+                    else
+                    {
+                        //Right側の勝利
+                        /* 勝利イベントここ */
+                        gamewin(false);
+                        return;
+                    }
+                }
             }
         }
         else if (gameready)
@@ -624,11 +633,11 @@ public class pvp_game_load : MonoBehaviour
 
     void activekoma_change(bool isblue, int komaid, bool keydownleft = false) /* 選択中のコマの色を変える */
     {
-        if (isblue)
+        if (isblue)  //青ターン
         {
-            if (komaid != -1)
+            if (komaid != -1)   //-1だと全部のコマの色を初期化する
             {
-                if (keydownleft)
+                if (keydownleft)    //押されたキーが←の場合
                 {
                     while (lkoma[komaid] <= 0)
                     {
@@ -641,7 +650,7 @@ public class pvp_game_load : MonoBehaviour
                         }
                     }
                 }
-                else
+                else    //押されたキーが→の場合
                 {
                     while (lkoma[komaid] <= 0)
                     {
@@ -937,7 +946,6 @@ public class pvp_game_load : MonoBehaviour
                 ground[komapos]++;  //自分の元いた場所の処理
                 movekoma_apply(isblue, komaid, lkoma[komaid]);   //移動した自分のコマの描画処理。
                 Debug.Log("左側、移動先(ground[" + (komapos - move) + "])に敵アリ\n lkoma[" + komaid + "] (" + komapos + ") => (" + (komapos - move) + ")／rkoma[" + enemy + "](" + rkoma[enemy] + ") => (1)／ground[" + (komapos - move) + "]@" + ground[komapos - move]);
-
             }
             else
             {
@@ -965,7 +973,6 @@ public class pvp_game_load : MonoBehaviour
                 movekoma_apply(isblue, komaid, rkoma[komaid]);   //移動した自分のコマの描画処理。
                 Debug.Log("ground[" + (komapos + move) + "]@" + ground[komapos + move]);
                 Debug.Log("右側、移動先(ground[" + (komapos + move) + "])に敵アリ\n rkoma[" + komaid + "] (" + komapos + ") => (" + (komapos + move) + ")／lkoma[" + enemy + "](" + lkoma[enemy] + ") => (14)");
-
             }
             else
             {
@@ -1057,7 +1064,7 @@ public class pvp_game_load : MonoBehaviour
         int posX = -255;
         int idousu = ((fieldid - 1) * 39);
         int newposX = posX + idousu;
-        int posY = -1;
+        int AddposX = 20 * komaid;
 
         //コマをフィールドに描画反映。
         if (isblue)
@@ -1069,49 +1076,49 @@ public class pvp_game_load : MonoBehaviour
             {
                 case 0:
                     if (goprison)
-                        lkoma0_obj.transform.localPosition = new Vector3(newposX, -155, 0);
+                        lkoma0_obj.transform.localPosition = new Vector3(newposX - AddposX, -155, 0);
                     else
                         lkoma0_obj.transform.localPosition = new Vector3(newposX, -45, 0);
                     break;
                 case 1:
                     if (goprison)
-                        lkoma1_obj.transform.localPosition = new Vector3(newposX, -155, 0);
+                        lkoma1_obj.transform.localPosition = new Vector3(newposX - AddposX, -155, 0);
                     else
                         lkoma1_obj.transform.localPosition = new Vector3(newposX, 5, 0);
                     break;
                 case 2:
                     if (goprison)
-                        lkoma2_obj.transform.localPosition = new Vector3(newposX, -155, 0);
+                        lkoma2_obj.transform.localPosition = new Vector3(newposX - AddposX, -155, 0);
                     else
                         lkoma2_obj.transform.localPosition = new Vector3(newposX, -20, 0);
                     break;
                 case 3:
                     if (goprison)
-                        lkoma3_obj.transform.localPosition = new Vector3(newposX, -155, 0);
+                        lkoma3_obj.transform.localPosition = new Vector3(newposX - AddposX, -155, 0);
                     else
                         lkoma3_obj.transform.localPosition = new Vector3(newposX, 30, 0);
                     break;
                 case 4:
                     if (goprison)
-                        lkoma4_obj.transform.localPosition = new Vector3(newposX, -155, 0);
+                        lkoma4_obj.transform.localPosition = new Vector3(newposX - AddposX, -155, 0);
                     else
                         lkoma4_obj.transform.localPosition = new Vector3(newposX, 80, 0);
                     break;
                 case 5:
                     if (goprison)
-                        lkoma5_obj.transform.localPosition = new Vector3(newposX, -155, 0);
+                        lkoma5_obj.transform.localPosition = new Vector3(newposX - AddposX, -155, 0);
                     else
                         lkoma5_obj.transform.localPosition = new Vector3(newposX, 55, 0);
                     break;
                 case 6:
                     if (goprison)
-                        lkoma6_obj.transform.localPosition = new Vector3(newposX, -155, 0);
+                        lkoma6_obj.transform.localPosition = new Vector3(newposX - AddposX, -155, 0);
                     else
                         lkoma6_obj.transform.localPosition = new Vector3(newposX, 105, 0);
                     break;
                 case 7:
                     if (goprison)
-                        lkoma7_obj.transform.localPosition = new Vector3(newposX, -155, 0);
+                        lkoma7_obj.transform.localPosition = new Vector3(newposX - AddposX, -155, 0);
                     else
                         lkoma7_obj.transform.localPosition = new Vector3(newposX, 150, 0);
                     break;
@@ -1127,49 +1134,49 @@ public class pvp_game_load : MonoBehaviour
             {
                 case 0:
                     if (goprison)
-                        rkoma0_obj.transform.localPosition = new Vector3(newposX, -155, 0);
+                        rkoma0_obj.transform.localPosition = new Vector3(newposX + AddposX, -155, 0);
                     else
                         rkoma0_obj.transform.localPosition = new Vector3(newposX, -45, 0);
                     break;
                 case 1:
                     if (goprison)
-                        rkoma1_obj.transform.localPosition = new Vector3(newposX, -155, 0);
+                        rkoma1_obj.transform.localPosition = new Vector3(newposX + AddposX, -155, 0);
                     else
                         rkoma1_obj.transform.localPosition = new Vector3(newposX, 5, 0);
                     break;
                 case 2:
                     if (goprison)
-                        rkoma2_obj.transform.localPosition = new Vector3(newposX, -155, 0);
+                        rkoma2_obj.transform.localPosition = new Vector3(newposX + AddposX, -155, 0);
                     else
                         rkoma2_obj.transform.localPosition = new Vector3(newposX, -20, 0);
                     break;
                 case 3:
                     if (goprison)
-                        rkoma3_obj.transform.localPosition = new Vector3(newposX, -155, 0);
+                        rkoma3_obj.transform.localPosition = new Vector3(newposX + AddposX, -155, 0);
                     else
                         rkoma3_obj.transform.localPosition = new Vector3(newposX, 30, 0);
                     break;
                 case 4:
                     if (goprison)
-                        rkoma4_obj.transform.localPosition = new Vector3(newposX, -155, 0);
+                        rkoma4_obj.transform.localPosition = new Vector3(newposX + AddposX, -155, 0);
                     else
                         rkoma4_obj.transform.localPosition = new Vector3(newposX, 80, 0);
                     break;
                 case 5:
                     if (goprison)
-                        rkoma5_obj.transform.localPosition = new Vector3(newposX, -155, 0);
+                        rkoma5_obj.transform.localPosition = new Vector3(newposX + AddposX, -155, 0);
                     else
                         rkoma5_obj.transform.localPosition = new Vector3(newposX, 55, 0);
                     break;
                 case 6:
                     if (goprison)
-                        rkoma6_obj.transform.localPosition = new Vector3(newposX, -155, 0);
+                        rkoma6_obj.transform.localPosition = new Vector3(newposX + AddposX, -155, 0);
                     else
                         rkoma6_obj.transform.localPosition = new Vector3(newposX, 105, 0);
                     break;
                 case 7:
                     if (goprison)
-                        rkoma7_obj.transform.localPosition = new Vector3(newposX, -155, 0);
+                        rkoma7_obj.transform.localPosition = new Vector3(newposX + AddposX, -155, 0);
                     else
                         rkoma7_obj.transform.localPosition = new Vector3(newposX, 150, 0);
                     break;
@@ -1258,7 +1265,7 @@ public class pvp_game_load : MonoBehaviour
         l_goal_label.text = Mathf.Abs(ground[0]).ToString() + "/8";
         r_goal_label.text = ground[15].ToString() + "/8";
         l_kick_label.text = "漂流: " + ground[1].ToString();
-        r_kick_label.text = "漂流: " + ground[14].ToString();
+        r_kick_label.text = "漂流: " + Mathf.Abs(ground[14]).ToString();
         turntext.text = "Turn: " + turn.ToString();
         return;
     }
@@ -1329,4 +1336,5 @@ public class pvp_game_load : MonoBehaviour
         }
         return;
     }
+
 }
