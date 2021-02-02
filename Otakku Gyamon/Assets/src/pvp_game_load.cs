@@ -14,7 +14,6 @@ public class pvp_game_load : MonoBehaviour
      [改善点]
         * 先攻ターンがどっちか直感的にわからない
         * Xコン対応、操作方法
-        * 戻れると良い
         * ゴール可能状態では、引いたコマの値と同値でゴールできるコマを優先する
         * 漂流したコマがある場合はそっちのコマを優先し、ほかのコマを選択できないようにする。
         * 操作説明の位置
@@ -29,7 +28,6 @@ public class pvp_game_load : MonoBehaviour
     bool selectkoma = false;    //コマ選択モードか
     int turn = 0;   //経過ターン
     int remain = 0; //残りの移動回数
-    int remainmax = 0;  //残り移動回数の最大値
     int[] lkoma;    //左側コマの位置
     int[] rkoma;    //右側コマの位置
     int[] ground;   //フィールドのコマの数
@@ -37,11 +35,14 @@ public class pvp_game_load : MonoBehaviour
     int selected = 0;   //選択中のダイス
     int selected_koma = 0;  //選択中のコマ
     bool activedice1, activedice2, activedice3, activedice4;    //ダイス使用済みか
-    int rb_lp, rb_rp;   //【Return Buffer】blueダイス、redダイス
-    int rb_diceti, rb_diceid;   //【Return Buffer】ダイスの値、ダイスID
-    bool rb_prison;  //【Return Buffer】監獄に連れて行かれたか
-    int rb_prisonid;    //【Return Buffer】監獄に連れてかれたコマのID
-
+    bool rb_canback;
+    int rb_lp, rb_rp;           //【Return Buffer】blueコマの前の位置、redコマの前の位置
+    int rb_lid, rb_rid;         //【Return Buffer】blueコマのID、redコマのID
+    int rb_bg, rb_mg, rb_ag;    //【Return Buffer】左右の移動時のground値
+    int rb_diceid, rb_diceti;   //【Return Buffer】ダイスID
+    bool rb_wasblue;            //【Return Buffer】青色のターンだったか
+    bool rb_prison;             //【Return Buffer】監獄に連れて行かれたか
+    int rb_prisonid;            //【Return Buffer】監獄に連れてかれたコマのID
 
     public GameObject lkoma0_obj;
     public GameObject lkoma1_obj;
@@ -83,8 +84,6 @@ public class pvp_game_load : MonoBehaviour
     public Text selected_dice_3;
     public Text selected_dice_4;
     public Text remaintext;
-
-
 
     // Start is called before the first frame update
     void Start()
@@ -219,6 +218,18 @@ public class pvp_game_load : MonoBehaviour
         canroll = false;
         gameready = true;
         selectkoma = false;
+        rb_canback = false;
+        rb_lp = -1;
+        rb_rp = -1;
+        rb_lid = -1;
+        rb_rid = -1;
+        rb_bg = -1;
+        rb_mg = -1;
+        rb_ag = -1;
+        rb_diceid = -1;
+        rb_diceti = -1;
+        rb_prison = false;
+        rb_prisonid = -1;
         todotext.text = "先攻を決めます。\n[D]キーを押してね。";
         turntext.text = "Turn: " + turn.ToString();
         l_goal_label.text = ground[0].ToString() + "/8";
@@ -230,18 +241,23 @@ public class pvp_game_load : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.T))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             SceneManager.LoadScene("title");
         }
 
         if (ongame)
         {
+            if (Input.GetKeyDown(KeyCode.Z))
+            {
+                returnmove();
+            }
             if (canroll)
             {
                 if (Input.GetKeyDown(KeyCode.D))    /* ダイスロール */
                 {
                     canroll = false;
+                    rb_canback = false;
 
                     turn++;
                     turntext.text = "Turn: " + turn.ToString();
@@ -274,14 +290,16 @@ public class pvp_game_load : MonoBehaviour
                         //Left側の勝利
                         /* 勝利イベントここ */
                         gamewin(true);
-                        return;
+                        remain = -1;
+                        //return;
                     }
                     else
                     {
                         //Right側の勝利
                         /* 勝利イベントここ */
                         gamewin(false);
-                        return;
+                        remain = -1;
+                        //return;
                     }
                 }
 
@@ -290,67 +308,67 @@ public class pvp_game_load : MonoBehaviour
                 {
                     //if ((activedice1 && (isstuck(user, roll1) == false)) || (activedice4 && (isstuck(user, roll2) == false)) || (activedice2 && (isstuck(user, roll1)) == false) || (activedice3 && (isstuck(user, roll1) == false)))
                     //{
-                        if (Input.GetKeyDown(KeyCode.LeftArrow))
+                    if (Input.GetKeyDown(KeyCode.LeftArrow))
+                    {
+                        //←キー
+                        if (selected_koma <= 0)
                         {
-                            //←キー
-                            if (selected_koma <= 0)
-                            {
-                                selected_koma = 7;
-                            }
-                            else
-                            {
-                                selected_koma--;
-                            }
-                            activekoma_change(user, -1);
-                            activekoma_change(user, selected_koma, true);
+                            selected_koma = 7;
                         }
-                        else if (Input.GetKeyDown(KeyCode.RightArrow))
+                        else
                         {
-                            //→キー
-                            if (selected_koma >= 7)
+                            selected_koma--;
+                        }
+                        activekoma_change(user, -1);
+                        activekoma_change(user, selected_koma, true);
+                    }
+                    else if (Input.GetKeyDown(KeyCode.RightArrow))
+                    {
+                        //→キー
+                        if (selected_koma >= 7)
+                        {
+                            selected_koma = 0;
+                        }
+                        else
+                        {
+                            selected_koma++;
+                        }
+                        activekoma_change(user, -1);
+                        activekoma_change(user, selected_koma);
+                    }
+                    else if (Input.GetKeyDown(KeyCode.Space))
+                    {
+                        if (can_select_dice(selected))  /* 選択中のダイスが選択可能か */
+                        {
+                            selected_dice_change(selected, true);
+                            //activekoma_change(user, 0);
+                            //コマ移動確定（検証）
+                            if (canmovekoma(user, selected_koma, selected))
                             {
+                                //移動完了
+                                remain--;
                                 selected_koma = 0;
-                            }
-                            else
-                            {
-                                selected_koma++;
-                            }
-                            activekoma_change(user, -1);
-                            activekoma_change(user, selected_koma);
-                        }
-                        else if (Input.GetKeyDown(KeyCode.Space))
-                        {
-                            if (can_select_dice(selected))  /* 選択中のダイスが選択可能か */
-                            {
-                                selected_dice_change(selected, true);
-                                //activekoma_change(user, 0);
-                                //コマ移動確定（検証）
-                                if (canmovekoma(user, selected_koma, selected))
-                                {
-                                    //移動完了
-                                    remain--;
-                                    selected_koma = 0;
-                                    activekoma_change(user, -1);
-                                    activekoma_change(user, selected_koma);
-                                }
+                                activekoma_change(user, -1);
+                                activekoma_change(user, selected_koma);
                             }
                         }
-                        else if (Input.GetKeyDown(KeyCode.Alpha1))
-                        {
-                            selected_dice_change(1);
-                        }
-                        else if (Input.GetKeyDown(KeyCode.Alpha2))
-                        {
-                            selected_dice_change(2);
-                        }
-                        else if (Input.GetKeyDown(KeyCode.Alpha3))
-                        {
-                            selected_dice_change(3);
-                        }
-                        else if (Input.GetKeyDown(KeyCode.Alpha4))
-                        {
-                            selected_dice_change(4);
-                        }
+                    }
+                    else if (Input.GetKeyDown(KeyCode.Alpha1))
+                    {
+                        selected_dice_change(1);
+                    }
+                    else if (Input.GetKeyDown(KeyCode.Alpha2))
+                    {
+                        selected_dice_change(2);
+                    }
+                    else if (Input.GetKeyDown(KeyCode.Alpha3))
+                    {
+                        selected_dice_change(3);
+                    }
+                    else if (Input.GetKeyDown(KeyCode.Alpha4))
+                    {
+                        selected_dice_change(4);
+                    }
                     /* }
                     else
                     {
@@ -414,7 +432,7 @@ public class pvp_game_load : MonoBehaviour
                     turnuser.transform.localPosition = new Vector3(315, -75, 0);
                     todotext.text = "先攻が決まりました！　→";
                 }
-                todotext.text += "\n[D]キーを押してダイスを振ろう。";
+                todotext.text += "\nダイスとコマを選んで動かしましょう。";
                 activekoma_change(user, 0);
                 remain = 2;
                 canroll = false;
@@ -917,7 +935,7 @@ public class pvp_game_load : MonoBehaviour
         }
         if (canmove)
         {
-            movekoma(isblue, komaid, komapos, move, hasenemy);
+            movekoma(isblue, komaid, komapos, move, hasenemy, diceselected);
         }
         else
         {
@@ -937,7 +955,7 @@ public class pvp_game_load : MonoBehaviour
         return canmove;
     }
 
-    void movekoma(bool isblue, int komaid, int komapos, int move, bool hasenemy) /* コマを移動 */
+    void movekoma(bool isblue, int komaid, int komapos, int move, bool hasenemy, int diceid) /* コマを移動 */
     {
         //ダイス移動処理ここから
         Debug.Log("[Function Join] movekoma\n左側？:" + isblue + " / コマID:" + komaid + " / コマの座標:" + komapos + " / 移動コマ数:" + move + " / 敵がいるか？:" + hasenemy);
@@ -949,6 +967,21 @@ public class pvp_game_load : MonoBehaviour
                 //移動先マスに敵が1体いる場合
                 ground[1]++;    //監獄に加算
                 int enemy = getenemykomaid(komapos - move); //飛ばされる敵のコマを取得
+
+                //ロールバック処理のための記録
+                rb_prison = true;
+                rb_prisonid = enemy;
+                rb_lp = lkoma[komaid];
+                rb_rp = rkoma[enemy];
+                rb_lid = komaid;
+                rb_rid = enemy;
+                rb_bg = ground[komapos];
+                rb_mg = ground[komapos - move];
+                rb_ag = ground[1] - 1;
+                rb_diceid = diceid;
+                rb_wasblue = isblue;
+                rb_canback = true;
+
                 rkoma[enemy] = 1;   //飛ばされたコマの座標を監獄に設定。
                 movekoma_apply(isblue, enemy, 1, true, enemy);   //飛ばされたコマの描画処理。
                 ground[komapos - move] = -1;    //敵がいたコマに自分の値を確保
@@ -961,6 +994,20 @@ public class pvp_game_load : MonoBehaviour
             {
                 Debug.Log("左側、移動先(ground[" + (komapos - move) + "])に敵ナシ");
                 //敵がいない場合
+
+                rb_prison = false;
+                rb_prisonid = -1;
+                rb_lp = lkoma[komaid];
+                rb_rp = -1;
+                rb_lid = komaid;
+                rb_rid = -1;
+                rb_bg = ground[komapos];
+                rb_mg = ground[komapos - move];
+                rb_ag = -1;
+                rb_diceid = diceid;
+                rb_wasblue = isblue;
+                rb_canback = true;
+
                 lkoma[komaid] = komapos - move;
                 ground[komapos]++;
                 ground[komapos - move]--;
@@ -975,6 +1022,21 @@ public class pvp_game_load : MonoBehaviour
                 //移動先マスに敵が1コマいる場合
                 ground[14]--;    //監獄に加算
                 int enemy = getenemykomaid(komapos + move); //飛ばされる敵のコマを取得
+
+                //ロールバック処理のための記録
+                rb_prison = true;
+                rb_prisonid = enemy;
+                rb_lp = lkoma[enemy];
+                rb_rp = rkoma[komaid];
+                rb_lid = enemy;
+                rb_rid = komaid;
+                rb_bg = ground[komapos];
+                rb_mg = ground[komapos + move];
+                rb_ag = ground[14] + 1;
+                rb_diceid = diceid;
+                rb_wasblue = isblue;
+                rb_canback = true;
+
                 lkoma[enemy] = 14;   //飛ばされたコマの座標を監獄に設定。
                 movekoma_apply(isblue, enemy, 14, true, enemy);   //飛ばされたコマの描画処理。
                 ground[komapos + move] = 1;    //敵がいたコマに自分の値を確保
@@ -988,6 +1050,20 @@ public class pvp_game_load : MonoBehaviour
             {
                 Debug.Log("右側、移動先(ground[" + (komapos - move) + "])に敵ナシ");
                 //敵がいない場合
+
+                rb_prison = false;
+                rb_prisonid = -1;
+                rb_lp = -1;
+                rb_rp = rkoma[komaid];
+                rb_lid = -1;
+                rb_rid = komaid;
+                rb_bg = ground[komapos];
+                rb_mg = ground[komapos + move];
+                rb_ag = -1;
+                rb_diceid = diceid;
+                rb_wasblue = isblue;
+                rb_canback = true;
+
                 rkoma[komaid] = komapos + move;
                 ground[komapos]--;
                 ground[komapos + move]++;
@@ -1281,6 +1357,7 @@ public class pvp_game_load : MonoBehaviour
 
     bool cangoal(bool isblue, int komaid)
     {
+        Debug.Log("[Function Join] (cangoal) Function joined!");
         bool ans = false;
         if (isblue)
         {
@@ -1331,18 +1408,17 @@ public class pvp_game_load : MonoBehaviour
 
     void gamewin(bool isblue)
     {
+        Debug.Log("[Function Join] (gamewin)");
         if (isblue)
         {
             todotext.text = "青色ペンギンさんチームの勝利！\nおめでとう！！";
-            gameready = false;
-            ongame = false;
         }
         else
         {
             todotext.text = "赤色ペンギンさんチームの勝利！\nおめでとう！！";
-            gameready = false;
-            ongame = false;
         }
+        gameready = false;
+        ongame = false;
         return;
     }
 
@@ -1436,4 +1512,147 @@ public class pvp_game_load : MonoBehaviour
         return ans;
     }
 
+    void returnmove()   /* ロールバック処理 */
+    {
+        if (rb_canback) //ロールバックが許可されているか
+        {
+            if (rb_wasblue)     //青ターン
+            {
+                if (rb_prison)  //監獄に飛ばした
+                {
+                    ground[lkoma[rb_lid]] = rb_mg;
+                    ground[1] = rb_ag;
+                    lkoma[rb_lid] = rb_lp;
+                    rkoma[rb_rid] = rb_rp;
+                    ground[rb_lp] = rb_bg;
+                    movekoma_apply(rb_wasblue, rb_lid, rb_lp);
+                    movekoma_apply(!rb_wasblue, rb_rid, rb_rp);
+                }
+                else    //通常移動のみ
+                {
+                    ground[lkoma[rb_lid]] = rb_mg;
+                    lkoma[rb_lid] = rb_lp;
+                    ground[rb_lp] = rb_bg;
+                    movekoma_apply(rb_wasblue, rb_lid, rb_lp);
+                }
+            }
+            else    //赤ターン
+            {
+                if (rb_prison)  //監獄に飛ばした
+                {
+                    ground[rkoma[rb_rid]] = rb_mg;
+                    ground[14] = rb_ag;
+                    lkoma[rb_lid] = rb_lp;
+                    rkoma[rb_rid] = rb_rp;
+                    ground[rb_rp] = rb_bg;
+                    movekoma_apply(!rb_wasblue, rb_lid, rb_lp);
+                    movekoma_apply(rb_wasblue, rb_rid, rb_rp);
+                }
+                else    //通常移動のみ
+                {
+                    ground[rkoma[rb_rid]] = rb_mg;
+                    rkoma[rb_rid] = rb_rp;
+                    ground[rb_rp] = rb_bg;
+                    movekoma_apply(rb_wasblue, rb_rid, rb_rp);
+                }
+            }
+            remain++;
+
+            if (rb_wasblue != user)
+            {
+                user = !user;
+            }
+            if (canroll)
+            {
+                canroll = false;
+            }
+
+            switch (rb_diceid)  //diceselectedと同値
+            {
+                case 1:
+                    activedice1 = true;
+                    switch (roll1) {
+                        case 0:
+                            diceview1_obj.GetComponent<Image>().material = di1;
+                            break;
+                        case 1:
+                            diceview1_obj.GetComponent<Image>().material = di2;
+                            break;
+                        case 2:
+                            diceview1_obj.GetComponent<Image>().material = di3;
+                            break;
+                        default:
+                            Debug.Log("[Error] (returnmove) Stack Overflow!!");
+                            break;
+                    }
+                    break;
+                case 2:
+                    activedice2 = true;
+                    switch (roll1)
+                    {
+                        case 0:
+                            diceview2_obj.GetComponent<Image>().material = di1;
+                            break;
+                        case 1:
+                            diceview2_obj.GetComponent<Image>().material = di2;
+                            break;
+                        case 2:
+                            diceview2_obj.GetComponent<Image>().material = di3;
+                            break;
+                        default:
+                            Debug.Log("[Error] (returnmove) Stack Overflow!!");
+                            break;
+                    }
+                    break;
+                case 3:
+                    activedice3 = true;
+                    switch (roll1)
+                    {
+                        case 0:
+                            diceview3_obj.GetComponent<Image>().material = di1;
+                            break;
+                        case 1:
+                            diceview3_obj.GetComponent<Image>().material = di2;
+                            break;
+                        case 2:
+                            diceview3_obj.GetComponent<Image>().material = di3;
+                            break;
+                        default:
+                            Debug.Log("[Error] (returnmove) Stack Overflow!!");
+                            break;
+                    }
+                    break;
+                case 4:
+                    activedice4 = true;
+                    switch (roll2)
+                    {
+                        case 0:
+                            diceview4_obj.GetComponent<Image>().material = di1;
+                            break;
+                        case 1:
+                            diceview4_obj.GetComponent<Image>().material = di2;
+                            break;
+                        case 2:
+                            diceview4_obj.GetComponent<Image>().material = di3;
+                            break;
+                        default:
+                            Debug.Log("[Error] (returnmove) Stack Overflow!!");
+                            break;
+                    }
+                    break;
+                default:
+                    Debug.Log("[Error] (returnmove) Switch Overflow!!");
+                    break;
+            }
+            activekoma_change(user, -1);
+            activekoma_change(!user, -1);
+            activekoma_change(user, 0);
+            textupdate();
+            Debug.Log("(returnmove) 戻しました。");
+            todotext.text = "直近の1手を戻しました。\nコマを再度動かしてください。";
+            rb_canback = false;
+        }
+        Debug.Log("(returnmove) 呼び出されました。");
+        return;
+    }
 }
