@@ -1,8 +1,11 @@
 ScriptsOnlyBuild:
   usedScripts:
     Assembly-CSharp.dll:
+    - click_title_exit
+    - click_title_howto
     - click_title_pve
     - click_title_pvp
+    - howto_load
     - pvp_game_load
     Unity.2D.Animation.Editor.dll:
     - UnityEditor.U2D.Animation.BoneGizmo
@@ -26,8 +29,6 @@ ScriptsOnlyBuild:
     - UnityEngine.UI.GraphicRaycaster
     - UnityEngine.UI.Image
     - UnityEngine.UI.Text
-    com.unity.multiplayer-hlapi.Runtime.dll:
-    - UnityEngine.Networking.NetworkCallbacks
   sceneClasses:
     Assets/Scenes/go_multiplay.unity:
     - Class: 1
@@ -49,15 +50,15 @@ ScriptsOnlyBuild:
     - Class: 108
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 11334}
+      Script: {instanceID: 11336}
     - Class: 114
-      Script: {instanceID: 11360}
+      Script: {instanceID: 11362}
     - Class: 114
-      Script: {instanceID: 11778}
+      Script: {instanceID: 11780}
     - Class: 114
-      Script: {instanceID: 12608}
+      Script: {instanceID: 12614}
     - Class: 114
-      Script: {instanceID: 14414}
+      Script: {instanceID: 14422}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -102,18 +103,65 @@ ScriptsOnlyBuild:
     - Class: 108
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 11360}
+      Script: {instanceID: 11362}
     - Class: 114
-      Script: {instanceID: 12598}
+      Script: {instanceID: 12604}
     - Class: 114
-      Script: {instanceID: 14414}
+      Script: {instanceID: 14422}
     - Class: 114
-      Script: {instanceID: 15158}
+      Script: {instanceID: 15166}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 157
       Script: {instanceID: 0}
     - Class: 196
+      Script: {instanceID: 0}
+    - Class: 223
+      Script: {instanceID: 0}
+    - Class: 224
+      Script: {instanceID: 0}
+    Assets/Scenes/howto.unity:
+    - Class: 1
+      Script: {instanceID: 0}
+    - Class: 4
+      Script: {instanceID: 0}
+    - Class: 20
+      Script: {instanceID: 0}
+    - Class: 21
+      Script: {instanceID: 0}
+    - Class: 28
+      Script: {instanceID: 0}
+    - Class: 48
+      Script: {instanceID: 0}
+    - Class: 81
+      Script: {instanceID: 0}
+    - Class: 104
+      Script: {instanceID: 0}
+    - Class: 114
+      Script: {instanceID: 11336}
+    - Class: 114
+      Script: {instanceID: 11362}
+    - Class: 114
+      Script: {instanceID: 11780}
+    - Class: 114
+      Script: {instanceID: 12114}
+    - Class: 114
+      Script: {instanceID: 12604}
+    - Class: 114
+      Script: {instanceID: 14422}
+    - Class: 114
+      Script: {instanceID: 15166}
+    - Class: 115
+      Script: {instanceID: 0}
+    - Class: 128
+      Script: {instanceID: 0}
+    - Class: 157
+      Script: {instanceID: 0}
+    - Class: 196
+      Script: {instanceID: 0}
+    - Class: 213
+      Script: {instanceID: 0}
+    - Class: 222
       Script: {instanceID: 0}
     - Class: 223
       Script: {instanceID: 0}
@@ -137,23 +185,27 @@ ScriptsOnlyBuild:
     - Class: 104
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 11334}
+      Script: {instanceID: 11336}
     - Class: 114
-      Script: {instanceID: 11360}
+      Script: {instanceID: 11362}
     - Class: 114
-      Script: {instanceID: 11778}
+      Script: {instanceID: 11780}
     - Class: 114
-      Script: {instanceID: 12598}
+      Script: {instanceID: 12206}
     - Class: 114
-      Script: {instanceID: 13510}
+      Script: {instanceID: 12604}
     - Class: 114
-      Script: {instanceID: 13682}
+      Script: {instanceID: 12724}
     - Class: 114
-      Script: {instanceID: 14414}
+      Script: {instanceID: 13518}
     - Class: 114
-      Script: {instanceID: 14792}
+      Script: {instanceID: 13690}
     - Class: 114
-      Script: {instanceID: 15158}
+      Script: {instanceID: 14422}
+    - Class: 114
+      Script: {instanceID: 14800}
+    - Class: 114
+      Script: {instanceID: 15166}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -341,6 +393,12 @@ ScriptsOnlyBuild:
     className: PhysicsRaycaster
   - hash:
       serializedVersion: 2
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: howto_load
+  - hash:
+      serializedVersion: 2
       Hash: bd3cf68c8964d3c66d1c43f4f98508c9
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
@@ -375,6 +433,12 @@ ScriptsOnlyBuild:
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.UI
     className: RectMask2D
+  - hash:
+      serializedVersion: 2
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: click_title_howto
   - hash:
       serializedVersion: 2
       Hash: 1103fb0758976355cdf9b7d5ce9cb7e0
@@ -455,7 +519,7 @@ ScriptsOnlyBuild:
     className: ControlPlayableAsset
   - hash:
       serializedVersion: 2
-      Hash: b0fbcf3fdff579cd763ff9c7f5adb764
+      Hash: 293f744385d83fcf4946c5a338ab9822
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: pvp_game_load
@@ -483,6 +547,12 @@ ScriptsOnlyBuild:
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.UI
     className: Selectable
+  - hash:
+      serializedVersion: 2
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: click_title_exit
   - hash:
       serializedVersion: 2
       Hash: 265cf27ba050d55ff33a8acab4ded6c0
@@ -854,5 +924,6 @@ ScriptsOnlyBuild:
   - Assets/Scenes/title.unity
   - Assets/Scenes/go_soloplay.unity
   - Assets/Scenes/go_multiplay.unity
+  - Assets/Scenes/howto.unity
   playerPath: "C:/Users/fanta/Documents/MIE/sotuken/Otakku Gyamon/bin/\uFF73\uFF6B\uFF75\uFF75\uFF75\uFF75\uFF75\uFF75\uFF75\uFF75\uFF75\u30BF\u30C3\u30AF\u30AE\u30E3\u30E2\u30F3
-    Ver.0.06 (dev).exe"
+    Ver.0.07e (dev).exe"

@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/go_multiplay.unity
     guid: 2cc579df8f7beb64196ca98f1b259a64
+  - enabled: 1
+    path: Assets/Scenes/howto.unity
+    guid: 097d631293a19e24485355f108bac460
   m_configObjects: {}

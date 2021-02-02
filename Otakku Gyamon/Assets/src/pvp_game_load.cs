@@ -2,26 +2,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class pvp_game_load : MonoBehaviour
 {
     /*
      [TO DO]
-        * 動けるコマがない場合の処理（ターンエンド）
+        * ☆動けるコマがない場合の処理（ターンエンド）
         * 音を入れる
         * クリアイベントの作成
-     [BUG]
-        * 赤(Right)側の漂流数の数字が表示されないバグ
-        * Fキースキップ時にコマが選択色のままになる問題
      [改善点]
         * 先攻ターンがどっちか直感的にわからない
         * Xコン対応、操作方法
         * 戻れると良い
-        * ダイス選択とコマ選択が同時に行えるようにする
+        * ゴール可能状態では、引いたコマの値と同値でゴールできるコマを優先する
         * 漂流したコマがある場合はそっちのコマを優先し、ほかのコマを選択できないようにする。
         * 操作説明の位置
         * todoが見にくい
-        * ゴールしたコマを
+        * ゴールしたコマを表示する
     */
 
     bool user = false;  //プレイヤー(左側がtrue)
@@ -39,6 +37,11 @@ public class pvp_game_load : MonoBehaviour
     int selected = 0;   //選択中のダイス
     int selected_koma = 0;  //選択中のコマ
     bool activedice1, activedice2, activedice3, activedice4;    //ダイス使用済みか
+    int rb_lp, rb_rp;   //【Return Buffer】blueダイス、redダイス
+    int rb_diceti, rb_diceid;   //【Return Buffer】ダイスの値、ダイスID
+    bool rb_prison;  //【Return Buffer】監獄に連れて行かれたか
+    int rb_prisonid;    //【Return Buffer】監獄に連れてかれたコマのID
+
 
     public GameObject lkoma0_obj;
     public GameObject lkoma1_obj;
@@ -60,6 +63,7 @@ public class pvp_game_load : MonoBehaviour
     public GameObject diceview2_obj;
     public GameObject diceview3_obj;
     public GameObject diceview4_obj;
+    public Button backmenu;
     public Material di1;
     public Material di2;
     public Material di3;
@@ -192,6 +196,9 @@ public class pvp_game_load : MonoBehaviour
         lkoma[7] = 4;
         lkoma7_obj.transform.localPosition = new Vector3(-140, 150, 0);
 
+        /* Return Bufferの初期化 */
+
+
         /* Ready! */
         diceview1_obj.GetComponent<Image>().material = null;
         diceview2_obj.GetComponent<Image>().material = null;
@@ -223,6 +230,11 @@ public class pvp_game_load : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            SceneManager.LoadScene("title");
+        }
+
         if (ongame)
         {
             if (canroll)
@@ -254,12 +266,30 @@ public class pvp_game_load : MonoBehaviour
             }
             else
             {
+                //勝利しましたか？
+                if (ground[0] >= 8 || ground[15] >= 8) /* 勝利判定 */
+                {
+                    if (ground[0] >= 8)
+                    {
+                        //Left側の勝利
+                        /* 勝利イベントここ */
+                        gamewin(true);
+                        return;
+                    }
+                    else
+                    {
+                        //Right側の勝利
+                        /* 勝利イベントここ */
+                        gamewin(false);
+                        return;
+                    }
+                }
+
                 //コマ移動フェーズ
                 if (remain > 0)
                 {
-                    //移動可能コマがある
-                    if (selectkoma)
-                    {
+                    //if ((activedice1 && (isstuck(user, roll1) == false)) || (activedice4 && (isstuck(user, roll2) == false)) || (activedice2 && (isstuck(user, roll1)) == false) || (activedice3 && (isstuck(user, roll1) == false)))
+                    //{
                         if (Input.GetKeyDown(KeyCode.LeftArrow))
                         {
                             //←キー
@@ -288,36 +318,24 @@ public class pvp_game_load : MonoBehaviour
                             activekoma_change(user, -1);
                             activekoma_change(user, selected_koma);
                         }
-                        else if (Input.GetKeyDown(KeyCode.Escape))
-                        {
-                            //コマ選択キャンセル
-                            selected_dice_change(selected);
-                            selectkoma = false;
-                        }
                         else if (Input.GetKeyDown(KeyCode.Space))
                         {
-                            //コマ移動確定（検証）
-                            if (canmovekoma(user, selected_koma, selected))
+                            if (can_select_dice(selected))  /* 選択中のダイスが選択可能か */
                             {
-                                //移動完了
-                                selectkoma = false;
-                                remain--;
-                                selected_koma = 0;
+                                selected_dice_change(selected, true);
+                                //activekoma_change(user, 0);
+                                //コマ移動確定（検証）
+                                if (canmovekoma(user, selected_koma, selected))
+                                {
+                                    //移動完了
+                                    remain--;
+                                    selected_koma = 0;
+                                    activekoma_change(user, -1);
+                                    activekoma_change(user, selected_koma);
+                                }
                             }
                         }
-                        else if (Input.GetKeyDown(KeyCode.F))
-                        {
-                            //移動不能パス（仮）
-                            selected_dice_change(selected);
-                            selected_koma = 0;
-                            remain = 0;
-                            selectkoma = false;
-                        }
-                    }
-                    else
-                    {
-                        //コマの指定変更ができる
-                        if (Input.GetKeyDown(KeyCode.Alpha1))
+                        else if (Input.GetKeyDown(KeyCode.Alpha1))
                         {
                             selected_dice_change(1);
                         }
@@ -333,20 +351,24 @@ public class pvp_game_load : MonoBehaviour
                         {
                             selected_dice_change(4);
                         }
-                        else if (Input.GetKeyDown(KeyCode.Space))
+                    /* }
+                    else
+                    {
+                        Debug.Log("動かせるコマがありません！！(stucked!!)");
+                        todotext.text = "スタックしました！\n[D]キーを押して交代です。";
+                        if (Input.GetKeyDown(KeyCode.D))
                         {
-                            if (can_select_dice(selected))  /* 選択中のダイスが選択可能か */
-                            {
-                                selected_dice_change(selected, true);
-                                activekoma_change(user, 0);
-                                selectkoma = true;
-                            }
+                            activekoma_change(user, -1);
+                            selected_dice_change(selected);
+                            selected_koma = 0;
+                            remain = 0;
                         }
-                    }
+                    } */
                 }
                 else
                 {
                     /* プレイヤー交代 */
+                    activekoma_change(user, -1);
                     user = !user;
                     if (user)
                     {
@@ -358,27 +380,12 @@ public class pvp_game_load : MonoBehaviour
                     }
                     todotext.text = "ターンチェンジ。\n[D]キーを押してダイスを振りましょう。";
                     canroll = true;
+                    selected_koma = 0;
+                    activekoma_change(user, -1);
+                    activekoma_change(user, selected_koma);
                 }
                 remaintext.text = "残ダイス数:" + remain.ToString();
 
-                //勝利しましたか？
-                if (ground[0] >= 8 || ground[15] >= 8) /* 勝利判定 */
-                {
-                    if (ground[0] >= 8)
-                    {
-                        //Left側の勝利
-                        /* 勝利イベントここ */
-                        gamewin(true);
-                        return;
-                    }
-                    else
-                    {
-                        //Right側の勝利
-                        /* 勝利イベントここ */
-                        gamewin(false);
-                        return;
-                    }
-                }
             }
         }
         else if (gameready)
@@ -394,6 +401,7 @@ public class pvp_game_load : MonoBehaviour
                     diceapply(roll1, roll2);
                 } while (roll1 == roll2);
 
+
                 if (roll1 > roll2)
                 {
                     user = true;
@@ -406,8 +414,10 @@ public class pvp_game_load : MonoBehaviour
                     turnuser.transform.localPosition = new Vector3(315, -75, 0);
                     todotext.text = "先攻が決まりました！　→";
                 }
-                todotext.text += "\n[D]キーを押してダイスを振りましょう。";
-                canroll = true;
+                todotext.text += "\n[D]キーを押してダイスを振ろう。";
+                activekoma_change(user, 0);
+                remain = 2;
+                canroll = false;
                 ongame = true;
                 gameready = false;
             }
@@ -999,7 +1009,6 @@ public class pvp_game_load : MonoBehaviour
         }
         Debug.Log("コマを移動しました。\nground[" + grounds + "]の新しい値は" + ti);
         activedice_change(selected);
-        activekoma_change(user, -1);
         selected_dice_change(selected);
         textupdate();
         return;
@@ -1064,7 +1073,7 @@ public class pvp_game_load : MonoBehaviour
         int posX = -255;
         int idousu = ((fieldid - 1) * 39);
         int newposX = posX + idousu;
-        int AddposX = 20 * komaid;
+        int AddposX = 10 * komaid;
 
         //コマをフィールドに描画反映。
         if (isblue)
@@ -1278,7 +1287,7 @@ public class pvp_game_load : MonoBehaviour
             //青
             for (int i = 0; i < 8; i++)
             {
-                if(i == komaid)
+                if (i == komaid)
                 {
                     ans = true;
                 }
@@ -1300,7 +1309,7 @@ public class pvp_game_load : MonoBehaviour
             //赤
             for (int i = 0; i < 8; i++)
             {
-                if(i == komaid)
+                if (i == komaid)
                 {
                     ans = true;
                 }
@@ -1335,6 +1344,96 @@ public class pvp_game_load : MonoBehaviour
             ongame = false;
         }
         return;
+    }
+
+    bool isstuck(bool isblue, int roll)   /* 全てのアクティブなコマが移動可能か */
+    {
+        Debug.Log("[Function Join] (isstuck) スタック判定を開始。");
+        bool ans = true;
+        int dice = roll + 1;
+        if (isblue)
+        {
+            //青
+            if (ground[14] == 0)    //監獄に誰もいない場合
+            {
+                for (int i = 0; i < 8; i++)
+                {
+                    if (lkoma[i] >= 2) //ゴールしていないコマを選択
+                    {
+                        if ((lkoma[i] - dice) >= 2)   //移動先がゴールより奥に行かない場合
+                        {
+                            //判定
+                            if (ground[(lkoma[i] - dice)] <= 1) //移動先のフィールドに位置する敵コマが取得可能な場合
+                            {
+                                ans = false;
+                                Debug.Log("(isstuck) 移動先のフィールドを取得可能です。");
+                            }
+                        }
+                        else
+                        {
+                            //ゴールに行く場合
+                            ans = false;
+                            Debug.Log("(isstuck) 移動先のゴールを取得可能です。");
+                        }
+                    }
+                }
+            }
+            else   //監獄に囚われがいる場合
+            {
+                if (ground[(14 - dice)] <= 1)
+                {
+                    //移動可能
+                    ans = false;
+                    Debug.Log("監獄に囚われがいますが移動可能です。");
+                }
+            }
+        }
+        else
+        {
+            //赤
+            if (ground[1] == 0)    //監獄に誰もいない場合
+            {
+                for (int i = 0; i < 8; i++)
+                {
+                    if (rkoma[i] <= 13) //ゴールしていないコマを選択
+                    {
+                        if ((rkoma[i] + dice) <= 13)   //移動先がゴールより奥に行かない場合
+                        {
+                            //判定
+                            if (ground[(rkoma[i] + dice)] >= -1) //移動先のフィールドに位置する敵コマが取得可能な場合
+                            {
+                                ans = false;
+                                Debug.Log("(isstuck) 移動先のフィールドを取得可能です。");
+                            }
+                        }
+                        else
+                        {
+                            //ゴールに行く場合
+                            ans = false;
+                            Debug.Log("(isstuck) 移動先のゴールを取得可能です。");
+                        }
+                    }
+                }
+            }
+            else   //監獄に囚われがいる場合
+            {
+                if (ground[(1 + dice)] >= -1)
+                {
+                    //移動可能
+                    ans = false;
+                    Debug.Log("監獄に囚われがいますが移動可能です。");
+                }
+            }
+        }
+        if (ans)
+        {
+            Debug.Log("判定結果：スタックしています。移動できません。");
+        }
+        else
+        {
+            Debug.Log("判定結果：スタックしていません。移動可能です。");
+        }
+        return ans;
     }
 
 }
