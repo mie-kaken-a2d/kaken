@@ -8,17 +8,14 @@ public class pvp_game_load : MonoBehaviour
 {
     /*
      [TO DO]
-        * ☆動けるコマがない場合の処理（ターンエンド）
         * 音を入れる
         * クリアイベントの作成
      [改善点]
         * 先攻ターンがどっちか直感的にわからない
         * Xコン対応、操作方法
         * ゴール可能状態では、引いたコマの値と同値でゴールできるコマを優先する
-        * 漂流したコマがある場合はそっちのコマを優先し、ほかのコマを選択できないようにする。
-        * 操作説明の位置
-        * todoが見にくい
-        * ゴールしたコマを表示する
+        * フィールドの数字表示
+        * ギャモン勝ちのときのイベント
     */
 
     bool user = false;  //プレイヤー(左側がtrue)
@@ -26,6 +23,7 @@ public class pvp_game_load : MonoBehaviour
     bool ongame = false;    //playing game
     bool canroll = false;   //ダイスロールの可否
     bool selectkoma = false;    //コマ選択モードか
+    bool playsound; //サウンドの再生が許可されているか
     int turn = 0;   //経過ターン
     int remain = 0; //残りの移動回数
     int[] lkoma;    //左側コマの位置
@@ -64,7 +62,6 @@ public class pvp_game_load : MonoBehaviour
     public GameObject diceview2_obj;
     public GameObject diceview3_obj;
     public GameObject diceview4_obj;
-    public Button backmenu;
     public Material di1;
     public Material di2;
     public Material di3;
@@ -72,6 +69,8 @@ public class pvp_game_load : MonoBehaviour
     public Material rkoma_notselected;
     public Material lkoma_selected;
     public Material rkoma_selected;
+    public Material lkoma_goal;
+    public Material rkoma_goal;
     public Text turntext;
     public Text todotext;
     public Text turnuser;
@@ -84,6 +83,14 @@ public class pvp_game_load : MonoBehaviour
     public Text selected_dice_3;
     public Text selected_dice_4;
     public Text remaintext;
+    public Text debugtext;
+    public AudioSource bgm;
+    public AudioSource se;
+    public AudioClip clearbgm;
+    public AudioClip dicese;
+    public AudioClip movekomase;
+    public AudioClip goalse;
+    public AudioClip prisonse;
 
     // Start is called before the first frame update
     void Start()
@@ -146,57 +153,55 @@ public class pvp_game_load : MonoBehaviour
         /* コマ初期化 */
         lkoma = new int[8];
         rkoma = new int[8];
+
         rkoma[0] = new int();
         rkoma[0] = 2;
-        rkoma0_obj.transform.localPosition = new Vector3(-215, -45, 0);
+        rkoma0_obj.transform.localPosition = new Vector3(-215, -60, 0);
         rkoma[1] = new int();
         rkoma[1] = 2;
-        rkoma1_obj.transform.localPosition = new Vector3(-215, 5, 0);
+        rkoma1_obj.transform.localPosition = new Vector3(-215, -10, 0);
         lkoma[0] = new int();
         lkoma[0] = 13;
-        lkoma0_obj.transform.localPosition = new Vector3(220, -45, 0);
+        lkoma0_obj.transform.localPosition = new Vector3(220, -60, 0);
         lkoma[1] = new int();
         lkoma[1] = 13;
-        lkoma1_obj.transform.localPosition = new Vector3(220, 5, 0);
+        lkoma1_obj.transform.localPosition = new Vector3(220, -10, 0);
         lkoma[2] = new int();
         lkoma[2] = 8;
-        lkoma2_obj.transform.localPosition = new Vector3(20, -20, 0);
+        lkoma2_obj.transform.localPosition = new Vector3(20, -35, 0);
         rkoma[2] = new int();
         rkoma[2] = 7;
-        rkoma2_obj.transform.localPosition = new Vector3(-20, -20, 0);
+        rkoma2_obj.transform.localPosition = new Vector3(-20, -35, 0);
         rkoma[3] = new int();
         rkoma[3] = 7;
-        rkoma3_obj.transform.localPosition = new Vector3(-20, 30, 0);
+        rkoma3_obj.transform.localPosition = new Vector3(-20, 15, 0);
         rkoma[4] = new int();
         rkoma[4] = 7;
-        rkoma4_obj.transform.localPosition = new Vector3(-20, 80, 0);
+        rkoma4_obj.transform.localPosition = new Vector3(-20, 65, 0);
         lkoma[3] = new int();
         lkoma[3] = 8;
-        lkoma3_obj.transform.localPosition = new Vector3(20, 30, 0);
+        lkoma3_obj.transform.localPosition = new Vector3(20, 15, 0);
         lkoma[4] = new int();
         lkoma[4] = 8;
-        lkoma4_obj.transform.localPosition = new Vector3(20, 80, 0);
+        lkoma4_obj.transform.localPosition = new Vector3(20, 65, 0);
         lkoma[5] = new int();
         lkoma[5] = 4;
-        lkoma5_obj.transform.localPosition = new Vector3(-140, 55, 0);
+        lkoma5_obj.transform.localPosition = new Vector3(-140, 40, 0);
         rkoma[5] = new int();
         rkoma[5] = 11;
-        rkoma5_obj.transform.localPosition = new Vector3(140, 55, 0);
+        rkoma5_obj.transform.localPosition = new Vector3(140, 40, 0);
         rkoma[6] = new int();
         rkoma[6] = 11;
-        rkoma6_obj.transform.localPosition = new Vector3(140, 105, 0);
+        rkoma6_obj.transform.localPosition = new Vector3(140, 90, 0);
         rkoma[7] = new int();
         rkoma[7] = 11;
-        rkoma7_obj.transform.localPosition = new Vector3(140, 150, 0);
+        rkoma7_obj.transform.localPosition = new Vector3(140, 135, 0);
         lkoma[6] = new int();
         lkoma[6] = 4;
-        lkoma6_obj.transform.localPosition = new Vector3(-140, 105, 0);
+        lkoma6_obj.transform.localPosition = new Vector3(-140, 90, 0);
         lkoma[7] = new int();
         lkoma[7] = 4;
-        lkoma7_obj.transform.localPosition = new Vector3(-140, 150, 0);
-
-        /* Return Bufferの初期化 */
-
+        lkoma7_obj.transform.localPosition = new Vector3(-140, 135, 0);
 
         /* Ready! */
         diceview1_obj.GetComponent<Image>().material = null;
@@ -236,11 +241,32 @@ public class pvp_game_load : MonoBehaviour
         r_goal_label.text = ground[15].ToString() + "/8";
         l_kick_label.text = "漂流：" + ground[1].ToString();
         r_kick_label.text = "漂流：" + ground[14].ToString();
+        playsound = true;
     }
 
     // Update is called once per frame
     void Update()
     {
+        /* turntext.text = "groundデバッグ\n";
+        for (int i = 0; i < 16; i++)
+        {
+            //デバッグ用Ground出力
+            turntext.text += "ground[" + i + "]@" + ground[i] + "\n";
+        } */
+
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            if (playsound)
+            {
+                bgm.Pause();
+                playsound = !playsound;
+            }
+            else
+            {
+                bgm.UnPause();
+                playsound = !playsound;
+            }
+        }
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             SceneManager.LoadScene("title");
@@ -248,6 +274,22 @@ public class pvp_game_load : MonoBehaviour
 
         if (ongame)
         {
+            //勝利しましたか？
+            if (ground[0] <= -8)
+            {
+                //Left側の勝利
+                /* 勝利イベントここ */
+                gamewin(true);
+                return;
+            }
+            else if (ground[15] >= 8)
+            {
+                //Right側の勝利
+                /* 勝利イベントここ */
+                gamewin(false);
+                return;
+            }
+
             if (Input.GetKeyDown(KeyCode.Z))
             {
                 returnmove();
@@ -282,106 +324,85 @@ public class pvp_game_load : MonoBehaviour
             }
             else
             {
-                //勝利しましたか？
-                if (ground[0] >= 8 || ground[15] >= 8) /* 勝利判定 */
-                {
-                    if (ground[0] >= 8)
-                    {
-                        //Left側の勝利
-                        /* 勝利イベントここ */
-                        gamewin(true);
-                        remain = -1;
-                        //return;
-                    }
-                    else
-                    {
-                        //Right側の勝利
-                        /* 勝利イベントここ */
-                        gamewin(false);
-                        remain = -1;
-                        //return;
-                    }
-                }
-
                 //コマ移動フェーズ
                 if (remain > 0)
                 {
-                    //if ((activedice1 && (isstuck(user, roll1) == false)) || (activedice4 && (isstuck(user, roll2) == false)) || (activedice2 && (isstuck(user, roll1)) == false) || (activedice3 && (isstuck(user, roll1) == false)))
-                    //{
-                    if (Input.GetKeyDown(KeyCode.LeftArrow))
+                    if ((activedice1 && (isstuck(user, roll1) == false)) || (activedice4 && (isstuck(user, roll2) == false)) || (activedice2 && (isstuck(user, roll1)) == false) || (activedice3 && (isstuck(user, roll1) == false)))
                     {
-                        //←キー
-                        if (selected_koma <= 0)
+                        if (Input.GetKeyDown(KeyCode.LeftArrow))
                         {
-                            selected_koma = 7;
-                        }
-                        else
-                        {
-                            selected_koma--;
-                        }
-                        activekoma_change(user, -1);
-                        activekoma_change(user, selected_koma, true);
-                    }
-                    else if (Input.GetKeyDown(KeyCode.RightArrow))
-                    {
-                        //→キー
-                        if (selected_koma >= 7)
-                        {
-                            selected_koma = 0;
-                        }
-                        else
-                        {
-                            selected_koma++;
-                        }
-                        activekoma_change(user, -1);
-                        activekoma_change(user, selected_koma);
-                    }
-                    else if (Input.GetKeyDown(KeyCode.Space))
-                    {
-                        if (can_select_dice(selected))  /* 選択中のダイスが選択可能か */
-                        {
-                            selected_dice_change(selected, true);
-                            //activekoma_change(user, 0);
-                            //コマ移動確定（検証）
-                            if (canmovekoma(user, selected_koma, selected))
+                            //←キー
+                            if (selected_koma <= 0)
                             {
-                                //移動完了
-                                remain--;
+                                selected_koma = 7;
+                            }
+                            else
+                            {
+                                selected_koma--;
+                            }
+                            activekoma_change(user, -1);
+                            activekoma_change(user, selected_koma, true);
+                        }
+                        else if (Input.GetKeyDown(KeyCode.RightArrow))
+                        {
+                            //→キー
+                            if (selected_koma >= 7)
+                            {
                                 selected_koma = 0;
-                                activekoma_change(user, -1);
-                                activekoma_change(user, selected_koma);
+                            }
+                            else
+                            {
+                                selected_koma++;
+                            }
+                            activekoma_change(user, -1);
+                            activekoma_change(user, selected_koma);
+                        }
+                        else if (Input.GetKeyDown(KeyCode.Space))
+                        {
+                            if (can_select_dice(selected))  /* 選択中のダイスが選択可能か */
+                            {
+                                selected_dice_change(selected, true);
+                                //activekoma_change(user, 0);
+                                //コマ移動確定（検証）
+                                if (canmovekoma(user, selected_koma, selected))
+                                {
+                                    //移動完了
+                                    remain--;
+                                    selected_koma = 0;
+                                    activekoma_change(user, -1);
+                                    activekoma_change(user, selected_koma);
+                                }
                             }
                         }
+                        else if (Input.GetKeyDown(KeyCode.Alpha1))
+                        {
+                            selected_dice_change(1);
+                        }
+                        else if (Input.GetKeyDown(KeyCode.Alpha2))
+                        {
+                            selected_dice_change(2);
+                        }
+                        else if (Input.GetKeyDown(KeyCode.Alpha3))
+                        {
+                            selected_dice_change(3);
+                        }
+                        else if (Input.GetKeyDown(KeyCode.Alpha4))
+                        {
+                            selected_dice_change(4);
+                        }
                     }
-                    else if (Input.GetKeyDown(KeyCode.Alpha1))
-                    {
-                        selected_dice_change(1);
-                    }
-                    else if (Input.GetKeyDown(KeyCode.Alpha2))
-                    {
-                        selected_dice_change(2);
-                    }
-                    else if (Input.GetKeyDown(KeyCode.Alpha3))
-                    {
-                        selected_dice_change(3);
-                    }
-                    else if (Input.GetKeyDown(KeyCode.Alpha4))
-                    {
-                        selected_dice_change(4);
-                    }
-                    /* }
                     else
                     {
                         Debug.Log("動かせるコマがありません！！(stucked!!)");
-                        todotext.text = "スタックしました！\n[D]キーを押して交代です。";
-                        if (Input.GetKeyDown(KeyCode.D))
+                        todotext.text = "スタックしました！\n[Space]キーを押して交代です。";
+                        if (Input.GetKeyDown(KeyCode.Space))
                         {
                             activekoma_change(user, -1);
                             selected_dice_change(selected);
                             selected_koma = 0;
                             remain = 0;
                         }
-                    } */
+                    }
                 }
                 else
                 {
@@ -438,6 +459,13 @@ public class pvp_game_load : MonoBehaviour
                 canroll = false;
                 ongame = true;
                 gameready = false;
+            }
+        }
+        else
+        {
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                SceneManager.LoadScene("go_multiplay");
             }
         }
     }
@@ -661,146 +689,217 @@ public class pvp_game_load : MonoBehaviour
 
     void activekoma_change(bool isblue, int komaid, bool keydownleft = false) /* 選択中のコマの色を変える */
     {
-        if (isblue)  //青ターン
+        if (!(ground[0] <= -8 || ground[15] >= 8))
         {
-            if (komaid != -1)   //-1だと全部のコマの色を初期化する
+            if (isblue)  //青ターン
             {
-                if (keydownleft)    //押されたキーが←の場合
+                if (komaid != -1)   //-1だと全部のコマの色を初期化する
                 {
-                    while (lkoma[komaid] <= 0)
+                    if (ground[14] != 0)
                     {
-                        komaid--;
-                        selected_koma--;
-                        if (komaid <= -1)
+                        //漂流コマがいる場合はそれを優先する
+                        int koma = getenemykomaid(14);
+                        komaid = koma;
+                        selected_koma = koma;
+                    }
+                    else
+                    {
+                        if (keydownleft)    //押されたキーが←の場合
                         {
-                            komaid = 7;
-                            selected_koma = 7;
+                            while (lkoma[komaid] <= 0)
+                            {
+                                komaid--;
+                                selected_koma--;
+                                if (komaid <= -1)
+                                {
+                                    komaid = 7;
+                                    selected_koma = 7;
+                                }
+                            }
+                        }
+                        else    //押されたキーが→の場合
+                        {
+                            while (lkoma[komaid] <= 0)
+                            {
+                                komaid++;
+                                selected_koma++;
+                                if (komaid >= 8)
+                                {
+                                    komaid = 0;
+                                    selected_koma = 0;
+                                }
+                            }
                         }
                     }
+                    Debug.Log("isblue:" + isblue + " / KomaID:" + komaid + "  を選択します。");
                 }
-                else    //押されたキーが→の場合
-                {
-                    while (lkoma[komaid] <= 0)
-                    {
-                        komaid++;
-                        selected_koma++;
-                        if (komaid >= 8)
-                        {
-                            komaid = 0;
-                            selected_koma = 0;
-                        }
-                    }
-                }
-                Debug.Log("isblue:" + isblue + " / KomaID:" + komaid + "  を選択します。");
-            }
 
-            switch (komaid)
-            {
-                case 0:
-                    lkoma0_obj.GetComponent<Image>().material = lkoma_selected;
-                    break;
-                case 1:
-                    lkoma1_obj.GetComponent<Image>().material = lkoma_selected;
-                    break;
-                case 2:
-                    lkoma2_obj.GetComponent<Image>().material = lkoma_selected;
-                    break;
-                case 3:
-                    lkoma3_obj.GetComponent<Image>().material = lkoma_selected;
-                    break;
-                case 4:
-                    lkoma4_obj.GetComponent<Image>().material = lkoma_selected;
-                    break;
-                case 5:
-                    lkoma5_obj.GetComponent<Image>().material = lkoma_selected;
-                    break;
-                case 6:
-                    lkoma6_obj.GetComponent<Image>().material = lkoma_selected;
-                    break;
-                case 7:
-                    lkoma7_obj.GetComponent<Image>().material = lkoma_selected;
-                    break;
-                default:
-                    lkoma0_obj.GetComponent<Image>().material = lkoma_notselected;
-                    lkoma1_obj.GetComponent<Image>().material = lkoma_notselected;
-                    lkoma2_obj.GetComponent<Image>().material = lkoma_notselected;
-                    lkoma3_obj.GetComponent<Image>().material = lkoma_notselected;
-                    lkoma4_obj.GetComponent<Image>().material = lkoma_notselected;
-                    lkoma5_obj.GetComponent<Image>().material = lkoma_notselected;
-                    lkoma6_obj.GetComponent<Image>().material = lkoma_notselected;
-                    lkoma7_obj.GetComponent<Image>().material = lkoma_notselected;
-                    break;
-            }
-        }
-        else
-        {
-            if (komaid != -1)
-            {
-                if (keydownleft)
+                switch (komaid)
                 {
-                    while (rkoma[komaid] >= 15)
-                    {
-                        komaid--;
-                        selected_koma--;
-                        if (komaid <= -1)
+                    case 0:
+                        lkoma0_obj.GetComponent<Image>().material = lkoma_selected;
+                        break;
+                    case 1:
+                        lkoma1_obj.GetComponent<Image>().material = lkoma_selected;
+                        break;
+                    case 2:
+                        lkoma2_obj.GetComponent<Image>().material = lkoma_selected;
+                        break;
+                    case 3:
+                        lkoma3_obj.GetComponent<Image>().material = lkoma_selected;
+                        break;
+                    case 4:
+                        lkoma4_obj.GetComponent<Image>().material = lkoma_selected;
+                        break;
+                    case 5:
+                        lkoma5_obj.GetComponent<Image>().material = lkoma_selected;
+                        break;
+                    case 6:
+                        lkoma6_obj.GetComponent<Image>().material = lkoma_selected;
+                        break;
+                    case 7:
+                        lkoma7_obj.GetComponent<Image>().material = lkoma_selected;
+                        break;
+                    default:
+                        if (lkoma[0] != 0)
                         {
-                            komaid = 7;
-                            selected_koma = 7;
+                            lkoma0_obj.GetComponent<Image>().material = lkoma_notselected;
+                        }
+                        if (lkoma[1] != 0)
+                        {
+                            lkoma1_obj.GetComponent<Image>().material = lkoma_notselected;
+                        }
+                        if (lkoma[2] != 0)
+                        {
+                            lkoma2_obj.GetComponent<Image>().material = lkoma_notselected;
+                        }
+                        if (lkoma[3] != 0)
+                        {
+                            lkoma3_obj.GetComponent<Image>().material = lkoma_notselected;
+                        }
+                        if (lkoma[4] != 0)
+                        {
+                            lkoma4_obj.GetComponent<Image>().material = lkoma_notselected;
+                        }
+                        if (lkoma[5] != 0)
+                        {
+                            lkoma5_obj.GetComponent<Image>().material = lkoma_notselected;
+                        }
+                        if (lkoma[6] != 0)
+                        {
+                            lkoma6_obj.GetComponent<Image>().material = lkoma_notselected;
+                        }
+                        if (lkoma[7] != 0)
+                        {
+                            lkoma7_obj.GetComponent<Image>().material = lkoma_notselected;
+                        }
+                        break;
+                }
+            }
+            else
+            {
+                if (komaid != -1)
+                {
+                    if (ground[1] != 0)
+                    {
+                        //漂流コマがいる場合はそれを優先する
+                        int koma = getenemykomaid(1);
+                        komaid = koma;
+                        selected_koma = koma;
+                    }
+                    else
+                    {
+                        if (keydownleft)
+                        {
+                            while (rkoma[komaid] >= 15)
+                            {
+                                komaid--;
+                                selected_koma--;
+                                if (komaid <= -1)
+                                {
+                                    komaid = 7;
+                                    selected_koma = 7;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            while (rkoma[komaid] >= 15)
+                            {
+                                komaid++;
+                                selected_koma++;
+                                if (komaid >= 8)
+                                {
+                                    komaid = 0;
+                                    selected_koma = 0;
+                                }
+                            }
                         }
                     }
+                    Debug.Log(komaid + "を選択します。");
                 }
-                else
-                {
-                    while (rkoma[komaid] >= 15)
-                    {
-                        komaid++;
-                        selected_koma++;
-                        if (komaid >= 8)
-                        {
-                            komaid = 0;
-                            selected_koma = 0;
-                        }
-                    }
-                }
-                Debug.Log(komaid + "を選択します。");
-            }
 
-            switch (komaid)
-            {
-                case 0:
-                    rkoma0_obj.GetComponent<Image>().material = rkoma_selected;
-                    break;
-                case 1:
-                    rkoma1_obj.GetComponent<Image>().material = rkoma_selected;
-                    break;
-                case 2:
-                    rkoma2_obj.GetComponent<Image>().material = rkoma_selected;
-                    break;
-                case 3:
-                    rkoma3_obj.GetComponent<Image>().material = rkoma_selected;
-                    break;
-                case 4:
-                    rkoma4_obj.GetComponent<Image>().material = rkoma_selected;
-                    break;
-                case 5:
-                    rkoma5_obj.GetComponent<Image>().material = rkoma_selected;
-                    break;
-                case 6:
-                    rkoma6_obj.GetComponent<Image>().material = rkoma_selected;
-                    break;
-                case 7:
-                    rkoma7_obj.GetComponent<Image>().material = rkoma_selected;
-                    break;
-                default:
-                    rkoma0_obj.GetComponent<Image>().material = rkoma_notselected;
-                    rkoma1_obj.GetComponent<Image>().material = rkoma_notselected;
-                    rkoma2_obj.GetComponent<Image>().material = rkoma_notselected;
-                    rkoma3_obj.GetComponent<Image>().material = rkoma_notselected;
-                    rkoma4_obj.GetComponent<Image>().material = rkoma_notselected;
-                    rkoma5_obj.GetComponent<Image>().material = rkoma_notselected;
-                    rkoma6_obj.GetComponent<Image>().material = rkoma_notselected;
-                    rkoma7_obj.GetComponent<Image>().material = rkoma_notselected;
-                    break;
+                switch (komaid)
+                {
+                    case 0:
+                        rkoma0_obj.GetComponent<Image>().material = rkoma_selected;
+                        break;
+                    case 1:
+                        rkoma1_obj.GetComponent<Image>().material = rkoma_selected;
+                        break;
+                    case 2:
+                        rkoma2_obj.GetComponent<Image>().material = rkoma_selected;
+                        break;
+                    case 3:
+                        rkoma3_obj.GetComponent<Image>().material = rkoma_selected;
+                        break;
+                    case 4:
+                        rkoma4_obj.GetComponent<Image>().material = rkoma_selected;
+                        break;
+                    case 5:
+                        rkoma5_obj.GetComponent<Image>().material = rkoma_selected;
+                        break;
+                    case 6:
+                        rkoma6_obj.GetComponent<Image>().material = rkoma_selected;
+                        break;
+                    case 7:
+                        rkoma7_obj.GetComponent<Image>().material = rkoma_selected;
+                        break;
+                    default:
+                        if (rkoma[0] != 15)
+                        {
+                            rkoma0_obj.GetComponent<Image>().material = rkoma_notselected;
+                        }
+                        if (rkoma[1] != 15)
+                        {
+                            rkoma1_obj.GetComponent<Image>().material = rkoma_notselected;
+                        }
+                        if (rkoma[2] != 15)
+                        {
+                            rkoma2_obj.GetComponent<Image>().material = rkoma_notselected;
+                        }
+                        if (rkoma[3] != 15)
+                        {
+                            rkoma3_obj.GetComponent<Image>().material = rkoma_notselected;
+                        }
+                        if (rkoma[4] != 15)
+                        {
+                            rkoma4_obj.GetComponent<Image>().material = rkoma_notselected;
+                        }
+                        if (rkoma[5] != 15)
+                        {
+                            rkoma5_obj.GetComponent<Image>().material = rkoma_notselected;
+                        }
+                        if (rkoma[6] != 15)
+                        {
+                            rkoma6_obj.GetComponent<Image>().material = rkoma_notselected;
+                        }
+                        if (rkoma[7] != 15)
+                        {
+                            rkoma7_obj.GetComponent<Image>().material = rkoma_notselected;
+                        }
+                        break;
+                }
             }
         }
         return;
@@ -809,6 +908,7 @@ public class pvp_game_load : MonoBehaviour
     bool canmovekoma(bool isblue, int komaid, int diceselected) /* コマの移動可否検証及び実行 */
     {
         bool canmove = false;
+        bool cantbyanother = false;
         /* 移動可否判定ここから */
         bool hasenemy = false;
         //ダイスの移動数取得
@@ -837,22 +937,31 @@ public class pvp_game_load : MonoBehaviour
                 if (komapos != 14)
                 {
                     Debug.Log("先に漂流されているコマを動かしてね！\nground[14]: " + ground[14]);
+                    todotext.text = "先に漂流中の味方を動かしましょう！";
                     return canmove;
                 }
             }
             Debug.Log("右コマ(LKoma)ID:" + komaid + " は、現在ground[" + komapos + "]に位置しています。\nまた、監獄がなければ、ground[" + (komapos - move) + "]へ移動します。");
-            if (komapos - move <= 1)    //移動先が監獄だった場合、ゴールへ
+            if ((komapos - move) <= 1)    //移動先が監獄だった場合、ゴールへ
             {
-                move = (komapos - 0);
+                move = komapos - 0;
                 Debug.Log("移動先がゴールです。");
                 if (cangoal(isblue, komaid))
                 {
-                    canmove = true;
-                    goal(isblue, komaid);
+                    if (noanothergoal(isblue, komaid, move))
+                    {
+                        canmove = true;
+                        goal(isblue, komaid);
+                    }
+                    else
+                    {
+                        cantbyanother = true;
+                    }
                 }
                 else
                 {
                     Debug.Log("コマが揃っていないためゴールできません。");
+                    todotext.text = "仲間を置いて帰宅はできません！";
                     return canmove;
                 }
             }
@@ -871,14 +980,42 @@ public class pvp_game_load : MonoBehaviour
                 }
                 else    //味方のコマの場合
                 {
-                    Debug.Log("味方のコマと合流します。");
-                    canmove = true;
+                    if (cangoal(isblue, komaid))
+                    {
+                        if (noanothergoal(isblue, komaid, move))
+                        {
+                            canmove = true;
+                        }
+                        else
+                        {
+                            cantbyanother = true;
+                        }
+                    }
+                    else
+                    {
+                        Debug.Log("味方のコマと合流します。");
+                        canmove = true;
+                    }
                 }
             }
             else    //移動先にコマがない場合
             {
-                Debug.Log("新規領域を占領します。");
-                canmove = true;
+                if (cangoal(isblue, komaid))
+                {
+                    if (noanothergoal(isblue, komaid, move))
+                    {
+                        canmove = true;
+                    }
+                    else
+                    {
+                        cantbyanother = true;
+                    }
+                }
+                else
+                {
+                    Debug.Log("新規領域を占領します。");
+                    canmove = true;
+                }
             }
         }
         else    //右のターンの場合（引く）
@@ -889,22 +1026,31 @@ public class pvp_game_load : MonoBehaviour
                 if (komapos != 1)
                 {
                     Debug.Log("先に漂流されているコマを動かしてね！\nground[1]: " + ground[1]);
+                    todotext.text = "漂流中の仲間を先に動かしましょう！";
                     return canmove;
                 }
             }
             Debug.Log("右側 コマID:" + komaid + " は、現在 " + komapos + "に位置しています。\nまた、監獄がなければ、ground[" + (komapos + move) + "]へ移動します。");
-            if (komapos + move >= 14)    //移動先が監獄だった場合、ゴールへ
+            if ((komapos + move) >= 14)    //移動先が監獄だった場合、ゴールへ
             {
                 move = Mathf.Abs(komapos - 15);
                 Debug.Log("移動先がゴールです。");
                 if (cangoal(isblue, komaid))
                 {
-                    canmove = true;
-                    goal(isblue, komaid);
+                    if (noanothergoal(isblue, komaid, move))
+                    {
+                        canmove = true;
+                        goal(isblue, komaid);
+                    }
+                    else
+                    {
+                        cantbyanother = true;
+                    }
                 }
                 else
                 {
                     Debug.Log("コマが揃っていないためゴールできません。");
+                    todotext.text = "全ての仲間が陣地内に収まっていません！";
                     return canmove;
                 }
             }
@@ -923,21 +1069,49 @@ public class pvp_game_load : MonoBehaviour
                 }
                 else    //味方のコマの場合
                 {
-                    Debug.Log("味方と合流します。");
-                    canmove = true;
+                    if (cangoal(isblue, komaid))
+                    {
+                        if (noanothergoal(isblue, komaid, move))
+                        {
+                            canmove = true;
+                        }
+                        else
+                        {
+                            cantbyanother = true;
+                        }
+                    }
+                    else
+                    {
+                        Debug.Log("味方と合流します。");
+                        canmove = true;
+                    }
                 }
             }
             else    //移動先にコマがない場合
             {
-                Debug.Log("新規領域を占領します。");
-                canmove = true;
+                if (cangoal(isblue, komaid))
+                {
+                    if (noanothergoal(isblue, komaid, move))
+                    {
+                        canmove = true;
+                    }
+                    else
+                    {
+                        cantbyanother = true;
+                    }
+                }
+                else
+                {
+                    Debug.Log("新規領域を占領します。");
+                    canmove = true;
+                }
             }
         }
         if (canmove)
         {
             movekoma(isblue, komaid, komapos, move, hasenemy, diceselected);
         }
-        else
+        else if (canmove == false && cantbyanother)
         {
             int grounds = -1, ti = -1;
             if (isblue)
@@ -951,6 +1125,11 @@ public class pvp_game_load : MonoBehaviour
                 ti = ground[komapos + move];
             }
             Debug.Log("敵が多すぎて動けません！\nground[" + grounds + "]@" + ti);
+            todotext.text = "移動先の敵が多すぎます！";
+        }
+        else
+        {
+            Debug.Log("ほかに移動できるコマがあります。");
         }
         return canmove;
     }
@@ -1132,7 +1311,7 @@ public class pvp_game_load : MonoBehaviour
         }
         if (cnt == -1)
         {
-            Debug.Log("[Error] (getenemykomaid) That komaID Not Found!!!");
+            Debug.Log("[Error] (getenemykomaid) That komaID Not Found!!!(Enemy Not Found!)");
         }
         return cnt;
     }
@@ -1149,7 +1328,7 @@ public class pvp_game_load : MonoBehaviour
         int posX = -255;
         int idousu = ((fieldid - 1) * 39);
         int newposX = posX + idousu;
-        int AddposX = 10 * komaid;
+        int AddposX = 7 * komaid;
 
         //コマをフィールドに描画反映。
         if (isblue)
@@ -1163,49 +1342,49 @@ public class pvp_game_load : MonoBehaviour
                     if (goprison)
                         lkoma0_obj.transform.localPosition = new Vector3(newposX - AddposX, -155, 0);
                     else
-                        lkoma0_obj.transform.localPosition = new Vector3(newposX, -45, 0);
+                        lkoma0_obj.transform.localPosition = new Vector3(newposX, -60, 0);
                     break;
                 case 1:
                     if (goprison)
                         lkoma1_obj.transform.localPosition = new Vector3(newposX - AddposX, -155, 0);
                     else
-                        lkoma1_obj.transform.localPosition = new Vector3(newposX, 5, 0);
+                        lkoma1_obj.transform.localPosition = new Vector3(newposX, -10, 0);
                     break;
                 case 2:
                     if (goprison)
                         lkoma2_obj.transform.localPosition = new Vector3(newposX - AddposX, -155, 0);
                     else
-                        lkoma2_obj.transform.localPosition = new Vector3(newposX, -20, 0);
+                        lkoma2_obj.transform.localPosition = new Vector3(newposX, -35, 0);
                     break;
                 case 3:
                     if (goprison)
                         lkoma3_obj.transform.localPosition = new Vector3(newposX - AddposX, -155, 0);
                     else
-                        lkoma3_obj.transform.localPosition = new Vector3(newposX, 30, 0);
+                        lkoma3_obj.transform.localPosition = new Vector3(newposX, 15, 0);
                     break;
                 case 4:
                     if (goprison)
                         lkoma4_obj.transform.localPosition = new Vector3(newposX - AddposX, -155, 0);
                     else
-                        lkoma4_obj.transform.localPosition = new Vector3(newposX, 80, 0);
+                        lkoma4_obj.transform.localPosition = new Vector3(newposX, 65, 0);
                     break;
                 case 5:
                     if (goprison)
                         lkoma5_obj.transform.localPosition = new Vector3(newposX - AddposX, -155, 0);
                     else
-                        lkoma5_obj.transform.localPosition = new Vector3(newposX, 55, 0);
+                        lkoma5_obj.transform.localPosition = new Vector3(newposX, 40, 0);
                     break;
                 case 6:
                     if (goprison)
                         lkoma6_obj.transform.localPosition = new Vector3(newposX - AddposX, -155, 0);
                     else
-                        lkoma6_obj.transform.localPosition = new Vector3(newposX, 105, 0);
+                        lkoma6_obj.transform.localPosition = new Vector3(newposX, 90, 0);
                     break;
                 case 7:
                     if (goprison)
                         lkoma7_obj.transform.localPosition = new Vector3(newposX - AddposX, -155, 0);
                     else
-                        lkoma7_obj.transform.localPosition = new Vector3(newposX, 150, 0);
+                        lkoma7_obj.transform.localPosition = new Vector3(newposX, 135, 0);
                     break;
                 default:
                     Debug.Log("[Error] (movekoma_apply) switch overflow!!! [" + komaid + "]");
@@ -1221,49 +1400,49 @@ public class pvp_game_load : MonoBehaviour
                     if (goprison)
                         rkoma0_obj.transform.localPosition = new Vector3(newposX + AddposX, -155, 0);
                     else
-                        rkoma0_obj.transform.localPosition = new Vector3(newposX, -45, 0);
+                        rkoma0_obj.transform.localPosition = new Vector3(newposX, -60, 0);
                     break;
                 case 1:
                     if (goprison)
                         rkoma1_obj.transform.localPosition = new Vector3(newposX + AddposX, -155, 0);
                     else
-                        rkoma1_obj.transform.localPosition = new Vector3(newposX, 5, 0);
+                        rkoma1_obj.transform.localPosition = new Vector3(newposX, -10, 0);
                     break;
                 case 2:
                     if (goprison)
                         rkoma2_obj.transform.localPosition = new Vector3(newposX + AddposX, -155, 0);
                     else
-                        rkoma2_obj.transform.localPosition = new Vector3(newposX, -20, 0);
+                        rkoma2_obj.transform.localPosition = new Vector3(newposX, -35, 0);
                     break;
                 case 3:
                     if (goprison)
                         rkoma3_obj.transform.localPosition = new Vector3(newposX + AddposX, -155, 0);
                     else
-                        rkoma3_obj.transform.localPosition = new Vector3(newposX, 30, 0);
+                        rkoma3_obj.transform.localPosition = new Vector3(newposX, 15, 0);
                     break;
                 case 4:
                     if (goprison)
                         rkoma4_obj.transform.localPosition = new Vector3(newposX + AddposX, -155, 0);
                     else
-                        rkoma4_obj.transform.localPosition = new Vector3(newposX, 80, 0);
+                        rkoma4_obj.transform.localPosition = new Vector3(newposX, 65, 0);
                     break;
                 case 5:
                     if (goprison)
                         rkoma5_obj.transform.localPosition = new Vector3(newposX + AddposX, -155, 0);
                     else
-                        rkoma5_obj.transform.localPosition = new Vector3(newposX, 55, 0);
+                        rkoma5_obj.transform.localPosition = new Vector3(newposX, 40, 0);
                     break;
                 case 6:
                     if (goprison)
                         rkoma6_obj.transform.localPosition = new Vector3(newposX + AddposX, -155, 0);
                     else
-                        rkoma6_obj.transform.localPosition = new Vector3(newposX, 105, 0);
+                        rkoma6_obj.transform.localPosition = new Vector3(newposX, 90, 0);
                     break;
                 case 7:
                     if (goprison)
                         rkoma7_obj.transform.localPosition = new Vector3(newposX + AddposX, -155, 0);
                     else
-                        rkoma7_obj.transform.localPosition = new Vector3(newposX, 150, 0);
+                        rkoma7_obj.transform.localPosition = new Vector3(newposX, 135, 0);
                     break;
                 default:
                     Debug.Log("[Error] (movekoma_apply) switch overflow!!! [" + komaid + "]");
@@ -1281,28 +1460,36 @@ public class pvp_game_load : MonoBehaviour
             switch (komaid)
             {
                 case 0:
-                    lkoma0_obj.SetActive(false);
+                    lkoma0_obj.GetComponent<Image>().material = lkoma_goal;
+                    lkoma0_obj.transform.localPosition = new Vector3(-259, -43, 0);
                     break;
                 case 1:
-                    lkoma1_obj.SetActive(false);
+                    lkoma1_obj.GetComponent<Image>().material = lkoma_goal;
+                    lkoma1_obj.transform.localPosition = new Vector3(-312, -74, 0);
                     break;
                 case 2:
-                    lkoma2_obj.SetActive(false);
+                    lkoma2_obj.GetComponent<Image>().material = lkoma_goal;
+                    lkoma2_obj.transform.localPosition = new Vector3(-294, -40, 0);
                     break;
                 case 3:
-                    lkoma3_obj.SetActive(false);
+                    lkoma3_obj.GetComponent<Image>().material = lkoma_goal;
+                    lkoma3_obj.transform.localPosition = new Vector3(-367, -70, 0);
                     break;
                 case 4:
-                    lkoma4_obj.SetActive(false);
+                    lkoma4_obj.GetComponent<Image>().material = lkoma_goal;
+                    lkoma4_obj.transform.localPosition = new Vector3(-291, 152, 0);
                     break;
                 case 5:
-                    lkoma5_obj.SetActive(false);
+                    lkoma5_obj.GetComponent<Image>().material = lkoma_goal;
+                    lkoma5_obj.transform.localPosition = new Vector3(-317, 193, 0);
                     break;
                 case 6:
-                    lkoma6_obj.SetActive(false);
+                    lkoma6_obj.GetComponent<Image>().material = lkoma_goal;
+                    lkoma6_obj.transform.localPosition = new Vector3(-265, 180, 0);
                     break;
                 case 7:
-                    lkoma7_obj.SetActive(false);
+                    lkoma7_obj.GetComponent<Image>().material = lkoma_goal;
+                    lkoma7_obj.transform.localPosition = new Vector3(-363, 180, 0);
                     break;
                 default:
                     Debug.Log("[Error] (goal) switch overflow!!! [" + isblue + " / " + komaid + "]");
@@ -1315,34 +1502,43 @@ public class pvp_game_load : MonoBehaviour
             switch (komaid)
             {
                 case 0:
-                    rkoma0_obj.SetActive(false);
+                    rkoma0_obj.GetComponent<Image>().material = rkoma_goal;
+                    rkoma0_obj.transform.localPosition = new Vector3(262, -45, 0);
                     break;
                 case 1:
-                    rkoma1_obj.SetActive(false);
+                    rkoma1_obj.GetComponent<Image>().material = rkoma_goal;
+                    rkoma1_obj.transform.localPosition = new Vector3(314, -76, 0);
                     break;
                 case 2:
-                    rkoma2_obj.SetActive(false);
+                    rkoma2_obj.GetComponent<Image>().material = rkoma_goal;
+                    rkoma2_obj.transform.localPosition = new Vector3(348, -42, 0);
                     break;
                 case 3:
-                    rkoma3_obj.SetActive(false);
+                    rkoma3_obj.GetComponent<Image>().material = rkoma_goal;
+                    rkoma3_obj.transform.localPosition = new Vector3(307, -38, 0);
                     break;
                 case 4:
-                    rkoma4_obj.SetActive(false);
+                    rkoma4_obj.GetComponent<Image>().material = rkoma_goal;
+                    rkoma4_obj.transform.localPosition = new Vector3(287, 182, 0);
                     break;
                 case 5:
-                    rkoma5_obj.SetActive(false);
+                    rkoma5_obj.GetComponent<Image>().material = rkoma_goal;
+                    rkoma5_obj.transform.localPosition = new Vector3(356, 179, 0);
                     break;
                 case 6:
-                    rkoma6_obj.SetActive(false);
+                    rkoma6_obj.GetComponent<Image>().material = rkoma_goal;
+                    rkoma6_obj.transform.localPosition = new Vector3(249, 153, 0);
                     break;
                 case 7:
-                    rkoma7_obj.SetActive(false);
+                    rkoma7_obj.GetComponent<Image>().material = rkoma_goal;
+                    rkoma7_obj.transform.localPosition = new Vector3(319, 170, 0);
                     break;
                 default:
                     Debug.Log("[Error] (goal) switch overflow!!! [" + isblue + " / " + komaid + "]");
                     break;
             }
         }
+        return;
     }
 
     void textupdate()
@@ -1351,7 +1547,7 @@ public class pvp_game_load : MonoBehaviour
         r_goal_label.text = ground[15].ToString() + "/8";
         l_kick_label.text = "漂流: " + ground[1].ToString();
         r_kick_label.text = "漂流: " + Mathf.Abs(ground[14]).ToString();
-        turntext.text = "Turn: " + turn.ToString();
+        turntext.text = "Turn: " + (turn / 2 + 1).ToString();
         return;
     }
 
@@ -1411,14 +1607,22 @@ public class pvp_game_load : MonoBehaviour
         Debug.Log("[Function Join] (gamewin)");
         if (isblue)
         {
-            todotext.text = "青色ペンギンさんチームの勝利！\nおめでとう！！";
+            todotext.text = "青色ペンギンさんチームの勝利！\nおめでとう！！\n[R]を押してもう一度プレイできるぞ！";
         }
         else
         {
-            todotext.text = "赤色ペンギンさんチームの勝利！\nおめでとう！！";
+            todotext.text = "赤色ペンギンさんチームの勝利！\nおめでとう！！\n[R]を押してもう一度プレイできるぞ！";
         }
+        playsound = true;
+        bgm.clip = clearbgm;
+        bgm.Play();
         gameready = false;
         ongame = false;
+        remain = -1;
+        activekoma_change(user, -1);
+        activekoma_change(!user, -1);
+        rb_canback = false;
+        turntext.text = "経過ターンは" + (turn / 2 + 1).ToString() + "ターンでした。";
         return;
     }
 
@@ -1447,9 +1651,12 @@ public class pvp_game_load : MonoBehaviour
                         }
                         else
                         {
-                            //ゴールに行く場合
-                            ans = false;
-                            Debug.Log("(isstuck) 移動先のゴールを取得可能です。");
+                            if (cangoal(isblue, i))
+                            {
+                                //ゴールに行く場合
+                                ans = false;
+                                Debug.Log("(isstuck) 移動先のゴールを取得可能です。");
+                            }
                         }
                     }
                 }
@@ -1484,9 +1691,12 @@ public class pvp_game_load : MonoBehaviour
                         }
                         else
                         {
-                            //ゴールに行く場合
-                            ans = false;
-                            Debug.Log("(isstuck) 移動先のゴールを取得可能です。");
+                            if (cangoal(isblue, i))
+                            {
+                                //ゴールに行く場合
+                                ans = false;
+                                Debug.Log("(isstuck) 移動先のゴールを取得可能です。");
+                            }
                         }
                     }
                 }
@@ -1518,42 +1728,80 @@ public class pvp_game_load : MonoBehaviour
         {
             if (rb_wasblue)     //青ターン
             {
-                if (rb_prison)  //監獄に飛ばした
+                if (rb_prison)  //敵を監獄に飛ばした
                 {
                     ground[lkoma[rb_lid]] = rb_mg;
                     ground[1] = rb_ag;
                     lkoma[rb_lid] = rb_lp;
                     rkoma[rb_rid] = rb_rp;
                     ground[rb_lp] = rb_bg;
-                    movekoma_apply(rb_wasblue, rb_lid, rb_lp);
-                    movekoma_apply(!rb_wasblue, rb_rid, rb_rp);
+                    if (rb_lp == 14) //自分が監獄から出たときに敵を監獄に飛ばした
+                    {
+                        debugtext.text = "1";
+                        movekoma_apply(true, rb_lid, rb_lp, true, rb_lid);
+                        movekoma_apply(false, rb_rid, rb_rp);
+                    }
+                    else　   //通常移動で敵を監獄に飛ばした
+                    {
+                        debugtext.text = "2";
+                        movekoma_apply(true, rb_lid, rb_lp);
+                        movekoma_apply(false, rb_rid, rb_rp);
+                    }
                 }
                 else    //通常移動のみ
                 {
                     ground[lkoma[rb_lid]] = rb_mg;
                     lkoma[rb_lid] = rb_lp;
                     ground[rb_lp] = rb_bg;
-                    movekoma_apply(rb_wasblue, rb_lid, rb_lp);
+                    if (rb_lp == 14)    //監獄から出た
+                    {
+                        debugtext.text = "3";
+                        movekoma_apply(true, rb_lid, rb_lp, true, rb_lid);
+                    }
+                    else    //通常状態から通常移動
+                    {
+                        debugtext.text = "4";
+                        movekoma_apply(true, rb_lid, rb_lp);
+                    }
                 }
             }
             else    //赤ターン
             {
-                if (rb_prison)  //監獄に飛ばした
+                if (rb_prison)  //敵を監獄に飛ばした
                 {
                     ground[rkoma[rb_rid]] = rb_mg;
                     ground[14] = rb_ag;
                     lkoma[rb_lid] = rb_lp;
                     rkoma[rb_rid] = rb_rp;
                     ground[rb_rp] = rb_bg;
-                    movekoma_apply(!rb_wasblue, rb_lid, rb_lp);
-                    movekoma_apply(rb_wasblue, rb_rid, rb_rp);
+                    if (rb_rp == 1) //自分が監獄から出たときに敵を監獄に飛ばした
+                    {
+                        debugtext.text = "5";
+                        movekoma_apply(false, rb_rid, rb_rp, true, rb_rid);
+                        movekoma_apply(true, rb_lid, rb_lp);
+                    }
+                    else　   //通常移動で敵を監獄に飛ばした
+                    {
+                        debugtext.text = "6";
+                        movekoma_apply(false, rb_rid, rb_rp);
+                        movekoma_apply(true, rb_lid, rb_lp);
+                    }
                 }
                 else    //通常移動のみ
                 {
                     ground[rkoma[rb_rid]] = rb_mg;
                     rkoma[rb_rid] = rb_rp;
                     ground[rb_rp] = rb_bg;
-                    movekoma_apply(rb_wasblue, rb_rid, rb_rp);
+                    if (rb_rp == 1)
+                    {
+                        debugtext.text = "7";
+                        movekoma_apply(rb_wasblue, rb_rid, rb_rp, true, rb_rid);
+                    }
+                    else
+                    {
+                        debugtext.text = "8";
+                        movekoma_apply(rb_wasblue, rb_rid, rb_rp);
+                    }
                 }
             }
             remain++;
@@ -1571,7 +1819,8 @@ public class pvp_game_load : MonoBehaviour
             {
                 case 1:
                     activedice1 = true;
-                    switch (roll1) {
+                    switch (roll1)
+                    {
                         case 0:
                             diceview1_obj.GetComponent<Image>().material = di1;
                             break;
@@ -1654,5 +1903,129 @@ public class pvp_game_load : MonoBehaviour
         }
         Debug.Log("(returnmove) 呼び出されました。");
         return;
+    }
+
+    public void btn_rolldice()
+    {
+        if (ongame)
+        {
+            //ongame
+            if (canroll)
+            {
+                canroll = false;
+                rb_canback = false;
+
+                turn++;
+                turntext.text = "Turn: " + turn.ToString();
+
+                todotext.text = "ダイスを振っています…";
+                roll1 = diceroll();
+                roll2 = diceroll();
+                todotext.text = "ダイスを振りました。\n数字／スペースキーでコマを移動しましょう。";
+
+
+                if (roll1 == roll2)
+                {
+                    remain = 4;
+                    diceapply(roll1, roll2, true);
+                }
+                else
+                {
+                    remain = 2;
+                    diceapply(roll1, roll2);
+                }
+            }
+        }
+        else if (gameready)
+        {
+            //順番決め
+            todotext.text = "先攻を決めています…";
+            do
+            {
+                roll1 = diceroll();
+                roll2 = diceroll();
+                diceapply(roll1, roll2);
+            } while (roll1 == roll2);
+
+
+            if (roll1 > roll2)
+            {
+                user = true;
+                turnuser.transform.localPosition = new Vector3(-315, -75, 0);
+                todotext.text = "←　先攻が決まりました！";
+            }
+            else
+            {
+                user = false;
+                turnuser.transform.localPosition = new Vector3(315, -75, 0);
+                todotext.text = "先攻が決まりました！　→";
+            }
+            todotext.text += "\nダイスとコマを選んで動かしましょう。";
+            activekoma_change(user, 0);
+            remain = 2;
+            canroll = false;
+            ongame = true;
+            gameready = false;
+        }
+        return;
+    }
+
+    bool noanothergoal(bool isblue, int komaid, int diceti)
+    {
+        bool ans = false;
+
+        if (isblue)
+        {
+            //青
+            if (ground[(diceti + 1)] <= -1)
+            {
+                debugtext.text = "移動に適切なコマがあります。";
+                //コマがある場合は、選択したコマがジャストで動けるコマかチェックする
+                if (lkoma[komaid] == (diceti + 1))
+                {
+                    debugtext.text = "移動に適切なコマを選択しています。";
+                    //ダイスの値とジャストで移動できるコマ
+                    ans = true;
+                }
+                else
+                {
+                    //選択したコマ以外にジャストで動かせるコマがある
+                    todotext.text = "他に移動可能なコマがあります。";
+                }
+            }
+            else
+            {
+                //コマがない場合はほかのコマ移動を許可する
+                debugtext.text = "移動に適切なコマがありません。";
+                ans = true;
+            }
+        }
+        else
+        {
+            //赤
+            if (ground[(15 - (diceti + 1))] >= 1)
+            {
+                debugtext.text = "移動に適切なコマがあります。";
+                //コマがある場合は、選択したコマがジャストで動けるコマかチェックする
+                if (rkoma[komaid] == (15 - (diceti + 1)))
+                {
+                    debugtext.text = "移動に適切なコマを選択。";
+                    //ダイスの値とジャストで移動できるコマ
+                    ans = true;
+                }
+                else
+                {
+                    //選択したコマ以外にジャストで動かせるコマがある
+                    todotext.text = "他に移動可能なコマがあります。";
+                }
+            }
+            else
+            {
+                //コマがない場合はほかのコマ移動を許可する
+                debugtext.text = "移動に適切なコマがありません。";
+                ans = true;
+            }
+        }
+        return ans;
     }
 }

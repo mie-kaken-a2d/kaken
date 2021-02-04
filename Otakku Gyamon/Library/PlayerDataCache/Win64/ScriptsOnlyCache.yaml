@@ -1,8 +1,10 @@
 ScriptsOnlyBuild:
   usedScripts:
     Assembly-CSharp.dll:
+    - Lkoma_update
     - click_title_exit
     - click_title_howto
+    - click_title_mute
     - click_title_pve
     - click_title_pvp
     - howto_load
@@ -47,6 +49,10 @@ ScriptsOnlyBuild:
       Script: {instanceID: 0}
     - Class: 81
       Script: {instanceID: 0}
+    - Class: 82
+      Script: {instanceID: 0}
+    - Class: 83
+      Script: {instanceID: 0}
     - Class: 104
       Script: {instanceID: 0}
     - Class: 108
@@ -58,9 +64,13 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 11780}
     - Class: 114
-      Script: {instanceID: 12614}
+      Script: {instanceID: 12616}
     - Class: 114
-      Script: {instanceID: 14422}
+      Script: {instanceID: 13520}
+    - Class: 114
+      Script: {instanceID: 14424}
+    - Class: 114
+      Script: {instanceID: 14896}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -70,6 +80,8 @@ ScriptsOnlyBuild:
     - Class: 196
       Script: {instanceID: 0}
     - Class: 212
+      Script: {instanceID: 0}
+    - Class: 213
       Script: {instanceID: 0}
     - Class: 222
       Script: {instanceID: 0}
@@ -86,37 +98,47 @@ ScriptsOnlyBuild:
       Script: {instanceID: 0}
     - Class: 21
       Script: {instanceID: 0}
-    - Class: 23
-      Script: {instanceID: 0}
     - Class: 28
-      Script: {instanceID: 0}
-    - Class: 33
-      Script: {instanceID: 0}
-    - Class: 43
       Script: {instanceID: 0}
     - Class: 48
       Script: {instanceID: 0}
-    - Class: 65
-      Script: {instanceID: 0}
     - Class: 81
+      Script: {instanceID: 0}
+    - Class: 82
+      Script: {instanceID: 0}
+    - Class: 83
       Script: {instanceID: 0}
     - Class: 104
       Script: {instanceID: 0}
     - Class: 108
       Script: {instanceID: 0}
     - Class: 114
+      Script: {instanceID: 11336}
+    - Class: 114
       Script: {instanceID: 11362}
     - Class: 114
-      Script: {instanceID: 12604}
+      Script: {instanceID: 11780}
     - Class: 114
-      Script: {instanceID: 14422}
+      Script: {instanceID: 12616}
     - Class: 114
-      Script: {instanceID: 15166}
+      Script: {instanceID: 13520}
+    - Class: 114
+      Script: {instanceID: 14424}
+    - Class: 114
+      Script: {instanceID: 14896}
     - Class: 115
+      Script: {instanceID: 0}
+    - Class: 128
       Script: {instanceID: 0}
     - Class: 157
       Script: {instanceID: 0}
     - Class: 196
+      Script: {instanceID: 0}
+    - Class: 212
+      Script: {instanceID: 0}
+    - Class: 213
+      Script: {instanceID: 0}
+    - Class: 222
       Script: {instanceID: 0}
     - Class: 223
       Script: {instanceID: 0}
@@ -137,6 +159,10 @@ ScriptsOnlyBuild:
       Script: {instanceID: 0}
     - Class: 81
       Script: {instanceID: 0}
+    - Class: 82
+      Script: {instanceID: 0}
+    - Class: 83
+      Script: {instanceID: 0}
     - Class: 104
       Script: {instanceID: 0}
     - Class: 114
@@ -146,13 +172,13 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 11780}
     - Class: 114
-      Script: {instanceID: 12114}
+      Script: {instanceID: 12116}
     - Class: 114
-      Script: {instanceID: 12604}
+      Script: {instanceID: 12606}
     - Class: 114
-      Script: {instanceID: 14422}
+      Script: {instanceID: 14424}
     - Class: 114
-      Script: {instanceID: 15166}
+      Script: {instanceID: 15170}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -184,6 +210,10 @@ ScriptsOnlyBuild:
       Script: {instanceID: 0}
     - Class: 81
       Script: {instanceID: 0}
+    - Class: 82
+      Script: {instanceID: 0}
+    - Class: 83
+      Script: {instanceID: 0}
     - Class: 104
       Script: {instanceID: 0}
     - Class: 114
@@ -193,21 +223,23 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 11780}
     - Class: 114
-      Script: {instanceID: 12206}
+      Script: {instanceID: 12028}
     - Class: 114
-      Script: {instanceID: 12604}
+      Script: {instanceID: 12208}
     - Class: 114
-      Script: {instanceID: 12724}
+      Script: {instanceID: 12606}
     - Class: 114
-      Script: {instanceID: 13518}
+      Script: {instanceID: 12726}
     - Class: 114
-      Script: {instanceID: 13690}
+      Script: {instanceID: 13520}
     - Class: 114
-      Script: {instanceID: 14422}
+      Script: {instanceID: 13692}
     - Class: 114
-      Script: {instanceID: 14800}
+      Script: {instanceID: 14424}
     - Class: 114
-      Script: {instanceID: 15166}
+      Script: {instanceID: 14802}
+    - Class: 114
+      Script: {instanceID: 15170}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -395,7 +427,13 @@ ScriptsOnlyBuild:
     className: PhysicsRaycaster
   - hash:
       serializedVersion: 2
-      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+      Hash: c81eb7a51bd0af730986628c5f4387fd
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: click_title_mute
+  - hash:
+      serializedVersion: 2
+      Hash: d23aae3428107b44e96ed844634d5ef0
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: howto_load
@@ -521,7 +559,7 @@ ScriptsOnlyBuild:
     className: ControlPlayableAsset
   - hash:
       serializedVersion: 2
-      Hash: 293f744385d83fcf4946c5a338ab9822
+      Hash: 2ef5eaf1acfaadfc1b351b71c29a7907
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: pvp_game_load
@@ -809,6 +847,12 @@ ScriptsOnlyBuild:
     className: NetworkAnimator
   - hash:
       serializedVersion: 2
+      Hash: 7c54a686aec57195480ee906ee09189a
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: Lkoma_update
+  - hash:
+      serializedVersion: 2
       Hash: 8cd1cbba27f3cb1717254f668e9e0d5a
     assemblyName: Unity.TextMeshPro.dll
     namespaceName: TMPro
@@ -928,4 +972,4 @@ ScriptsOnlyBuild:
   - Assets/Scenes/go_multiplay.unity
   - Assets/Scenes/howto.unity
   playerPath: "C:/Users/fanta/Documents/MIE/sotuken/Otakku Gyamon/bin/\uFF73\uFF6B\uFF75\uFF75\uFF75\uFF75\uFF75\uFF75\uFF75\uFF75\uFF75\u30BF\u30C3\u30AF\u30AE\u30E3\u30E2\u30F3
-    Ver.0.08d (dev).exe"
+    Ver.0.13 (dev).exe"

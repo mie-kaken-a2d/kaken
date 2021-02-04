@@ -55,8 +55,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\src\Lkoma_update.cs" />
      <Compile Include="Assets\src\click_title_exit.cs" />
      <Compile Include="Assets\src\click_title_howto.cs" />
+     <Compile Include="Assets\src\click_title_mute.cs" />
      <Compile Include="Assets\src\click_title_pve.cs" />
      <Compile Include="Assets\src\click_title_pvp.cs" />
      <Compile Include="Assets\src\howto_load.cs" />
