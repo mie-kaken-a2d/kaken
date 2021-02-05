@@ -338,7 +338,7 @@ GameObject:
   - component: {fileID: 367235600}
   - component: {fileID: 367235599}
   m_Layer: 5
-  m_Name: Text
+  m_Name: subtitle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -709,9 +709,9 @@ GameObject:
   m_Component:
   - component: {fileID: 823722037}
   - component: {fileID: 823722040}
-  - component: {fileID: 823722039}
   - component: {fileID: 823722038}
   - component: {fileID: 823722041}
+  - component: {fileID: 823722039}
   m_Layer: 5
   m_Name: howto
   m_TagString: Untagged
@@ -736,8 +736,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 20}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -235.6, y: 12.2}
-  m_SizeDelta: {x: 247, y: 125}
+  m_AnchoredPosition: {x: -235.56, y: 6.44}
+  m_SizeDelta: {x: 248.38663, y: 128.69751}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &823722038
 MonoBehaviour:
@@ -802,18 +802,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 823722036}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Script: {fileID: 11500000, guid: ade1841702e9f704f9e419748980ea05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.9490197, g: 0.9686275, b: 0.9686275, a: 1}
   m_RaycastTarget: 1
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 0}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -822,6 +822,8 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+  Radius: 18
+  TriangleNum: 0
 --- !u!222 &823722040
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -854,7 +856,7 @@ GameObject:
   - component: {fileID: 975889693}
   - component: {fileID: 975889692}
   m_Layer: 5
-  m_Name: Text
+  m_Name: Attention
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1489,7 +1491,7 @@ GameObject:
   - component: {fileID: 1491998958}
   - component: {fileID: 1491998961}
   m_Layer: 5
-  m_Name: Button
+  m_Name: Mute
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -8,14 +8,13 @@ public class pvp_game_load : MonoBehaviour
 {
     /*
      [TO DO]
-        * 音を入れる
+        * （効果音待ち）音を入れる
         * クリアイベントの作成
      [改善点]
         * 先攻ターンがどっちか直感的にわからない
-        * Xコン対応、操作方法
         * ゴール可能状態では、引いたコマの値と同値でゴールできるコマを優先する
-        * フィールドの数字表示
         * ギャモン勝ちのときのイベント
+        * （デバッグデータの取得待ち）監獄ロールバックのコマバグ
     */
 
     bool user = false;  //プレイヤー(左側がtrue)
@@ -24,6 +23,7 @@ public class pvp_game_load : MonoBehaviour
     bool canroll = false;   //ダイスロールの可否
     bool selectkoma = false;    //コマ選択モードか
     bool playsound; //サウンドの再生が許可されているか
+    bool visiblefieldid;    //フィールド番号の表示
     int turn = 0;   //経過ターン
     int remain = 0; //残りの移動回数
     int[] lkoma;    //左側コマの位置
@@ -41,6 +41,7 @@ public class pvp_game_load : MonoBehaviour
     bool rb_wasblue;            //【Return Buffer】青色のターンだったか
     bool rb_prison;             //【Return Buffer】監獄に連れて行かれたか
     int rb_prisonid;            //【Return Buffer】監獄に連れてかれたコマのID
+    float timecounter;
 
     public GameObject lkoma0_obj;
     public GameObject lkoma1_obj;
@@ -84,6 +85,8 @@ public class pvp_game_load : MonoBehaviour
     public Text selected_dice_4;
     public Text remaintext;
     public Text debugtext;
+    public Text debugtext1;
+    public Text groundidtext;
     public AudioSource bgm;
     public AudioSource se;
     public AudioClip clearbgm;
@@ -91,6 +94,7 @@ public class pvp_game_load : MonoBehaviour
     public AudioClip movekomase;
     public AudioClip goalse;
     public AudioClip prisonse;
+    public AudioClip cantse;
 
     // Start is called before the first frame update
     void Start()
@@ -242,6 +246,8 @@ public class pvp_game_load : MonoBehaviour
         l_kick_label.text = "漂流：" + ground[1].ToString();
         r_kick_label.text = "漂流：" + ground[14].ToString();
         playsound = true;
+        visiblefieldid = true;
+        timecounter = 0;
     }
 
     // Update is called once per frame
@@ -272,6 +278,22 @@ public class pvp_game_load : MonoBehaviour
             SceneManager.LoadScene("title");
         }
 
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            if (visiblefieldid)
+            {
+                //visible
+                groundidtext.gameObject.SetActive(false);
+                visiblefieldid = !visiblefieldid;
+            }
+            else
+            {
+                //hide
+                groundidtext.gameObject.SetActive(true);
+                visiblefieldid = !visiblefieldid;
+            }
+        }
+
         if (ongame)
         {
             //勝利しましたか？
@@ -294,6 +316,7 @@ public class pvp_game_load : MonoBehaviour
             {
                 returnmove();
             }
+
             if (canroll)
             {
                 if (Input.GetKeyDown(KeyCode.D))    /* ダイスロール */
@@ -473,12 +496,60 @@ public class pvp_game_load : MonoBehaviour
     int diceroll()  /* ダイスを振る */
     {
         int diceval;
+        if (playsound)
+        {
+            se.clip = dicese;
+            se.Play();
+        }
         diceval = Random.Range(0, 3);
         return diceval;
     }
 
     void diceapply(int dice1, int dice2, bool zoro = false) /* ダイスの画像を反映 */
     {
+        /*
+         * ダイスエフェクト（墓地）
+        timecounter = 0;
+        int counter = 0;
+        int tempdice = 0;
+        while (counter != 10)
+        {
+            if (timecounter >= 2)
+            {
+                tempdice = Random.Range(0, 3);
+                switch (tempdice)
+                {
+                    case 0:
+                        diceview1_obj.GetComponent<Image>().material = di1;
+                        diceview2_obj.GetComponent<Image>().material = di1;
+                        diceview3_obj.GetComponent<Image>().material = di1;
+                        diceview4_obj.GetComponent<Image>().material = di1;
+                        break;
+                    case 1:
+                        diceview1_obj.GetComponent<Image>().material = di2;
+                        diceview2_obj.GetComponent<Image>().material = di2;
+                        diceview3_obj.GetComponent<Image>().material = di2;
+                        diceview4_obj.GetComponent<Image>().material = di2;
+                        break;
+                    case 2:
+                        diceview1_obj.GetComponent<Image>().material = di3;
+                        diceview2_obj.GetComponent<Image>().material = di3;
+                        diceview3_obj.GetComponent<Image>().material = di3;
+                        diceview4_obj.GetComponent<Image>().material = di3;
+                        break;
+                }
+                counter++;
+                timecounter = 0;
+            }
+            timecounter += Time.deltaTime;
+        }
+
+        diceview1_obj.GetComponent<Image>().material = null;
+        diceview2_obj.GetComponent<Image>().material = null;
+        diceview3_obj.GetComponent<Image>().material = null;
+        diceview4_obj.GetComponent<Image>().material = null;
+        */
+
         if (zoro)
         {
             switch (dice1)
@@ -938,81 +1009,116 @@ public class pvp_game_load : MonoBehaviour
                 {
                     Debug.Log("先に漂流されているコマを動かしてね！\nground[14]: " + ground[14]);
                     todotext.text = "先に漂流中の味方を動かしましょう！";
+                    debugtext.text = "cmc:blue/1";
+                    if (playsound)
+                    {
+                        se.clip = cantse;
+                        se.Play();
+                    }
                     return canmove;
                 }
             }
             Debug.Log("右コマ(LKoma)ID:" + komaid + " は、現在ground[" + komapos + "]に位置しています。\nまた、監獄がなければ、ground[" + (komapos - move) + "]へ移動します。");
             if ((komapos - move) <= 1)    //移動先が監獄だった場合、ゴールへ
             {
-                move = komapos - 0;
                 Debug.Log("移動先がゴールです。");
+                debugtext.text = "cmc:blue/2";
                 if (cangoal(isblue, komaid))
                 {
-                    if (noanothergoal(isblue, komaid, move))
+                    if (cangoal(isblue, komaid, false))
                     {
-                        canmove = true;
-                        goal(isblue, komaid);
+                        if (noanothergoal(isblue, komaid, move))
+                        {
+                            debugtext.text = "cmc:blue/3";
+                            canmove = true;
+                            goal(isblue, komaid);
+                        }
+                        else
+                        {
+                            cantbyanother = true;
+                            debugtext.text = "cmc:blue/4";
+                        }
                     }
                     else
                     {
-                        cantbyanother = true;
+                        canmove = true;
+                        debugtext.text = "cmc:blue/0";
                     }
                 }
                 else
                 {
                     Debug.Log("コマが揃っていないためゴールできません。");
                     todotext.text = "仲間を置いて帰宅はできません！";
+                    debugtext.text = "cmc:blue/5";
+                    if (playsound)
+                    {
+                        se.clip = cantse;
+                        se.Play();
+                    }
                     return canmove;
                 }
+                move = komapos - 0;
             }
             else if (ground[komapos - move] != 0)    //移動先に何かしらのコマがある場合
             {
                 Debug.Log("移動先に何かしらのコマがあります。");
+                debugtext.text = "cmc:blue/6";
                 if (ground[komapos - move] > 0)    //移動先が敵のコマの場合
                 {
                     Debug.Log("移動先に敵兵発見！");
+                    debugtext.text = "cmc:blue/7";
                     if (ground[komapos - move] == 1)    //敵のコマ1つしかないよ
                     {
                         Debug.Log("敵コマを制圧します。");
+                        debugtext.text = "cmc:blue/8";
                         hasenemy = true;
                         canmove = true;
                     }
                 }
                 else    //味方のコマの場合
                 {
-                    if (cangoal(isblue, komaid))
+                    debugtext.text = "cmc:blue/9";
+                    if (cangoal(isblue, komaid, false))
                     {
+                        debugtext.text = "cmc:blue/10";
                         if (noanothergoal(isblue, komaid, move))
                         {
                             canmove = true;
+                            debugtext.text = "cmc:blue/11";
                         }
                         else
                         {
                             cantbyanother = true;
+                            debugtext.text = "cmc:blue/12";
                         }
                     }
                     else
                     {
                         Debug.Log("味方のコマと合流します。");
+                        debugtext.text = "cmc:blue/13";
                         canmove = true;
                     }
                 }
             }
             else    //移動先にコマがない場合
             {
-                if (cangoal(isblue, komaid))
+                if (cangoal(isblue, komaid, false))
                 {
                     if (noanothergoal(isblue, komaid, move))
                     {
                         canmove = true;
+                        debugtext.text = "cmc:blue/15";
                     }
                     else
                     {
                         cantbyanother = true;
+                        debugtext.text = "cmc:blue/16";
                     }
+
                 }
                 else
                 {
+                    debugtext.text = "cmc:blue/14";
                     Debug.Log("新規領域を占領します。");
                     canmove = true;
                 }
@@ -1020,68 +1126,100 @@ public class pvp_game_load : MonoBehaviour
         }
         else    //右のターンの場合（引く）
         {
+            debugtext.text = "cmc:blue/19";
             komapos = rkoma[komaid];    //コマの現在地取得
             if (ground[1] != 0)    //漂流兵がいる場合に選択したコマがそれか
             {
+                debugtext.text = "cmc:blue/20";
                 if (komapos != 1)
                 {
                     Debug.Log("先に漂流されているコマを動かしてね！\nground[1]: " + ground[1]);
                     todotext.text = "漂流中の仲間を先に動かしましょう！";
+                    debugtext.text = "cmc:blue/21";
+                    if (playsound)
+                    {
+                        se.clip = cantse;
+                        se.Play();
+                    }
                     return canmove;
                 }
             }
             Debug.Log("右側 コマID:" + komaid + " は、現在 " + komapos + "に位置しています。\nまた、監獄がなければ、ground[" + (komapos + move) + "]へ移動します。");
             if ((komapos + move) >= 14)    //移動先が監獄だった場合、ゴールへ
             {
-                move = Mathf.Abs(komapos - 15);
                 Debug.Log("移動先がゴールです。");
+                debugtext.text = "cmc:blue/22";
                 if (cangoal(isblue, komaid))
                 {
-                    if (noanothergoal(isblue, komaid, move))
+                    if (cangoal(isblue, komaid, false))
                     {
-                        canmove = true;
-                        goal(isblue, komaid);
+                        debugtext.text = "cmc:blue/23";
+                        if (noanothergoal(isblue, komaid, move))
+                        {
+                            debugtext.text = "cmc:blue/25";
+                            goal(isblue, komaid);
+                            canmove = true;
+                        }
+                        else
+                        {
+                            debugtext.text = "cmc:blue/24";
+                            cantbyanother = true;
+                        }
                     }
                     else
                     {
-                        cantbyanother = true;
+                        debugtext.text = "cmc:blue/33";
+                        canmove = true;
                     }
                 }
                 else
                 {
                     Debug.Log("コマが揃っていないためゴールできません。");
                     todotext.text = "全ての仲間が陣地内に収まっていません！";
+                    debugtext.text = "cmc:blue/26";
+                    if (playsound)
+                    {
+                        se.clip = cantse;
+                        se.Play();
+                    }
                     return canmove;
                 }
+                move = Mathf.Abs(komapos - 15);
             }
             else if (ground[komapos + move] != 0)    //移動先に何かしらのコマがある場合
             {
+                debugtext.text = "cmc:blue/27";
                 Debug.Log("移動先に何かしらのコマを検知しました。");
                 if (ground[komapos + move] < 0)    //移動先が敵のコマの場合
                 {
                     Debug.Log("移動先に敵のコマがあります。偵察を開始。");
+                    debugtext.text = "cmc:blue/28";
                     if (ground[komapos + move] == -1)    //敵のコマ1つしかないよ
                     {
                         Debug.Log("敵コマを制圧します。");
+                        debugtext.text = "cmc:blue/29";
                         hasenemy = true;
                         canmove = true;
                     }
                 }
                 else    //味方のコマの場合
                 {
-                    if (cangoal(isblue, komaid))
+                    if (cangoal(isblue, komaid, false))
                     {
                         if (noanothergoal(isblue, komaid, move))
                         {
                             canmove = true;
+                            debugtext.text = "cmc:blue/31";
                         }
                         else
                         {
                             cantbyanother = true;
+                            debugtext.text = "cmc:blue/32";
                         }
                     }
                     else
                     {
+                        debugtext.text = "cmc:blue/30";
                         Debug.Log("味方と合流します。");
                         canmove = true;
                     }
@@ -1089,21 +1227,27 @@ public class pvp_game_load : MonoBehaviour
             }
             else    //移動先にコマがない場合
             {
-                if (cangoal(isblue, komaid))
+                debugtext.text = "cmc:blue/35";
                 {
-                    if (noanothergoal(isblue, komaid, move))
+                    if (cangoal(isblue, komaid, false))
                     {
-                        canmove = true;
+                        if (noanothergoal(isblue, komaid, move))
+                        {
+                            canmove = true;
+                            debugtext.text = "cmc:blue/36";
+                        }
+                        else
+                        {
+                            cantbyanother = true;
+                            debugtext.text = "cmc:blue/37";
+                        }
                     }
                     else
                     {
-                        cantbyanother = true;
+                        Debug.Log("新規領域を占領します。");
+                        debugtext.text = "cmc:blue/38";
+                        canmove = true;
                     }
-                }
-                else
-                {
-                    Debug.Log("新規領域を占領します。");
-                    canmove = true;
                 }
             }
         }
@@ -1111,8 +1255,13 @@ public class pvp_game_load : MonoBehaviour
         {
             movekoma(isblue, komaid, komapos, move, hasenemy, diceselected);
         }
-        else if (canmove == false && cantbyanother)
+        else if (canmove == false && cantbyanother == false)
         {
+            if (playsound)
+            {
+                se.clip = cantse;
+                se.Play();
+            }
             int grounds = -1, ti = -1;
             if (isblue)
             {
@@ -1129,7 +1278,13 @@ public class pvp_game_load : MonoBehaviour
         }
         else
         {
+            if (playsound)
+            {
+                se.clip = cantse;
+                se.Play();
+            }
             Debug.Log("ほかに移動できるコマがあります。");
+            todotext.text = "移動優先度が高い別のコマが\nあります。";
         }
         return canmove;
     }
@@ -1143,8 +1298,8 @@ public class pvp_game_load : MonoBehaviour
             //左側プレイヤー
             if (hasenemy)
             {
+
                 //移動先マスに敵が1体いる場合
-                ground[1]++;    //監獄に加算
                 int enemy = getenemykomaid(komapos - move); //飛ばされる敵のコマを取得
 
                 //ロールバック処理のための記録
@@ -1156,10 +1311,17 @@ public class pvp_game_load : MonoBehaviour
                 rb_rid = enemy;
                 rb_bg = ground[komapos];
                 rb_mg = ground[komapos - move];
-                rb_ag = ground[1] - 1;
+                rb_ag = ground[1];
                 rb_diceid = diceid;
                 rb_wasblue = isblue;
                 rb_canback = true;
+
+                ground[1]++;    //監獄に加算
+                if (playsound)
+                {
+                    se.clip = prisonse;
+                    se.Play();
+                }
 
                 rkoma[enemy] = 1;   //飛ばされたコマの座標を監獄に設定。
                 movekoma_apply(isblue, enemy, 1, true, enemy);   //飛ばされたコマの描画処理。
@@ -1187,6 +1349,12 @@ public class pvp_game_load : MonoBehaviour
                 rb_wasblue = isblue;
                 rb_canback = true;
 
+                if (playsound)
+                {
+                    se.clip = movekomase;
+                    se.Play();
+                }
+
                 lkoma[komaid] = komapos - move;
                 ground[komapos]++;
                 ground[komapos - move]--;
@@ -1198,8 +1366,6 @@ public class pvp_game_load : MonoBehaviour
             //右側プレイヤー
             if (hasenemy)
             {
-                //移動先マスに敵が1コマいる場合
-                ground[14]--;    //監獄に加算
                 int enemy = getenemykomaid(komapos + move); //飛ばされる敵のコマを取得
 
                 //ロールバック処理のための記録
@@ -1211,10 +1377,19 @@ public class pvp_game_load : MonoBehaviour
                 rb_rid = komaid;
                 rb_bg = ground[komapos];
                 rb_mg = ground[komapos + move];
-                rb_ag = ground[14] + 1;
+                rb_ag = ground[14];
                 rb_diceid = diceid;
                 rb_wasblue = isblue;
                 rb_canback = true;
+
+                //移動先マスに敵が1コマいる場合
+                ground[14]--;    //監獄に加算
+
+                if (playsound)
+                {
+                    se.clip = prisonse;
+                    se.Play();
+                }
 
                 lkoma[enemy] = 14;   //飛ばされたコマの座標を監獄に設定。
                 movekoma_apply(isblue, enemy, 14, true, enemy);   //飛ばされたコマの描画処理。
@@ -1242,6 +1417,12 @@ public class pvp_game_load : MonoBehaviour
                 rb_diceid = diceid;
                 rb_wasblue = isblue;
                 rb_canback = true;
+
+                if (playsound)
+                {
+                    se.clip = movekomase;
+                    se.Play();
+                }
 
                 rkoma[komaid] = komapos + move;
                 ground[komapos]--;
@@ -1454,6 +1635,11 @@ public class pvp_game_load : MonoBehaviour
 
     void goal(bool isblue, int komaid)
     {
+        if (playsound)
+        {
+            se.clip = goalse;
+            se.Play();
+        }
         Debug.Log("[Function Join] goal\nisblue:" + isblue + " / KomaID:" + komaid);
         if (isblue)
         {
@@ -1551,7 +1737,7 @@ public class pvp_game_load : MonoBehaviour
         return;
     }
 
-    bool cangoal(bool isblue, int komaid)
+    bool cangoal(bool isblue, int komaid, bool includeit = true)
     {
         Debug.Log("[Function Join] (cangoal) Function joined!");
         bool ans = false;
@@ -1560,19 +1746,35 @@ public class pvp_game_load : MonoBehaviour
             //青
             for (int i = 0; i < 8; i++)
             {
-                if (i == komaid)
+                if (includeit)
                 {
-                    ans = true;
-                }
-                else if (lkoma[i] <= 4)
-                {
-                    ans = true;
+                    if (i == komaid)
+                    {
+                        ans = true;
+                    }
+                    else if (lkoma[i] <= 4)
+                    {
+                        ans = true;
+                    }
+                    else
+                    {
+                        ans = false;
+                        Debug.Log("[Function] (cangoal) lkoma[" + i + "]は座標" + lkoma[i] + "に位置しているため、ゴール侵入は拒否されました。");
+                        break;
+                    }
                 }
                 else
                 {
-                    ans = false;
-                    Debug.Log("[Function] (cangoal) lkoma[" + i + "]は座標" + lkoma[i] + "に位置しているため、ゴール侵入は拒否されました。");
-                    break;
+                    if (lkoma[i] <= 4)
+                    {
+                        ans = true;
+                    }
+                    else
+                    {
+                        ans = false;
+                        Debug.Log("[Function] (cangoal) lkoma[" + i + "]は座標" + lkoma[i] + "に位置しているため、ゴール侵入は拒否されました。");
+                        break;
+                    }
                 }
                 Debug.Log("[Function] (cangoal) lkoma[" + i + "]は座標" + lkoma[i] + "に位置し、判定結果は" + ans + "です。");
             }
@@ -1582,19 +1784,35 @@ public class pvp_game_load : MonoBehaviour
             //赤
             for (int i = 0; i < 8; i++)
             {
-                if (i == komaid)
+                if (includeit)
                 {
-                    ans = true;
-                }
-                else if (rkoma[i] >= 11)
-                {
-                    ans = true;
+                    if (i == komaid)
+                    {
+                        ans = true;
+                    }
+                    else if (rkoma[i] >= 11)
+                    {
+                        ans = true;
+                    }
+                    else
+                    {
+                        ans = false;
+                        Debug.Log("[Function] (cangoal) rkoma[" + i + "]は座標" + rkoma[i] + "に位置しているため、ゴール侵入は拒否されました。");
+                        break;
+                    }
                 }
                 else
                 {
-                    ans = false;
-                    Debug.Log("[Function] (cangoal) rkoma[" + i + "]は座標" + rkoma[i] + "に位置しているため、ゴール侵入は拒否されました。");
-                    break;
+                    if (rkoma[i] >= 11)
+                    {
+                        ans = true;
+                    }
+                    else
+                    {
+                        ans = false;
+                        Debug.Log("[Function] (cangoal) rkoma[" + i + "]は座標" + rkoma[i] + "に位置しているため、ゴール侵入は拒否されました。");
+                        break;
+                    }
                 }
                 Debug.Log("[Function] (cangoal) rkoma[" + i + "]は座標" + rkoma[i] + "に位置し、判定結果は" + ans + "です。");
             }
@@ -1741,7 +1959,7 @@ public class pvp_game_load : MonoBehaviour
                         movekoma_apply(true, rb_lid, rb_lp, true, rb_lid);
                         movekoma_apply(false, rb_rid, rb_rp);
                     }
-                    else　   //通常移動で敵を監獄に飛ばした
+                    else    //通常移動で敵を監獄に飛ばした
                     {
                         debugtext.text = "2";
                         movekoma_apply(true, rb_lid, rb_lp);
@@ -1780,7 +1998,7 @@ public class pvp_game_load : MonoBehaviour
                         movekoma_apply(false, rb_rid, rb_rp, true, rb_rid);
                         movekoma_apply(true, rb_lid, rb_lp);
                     }
-                    else　   //通常移動で敵を監獄に飛ばした
+                    else    //通常移動で敵を監獄に飛ばした
                     {
                         debugtext.text = "6";
                         movekoma_apply(false, rb_rid, rb_rp);
@@ -1795,12 +2013,12 @@ public class pvp_game_load : MonoBehaviour
                     if (rb_rp == 1)
                     {
                         debugtext.text = "7";
-                        movekoma_apply(rb_wasblue, rb_rid, rb_rp, true, rb_rid);
+                        movekoma_apply(false, rb_rid, rb_rp, true, rb_rid);
                     }
                     else
                     {
                         debugtext.text = "8";
-                        movekoma_apply(rb_wasblue, rb_rid, rb_rp);
+                        movekoma_apply(false, rb_rid, rb_rp);
                     }
                 }
             }
@@ -1905,71 +2123,6 @@ public class pvp_game_load : MonoBehaviour
         return;
     }
 
-    public void btn_rolldice()
-    {
-        if (ongame)
-        {
-            //ongame
-            if (canroll)
-            {
-                canroll = false;
-                rb_canback = false;
-
-                turn++;
-                turntext.text = "Turn: " + turn.ToString();
-
-                todotext.text = "ダイスを振っています…";
-                roll1 = diceroll();
-                roll2 = diceroll();
-                todotext.text = "ダイスを振りました。\n数字／スペースキーでコマを移動しましょう。";
-
-
-                if (roll1 == roll2)
-                {
-                    remain = 4;
-                    diceapply(roll1, roll2, true);
-                }
-                else
-                {
-                    remain = 2;
-                    diceapply(roll1, roll2);
-                }
-            }
-        }
-        else if (gameready)
-        {
-            //順番決め
-            todotext.text = "先攻を決めています…";
-            do
-            {
-                roll1 = diceroll();
-                roll2 = diceroll();
-                diceapply(roll1, roll2);
-            } while (roll1 == roll2);
-
-
-            if (roll1 > roll2)
-            {
-                user = true;
-                turnuser.transform.localPosition = new Vector3(-315, -75, 0);
-                todotext.text = "←　先攻が決まりました！";
-            }
-            else
-            {
-                user = false;
-                turnuser.transform.localPosition = new Vector3(315, -75, 0);
-                todotext.text = "先攻が決まりました！　→";
-            }
-            todotext.text += "\nダイスとコマを選んで動かしましょう。";
-            activekoma_change(user, 0);
-            remain = 2;
-            canroll = false;
-            ongame = true;
-            gameready = false;
-        }
-        return;
-    }
-
     bool noanothergoal(bool isblue, int komaid, int diceti)
     {
         bool ans = false;
@@ -1979,11 +2132,11 @@ public class pvp_game_load : MonoBehaviour
             //青
             if (ground[(diceti + 1)] <= -1)
             {
-                debugtext.text = "移動に適切なコマがあります。";
+                debugtext1.text = "移動に適切なコマがあります。";
                 //コマがある場合は、選択したコマがジャストで動けるコマかチェックする
                 if (lkoma[komaid] == (diceti + 1))
                 {
-                    debugtext.text = "移動に適切なコマを選択しています。";
+                    debugtext1.text = "移動に適切なコマを選択しています。";
                     //ダイスの値とジャストで移動できるコマ
                     ans = true;
                 }
@@ -1991,25 +2144,27 @@ public class pvp_game_load : MonoBehaviour
                 {
                     //選択したコマ以外にジャストで動かせるコマがある
                     todotext.text = "他に移動可能なコマがあります。";
+                    debugtext1.text = "ほかに移動可能。";
                 }
             }
             else
             {
                 //コマがない場合はほかのコマ移動を許可する
-                debugtext.text = "移動に適切なコマがありません。";
+                debugtext1.text = "移動に適切なコマがありません。";
                 ans = true;
             }
+            debugtext1.text = "bg[" + (diceti + 1) + "] / " + ground[(diceti + 1)];
         }
         else
         {
             //赤
-            if (ground[(15 - (diceti + 1))] >= 1)
+            if (ground[(15 - diceti - 1)] >= 1)
             {
-                debugtext.text = "移動に適切なコマがあります。";
+                debugtext1.text = "移動に適切なコマがあります。";
                 //コマがある場合は、選択したコマがジャストで動けるコマかチェックする
-                if (rkoma[komaid] == (15 - (diceti + 1)))
+                if (rkoma[komaid] == (15 - diceti - 1))
                 {
-                    debugtext.text = "移動に適切なコマを選択。";
+                    debugtext1.text = "移動に適切なコマを選択。";
                     //ダイスの値とジャストで移動できるコマ
                     ans = true;
                 }
@@ -2017,13 +2172,23 @@ public class pvp_game_load : MonoBehaviour
                 {
                     //選択したコマ以外にジャストで動かせるコマがある
                     todotext.text = "他に移動可能なコマがあります。";
+                    debugtext1.text = "他に移動可能なコマあり。";
                 }
             }
             else
             {
                 //コマがない場合はほかのコマ移動を許可する
-                debugtext.text = "移動に適切なコマがありません。";
+                debugtext1.text = "移動に適切なコマがありません。";
                 ans = true;
+            }
+            debugtext1.text = "rg[" + (15 - diceti - 1) + "] / " + ground[(15 - diceti - 1)];
+        }
+        if (ans == false)
+        {
+            if (playsound)
+            {
+                se.clip = cantse;
+                se.Play();
             }
         }
         return ans;

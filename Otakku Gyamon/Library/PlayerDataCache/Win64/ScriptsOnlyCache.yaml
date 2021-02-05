@@ -1,6 +1,7 @@
 ScriptsOnlyBuild:
   usedScripts:
     Assembly-CSharp.dll:
+    - GFramework.SimpleRoundedImage
     - Lkoma_update
     - click_title_exit
     - click_title_howto
@@ -66,11 +67,11 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 12616}
     - Class: 114
-      Script: {instanceID: 13520}
+      Script: {instanceID: 13522}
     - Class: 114
-      Script: {instanceID: 14424}
+      Script: {instanceID: 14426}
     - Class: 114
-      Script: {instanceID: 14896}
+      Script: {instanceID: 14900}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -121,11 +122,11 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 12616}
     - Class: 114
-      Script: {instanceID: 13520}
+      Script: {instanceID: 13522}
     - Class: 114
-      Script: {instanceID: 14424}
+      Script: {instanceID: 14426}
     - Class: 114
-      Script: {instanceID: 14896}
+      Script: {instanceID: 14900}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -176,9 +177,9 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 12606}
     - Class: 114
-      Script: {instanceID: 14424}
+      Script: {instanceID: 14426}
     - Class: 114
-      Script: {instanceID: 15170}
+      Script: {instanceID: 15174}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -231,15 +232,17 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 12726}
     - Class: 114
-      Script: {instanceID: 13520}
+      Script: {instanceID: 13146}
     - Class: 114
-      Script: {instanceID: 13692}
+      Script: {instanceID: 13522}
     - Class: 114
-      Script: {instanceID: 14424}
+      Script: {instanceID: 13694}
     - Class: 114
-      Script: {instanceID: 14802}
+      Script: {instanceID: 14426}
     - Class: 114
-      Script: {instanceID: 15170}
+      Script: {instanceID: 14806}
+    - Class: 114
+      Script: {instanceID: 15174}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -559,7 +562,7 @@ ScriptsOnlyBuild:
     className: ControlPlayableAsset
   - hash:
       serializedVersion: 2
-      Hash: 2ef5eaf1acfaadfc1b351b71c29a7907
+      Hash: d45aaed6994de53b38a31ef7540e93e9
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: pvp_game_load
@@ -617,6 +620,12 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: SignalTrack
+  - hash:
+      serializedVersion: 2
+      Hash: 096a4374bca812a540e79de147cc542d
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: GFramework
+    className: SimpleRoundedImage
   - hash:
       serializedVersion: 2
       Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
@@ -972,4 +981,4 @@ ScriptsOnlyBuild:
   - Assets/Scenes/go_multiplay.unity
   - Assets/Scenes/howto.unity
   playerPath: "C:/Users/fanta/Documents/MIE/sotuken/Otakku Gyamon/bin/\uFF73\uFF6B\uFF75\uFF75\uFF75\uFF75\uFF75\uFF75\uFF75\uFF75\uFF75\u30BF\u30C3\u30AF\u30AE\u30E3\u30E2\u30F3
-    Ver.0.13 (dev).exe"
+    Ver.0.16 (dev).exe"
