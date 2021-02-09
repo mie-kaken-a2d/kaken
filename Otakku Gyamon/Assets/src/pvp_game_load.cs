@@ -7,13 +7,9 @@ using UnityEngine.SceneManagement;
 public class pvp_game_load : MonoBehaviour
 {
     /*
-     [TO DO]
-        * （効果音待ち）音を入れる
-        * クリアイベントの作成
      [改善点]
         * 先攻ターンがどっちか直感的にわからない
-        * ゴール可能状態では、引いたコマの値と同値でゴールできるコマを優先する
-        * ギャモン勝ちのときのイベント
+        * ゴール可能状態では、引いたコマの値と同値でゴールできるコマを優先する（）
         * （デバッグデータの取得待ち）監獄ロールバックのコマバグ
     */
 
@@ -95,6 +91,7 @@ public class pvp_game_load : MonoBehaviour
     public AudioClip goalse;
     public AudioClip prisonse;
     public AudioClip cantse;
+    public AudioClip gyamonwin;
 
     // Start is called before the first frame update
     void Start()
@@ -1825,15 +1822,35 @@ public class pvp_game_load : MonoBehaviour
         Debug.Log("[Function Join] (gamewin)");
         if (isblue)
         {
-            todotext.text = "青色ペンギンさんチームの勝利！\nおめでとう！！\n[R]を押してもう一度プレイできるぞ！";
+            todotext.text = "青色ペンギンさんチームの勝利！\nおめでとう！\n[R]を押してもう一度プレイできるぞ！";
+            if (ground[15] == 0)
+            {
+                todotext.text = "青色ペンギンさんチームのギャモン勝ち！\n戦略ゲーは得意なのかな？\n[R]を押してもう一度プレイできるぞ！";
+                if (playsound)
+                {
+                    se.clip = gyamonwin;
+                    se.Play();
+                }
+            }
         }
         else
         {
             todotext.text = "赤色ペンギンさんチームの勝利！\nおめでとう！！\n[R]を押してもう一度プレイできるぞ！";
+            if (ground[0] == 0)
+            {
+                todotext.text = "赤色ペンギンさんチームのギャモン勝ち！\nオリジナルのバックギャモンにも挑戦してみて！\n[R]を押してもう一度プレイできるぞ！";
+                if (playsound)
+                {
+                    se.clip = gyamonwin;
+                    se.Play();
+                }
+            }
         }
-        playsound = true;
-        bgm.clip = clearbgm;
-        bgm.Play();
+        if (playsound)
+        {
+            bgm.clip = clearbgm;
+            bgm.Play();
+        }
         gameready = false;
         ongame = false;
         remain = -1;
@@ -2129,7 +2146,7 @@ public class pvp_game_load : MonoBehaviour
 
         if (isblue)
         {
-            //青
+            //青ターン
             if (ground[(diceti + 1)] <= -1)
             {
                 debugtext1.text = "移動に適切なコマがあります。";
@@ -2143,21 +2160,87 @@ public class pvp_game_load : MonoBehaviour
                 else
                 {
                     //選択したコマ以外にジャストで動かせるコマがある
-                    todotext.text = "他に移動可能なコマがあります。";
-                    debugtext1.text = "ほかに移動可能。";
+
+                    if (remain >= 2 && lkoma[komaid] == 4)
+                    {
+                        //lkomaがground[4]に位置し、3の目ダイスでゴール出来る場合
+                        if (roll1 == 0 && roll2 == 1)
+                        {
+                            //1と2の目のとき
+                            ans = true;
+                        }
+                        else if (roll1 == 1 && roll2 == 0)
+                        {
+                            //2と1の目のとき
+                            ans = true;
+                        }
+                        else if (roll1 == 0 && roll2 == 0 && remain >= 3)
+                        {
+                            //1が３つあるとき
+                            ans = true;
+                        }
+                    }
+                    else if (remain >= 2 && lkoma[komaid] == 3)
+                    {
+                        //lkomaがground[3]に位置し、2の目ダイスでゴールできる場合
+                        if (roll1 == 0 && roll2 == 0)
+                        {
+                            //1と1の目のとき
+                            ans = true;
+                        }
+                    }
+                    else
+                    {
+                        todotext.text = "他に移動可能なコマがあります。";
+                        debugtext1.text = "ほかに移動可能。";
+                    }
                 }
             }
             else
             {
-                //コマがない場合はほかのコマ移動を許可する
+                //フィールドにコマがない場合はほかのコマ移動を許可する
                 debugtext1.text = "移動に適切なコマがありません。";
-                ans = true;
+                if ((lkoma[komaid] - 1) < diceti)
+                {
+                    switch (diceti)
+                    {
+                        case 1:
+                            //後方（２，３マス目）にコマがあるか見る
+                            if ((ground[3] != 0 && lkoma[komaid] == 3) || (ground[4] != 0 && lkoma[komaid] == 4))
+                            {
+                                ans = true;
+                            }
+                            else
+                            {
+                                todotext.text = "最後尾のコマを優先的に動かしましょう。";
+                            }
+                            break;
+                        case 2:
+                            //後方（３マス目）にコマがあるか見る
+                            if (ground[4] != 0 && lkoma[komaid] == 4)
+                            {
+                                ans = true;
+                            }
+                            else
+                            {
+                                todotext.text = "一番後ろのコマを優先で動かしましょう。";
+                            }
+                            break;
+                        default:
+                            //do nothing
+                            break;
+                    }
+                }
+                else
+                {
+                    ans = true;
+                }
             }
             debugtext1.text = "bg[" + (diceti + 1) + "] / " + ground[(diceti + 1)];
         }
         else
         {
-            //赤
+            //赤ターン
             if (ground[(15 - diceti - 1)] >= 1)
             {
                 debugtext1.text = "移動に適切なコマがあります。";
@@ -2171,18 +2254,89 @@ public class pvp_game_load : MonoBehaviour
                 else
                 {
                     //選択したコマ以外にジャストで動かせるコマがある
-                    todotext.text = "他に移動可能なコマがあります。";
-                    debugtext1.text = "他に移動可能なコマあり。";
+
+                    if (remain >= 2 && rkoma[komaid] == 11)
+                    {
+                        //lkomaがground[4]に位置し、3の目ダイスでゴール出来る場合
+                        if (roll1 == 0 && roll2 == 1)
+                        {
+                            //1と2の目のとき、ダイスを２個使ってゴールへ
+                            ans = true;
+                        }
+                        else if (roll1 == 1 && roll2 == 0)
+                        {
+                            //2と1の目のとき、ダイスを２個使ってゴールへ
+                            ans = true;
+                        }
+                        else if (roll1 == 0 && roll2 == 0 && remain >= 3)
+                        {
+                            //ダイスを３つ使ってコマをゴールに導く
+                            ans = true;
+                        }
+                    }
+                    else if (remain >= 2 && rkoma[komaid] == 12)
+                    {
+                        //lkomaがground[3]に位置し、2の目ダイスでゴールできる場合
+                        if (roll1 == 0 && roll2 == 0)
+                        {
+                            //1と1の目のとき
+                            ans = true;
+                        }
+                    }
+                    else
+                    {
+                        todotext.text = "他に移動可能なコマがあります。";
+                        debugtext1.text = "他に移動可能なコマあり。";
+                    }
                 }
             }
             else
             {
-                //コマがない場合はほかのコマ移動を許可する
+                //フィールドにコマがない場合はほかのコマ移動を許可する
                 debugtext1.text = "移動に適切なコマがありません。";
-                ans = true;
+                if ((15 - rkoma[komaid] - 1) > diceti)
+                {
+                    switch (diceti)
+                    {
+                        case 1:
+                            //後方（２，３マス目）にコマがあるか見る
+                            if ((ground[12] != 0 && rkoma[komaid] == 12) || (ground[11] != 0 && rkoma[komaid] == 11))
+                            {
+                                ans = true;
+                            }
+                            else
+                            {
+                                ans = false;
+                                todotext.text = "最後尾のコマを優先的に動かしましょう。";
+                            }
+                            break;
+
+                        case 2:
+                            //後方（３マス目）にコマがあるか見る
+                            if (ground[11] != 0 && rkoma[komaid] == 11)
+                            {
+                                ans = true;
+                            }
+                            else
+                            {
+                                ans = false;
+                                todotext.text = "一番後ろのコマを優先で動かしましょう。";
+                            }
+                            break;
+
+                        default:
+                            //do nothing
+                            break;
+                    }
+                }
+                else
+                {
+                    ans = true;
+                }
             }
             debugtext1.text = "rg[" + (15 - diceti - 1) + "] / " + ground[(15 - diceti - 1)];
         }
+
         if (ans == false)
         {
             if (playsound)
@@ -2191,6 +2345,8 @@ public class pvp_game_load : MonoBehaviour
                 se.Play();
             }
         }
+
         return ans;
     }
+
 }

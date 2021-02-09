@@ -562,7 +562,7 @@ ScriptsOnlyBuild:
     className: ControlPlayableAsset
   - hash:
       serializedVersion: 2
-      Hash: d45aaed6994de53b38a31ef7540e93e9
+      Hash: 5ef2cb7f5485cc05c5d906c215c4caa4
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: pvp_game_load
@@ -981,4 +981,4 @@ ScriptsOnlyBuild:
   - Assets/Scenes/go_multiplay.unity
   - Assets/Scenes/howto.unity
   playerPath: "C:/Users/fanta/Documents/MIE/sotuken/Otakku Gyamon/bin/\uFF73\uFF6B\uFF75\uFF75\uFF75\uFF75\uFF75\uFF75\uFF75\uFF75\uFF75\u30BF\u30C3\u30AF\u30AE\u30E3\u30E2\u30F3
-    Ver.0.16 (dev).exe"
+    Ver.0.19 (dev).exe"

@@ -2202,6 +2202,7 @@ MonoBehaviour:
   goalse: {fileID: 0}
   prisonse: {fileID: 0}
   cantse: {fileID: 0}
+  gyamonwin: {fileID: 0}
 --- !u!1 &779012976
 GameObject:
   m_ObjectHideFlags: 0
@@ -4991,6 +4992,7 @@ MonoBehaviour:
   goalse: {fileID: 8300000, guid: 23a7b48fde96d1741804b18e2379624c, type: 3}
   prisonse: {fileID: 8300000, guid: a718c364f3cee8c40b00f0b8dd9fa747, type: 3}
   cantse: {fileID: 8300000, guid: cdfcac77ade193340b5e958150877c0b, type: 3}
+  gyamonwin: {fileID: 8300000, guid: 1832100adae82054b906aa638054a5c4, type: 3}
 --- !u!1 &1696430125
 GameObject:
   m_ObjectHideFlags: 0
