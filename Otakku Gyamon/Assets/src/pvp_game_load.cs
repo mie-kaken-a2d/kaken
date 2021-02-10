@@ -7,10 +7,11 @@ using UnityEngine.SceneManagement;
 public class pvp_game_load : MonoBehaviour
 {
     /*
+     * [TODO]
+     *  * 解説動画へのリンク
+     *  * 移動先プレビュー
      [改善点]
         * 先攻ターンがどっちか直感的にわからない
-        * ゴール可能状態では、引いたコマの値と同値でゴールできるコマを優先する（）
-        * （デバッグデータの取得待ち）監獄ロールバックのコマバグ
     */
 
     bool user = false;  //プレイヤー(左側がtrue)
@@ -37,7 +38,7 @@ public class pvp_game_load : MonoBehaviour
     bool rb_wasblue;            //【Return Buffer】青色のターンだったか
     bool rb_prison;             //【Return Buffer】監獄に連れて行かれたか
     int rb_prisonid;            //【Return Buffer】監獄に連れてかれたコマのID
-    float timecounter;
+    bool playedse;
 
     public GameObject lkoma0_obj;
     public GameObject lkoma1_obj;
@@ -55,6 +56,7 @@ public class pvp_game_load : MonoBehaviour
     public GameObject rkoma5_obj;
     public GameObject rkoma6_obj;
     public GameObject rkoma7_obj;
+    public GameObject komapreview_obj;
     public GameObject diceview1_obj;
     public GameObject diceview2_obj;
     public GameObject diceview3_obj;
@@ -68,6 +70,8 @@ public class pvp_game_load : MonoBehaviour
     public Material rkoma_selected;
     public Material lkoma_goal;
     public Material rkoma_goal;
+    public Material hlkoma;
+    public Material hrkoma;
     public Text turntext;
     public Text todotext;
     public Text turnuser;
@@ -92,6 +96,8 @@ public class pvp_game_load : MonoBehaviour
     public AudioClip prisonse;
     public AudioClip cantse;
     public AudioClip gyamonwin;
+    public AudioClip stackse;
+    public AudioClip rollbackse;
 
     // Start is called before the first frame update
     void Start()
@@ -244,7 +250,10 @@ public class pvp_game_load : MonoBehaviour
         r_kick_label.text = "漂流：" + ground[14].ToString();
         playsound = true;
         visiblefieldid = true;
-        timecounter = 0;
+        playedse = false;
+
+
+        komapreview(user, 0, 0, true);
     }
 
     // Update is called once per frame
@@ -312,6 +321,11 @@ public class pvp_game_load : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Z))
             {
                 returnmove();
+                if (playsound)
+                {
+                    se.clip = rollbackse;
+                    se.Play();
+                }
             }
 
             if (canroll)
@@ -339,6 +353,50 @@ public class pvp_game_load : MonoBehaviour
                     {
                         remain = 2;
                         diceapply(roll1, roll2);
+                    }
+
+                    switch (selected)
+                    {
+                        case 1:
+                            if (activedice1)
+                            {
+                                komapreview(user, selected_koma, (roll1 + 1));
+                            }
+                            else
+                            {
+                                komapreview(user, 0, 0, true);
+                            }
+                            break;
+                        case 2:
+                            if (activedice2)
+                            {
+                                komapreview(user, selected_koma, (roll1 + 1));
+                            }
+                            else
+                            {
+                                komapreview(user, 0, 0, true);
+                            }
+                            break;
+                        case 3:
+                            if (activedice3)
+                            {
+                                komapreview(user, selected_koma, (roll1 + 1));
+                            }
+                            else
+                            {
+                                komapreview(user, 0, 0, true);
+                            }
+                            break;
+                        case 4:
+                            if (activedice4)
+                            {
+                                komapreview(user, selected_koma, (roll2 + 1));
+                            }
+                            else
+                            {
+                                komapreview(user, 0, 0, true);
+                            }
+                            break;
                     }
                 }
             }
@@ -440,6 +498,7 @@ public class pvp_game_load : MonoBehaviour
                     todotext.text = "ターンチェンジ。\n[D]キーを押してダイスを振りましょう。";
                     canroll = true;
                     selected_koma = 0;
+                    playedse = false;
                     activekoma_change(user, -1);
                     activekoma_change(user, selected_koma);
                 }
@@ -697,6 +756,51 @@ public class pvp_game_load : MonoBehaviour
                     break;
             }
         }
+
+        switch (selected)
+        {
+            case 1:
+                if (activedice1)
+                {
+                    komapreview(user, selected_koma, (roll1 + 1));
+                }
+                else
+                {
+                    komapreview(user, 0, 0, true);
+                }
+                break;
+            case 2:
+                if (activedice2)
+                {
+                    komapreview(user, selected_koma, (roll1 + 1));
+                }
+                else
+                {
+                    komapreview(user, 0, 0, true);
+                }
+                break;
+            case 3:
+                if (activedice3)
+                {
+                    komapreview(user, selected_koma, (roll1 + 1));
+                }
+                else
+                {
+                    komapreview(user, 0, 0, true);
+                }
+                break;
+            case 4:
+                if (activedice4)
+                {
+                    komapreview(user, selected_koma, (roll2 + 1));
+                }
+                else
+                {
+                    komapreview(user, 0, 0, true);
+                }
+                break;
+        }
+
         return;
     }
 
@@ -861,6 +965,7 @@ public class pvp_game_load : MonoBehaviour
                         {
                             lkoma7_obj.GetComponent<Image>().material = lkoma_notselected;
                         }
+                        komapreview(true, 0, 0, true);
                         break;
                 }
             }
@@ -966,10 +1071,56 @@ public class pvp_game_load : MonoBehaviour
                         {
                             rkoma7_obj.GetComponent<Image>().material = rkoma_notselected;
                         }
+                        komapreview(false, 0, 0, true);
                         break;
                 }
             }
         }
+
+        switch (selected)
+        {
+            case 1:
+                if (activedice1)
+                {
+                    komapreview(user, selected_koma, (roll1 + 1));
+                }
+                else
+                {
+                    komapreview(user, 0, 0, true);
+                }
+                break;
+            case 2:
+                if (activedice2)
+                {
+                    komapreview(user, selected_koma, (roll1 + 1));
+                }
+                else
+                {
+                    komapreview(user, 0, 0, true);
+                }
+                break;
+            case 3:
+                if (activedice3)
+                {
+                    komapreview(user, selected_koma, (roll1 + 1));
+                }
+                else
+                {
+                    komapreview(user, 0, 0, true);
+                }
+                break;
+            case 4:
+                if (activedice4)
+                {
+                    komapreview(user, selected_koma, (roll2 + 1));
+                }
+                else
+                {
+                    komapreview(user, 0, 0, true);
+                }
+                break;
+        }
+
         return;
     }
 
@@ -1357,6 +1508,11 @@ public class pvp_game_load : MonoBehaviour
                 ground[komapos - move]--;
                 movekoma_apply(isblue, komaid, lkoma[komaid]);
             }
+
+            if (komapos == 14) //監獄出身者はロールバック不能に
+            {
+                rb_canback = false;
+            }
         }
         else
         {
@@ -1425,6 +1581,11 @@ public class pvp_game_load : MonoBehaviour
                 ground[komapos]--;
                 ground[komapos + move]++;
                 movekoma_apply(isblue, komaid, rkoma[komaid]);
+            }
+
+            if (komapos == 1)
+            {
+                rb_canback = false;
             }
         }
 
@@ -1949,6 +2110,12 @@ public class pvp_game_load : MonoBehaviour
         if (ans)
         {
             Debug.Log("判定結果：スタックしています。移動できません。");
+            if (!playedse)
+            {
+                se.clip = stackse;
+                se.Play();
+                playedse = true;
+            }
         }
         else
         {
@@ -2147,198 +2314,137 @@ public class pvp_game_load : MonoBehaviour
         if (isblue)
         {
             //青ターン
-            if (ground[(diceti + 1)] <= -1)
+            if ((lkoma[komaid] - 1) < diceti)
             {
-                debugtext1.text = "移動に適切なコマがあります。";
-                //コマがある場合は、選択したコマがジャストで動けるコマかチェックする
-                if (lkoma[komaid] == (diceti + 1))
+                switch (diceti)
                 {
-                    debugtext1.text = "移動に適切なコマを選択しています。";
-                    //ダイスの値とジャストで移動できるコマ
-                    ans = true;
-                }
-                else
-                {
-                    //選択したコマ以外にジャストで動かせるコマがある
+                    case 2:
+                        if (lkoma[komaid] == 2)
+                        {
+                            //後方（３マス目）にコマがあるか見る
+                            if (ground[3] <= -1 || ground[4] <= -1)
+                            {
+                                ans = false;
+                            }
+                            else
+                            {
+                                ans = true;
+                            }
+                        }
+                        else
+                        {
+                            ans = true;
+                        }
+                        break;
 
-                    if (remain >= 2 && lkoma[komaid] == 4)
-                    {
-                        //lkomaがground[4]に位置し、3の目ダイスでゴール出来る場合
-                        if (roll1 == 0 && roll2 == 1)
+                    case 3:
+                        if (lkoma[komaid] == 2)
                         {
-                            //1と2の目のとき
+                            if (ground[3] <= -1 || ground[4] <= -1)
+                            {
+                                ans = false;
+                            }
+                            else
+                            {
+                                ans = true;
+                            }
+                        }
+                        else if (lkoma[komaid] == 3)
+                        {
+                            if (ground[4] <= -1)
+                            {
+                                ans = false;
+                            }
+                            else
+                            {
+                                ans = true;
+                            }
+                        }
+                        else
+                        {
                             ans = true;
                         }
-                        else if (roll1 == 1 && roll2 == 0)
-                        {
-                            //2と1の目のとき
-                            ans = true;
-                        }
-                        else if (roll1 == 0 && roll2 == 0 && remain >= 3)
-                        {
-                            //1が３つあるとき
-                            ans = true;
-                        }
-                    }
-                    else if (remain >= 2 && lkoma[komaid] == 3)
-                    {
-                        //lkomaがground[3]に位置し、2の目ダイスでゴールできる場合
-                        if (roll1 == 0 && roll2 == 0)
-                        {
-                            //1と1の目のとき
-                            ans = true;
-                        }
-                    }
-                    else
-                    {
-                        todotext.text = "他に移動可能なコマがあります。";
-                        debugtext1.text = "ほかに移動可能。";
-                    }
+                        break;
+
+                    default:
+                        //do nothing
+                        ans = true;
+                        break;
                 }
             }
             else
             {
-                //フィールドにコマがない場合はほかのコマ移動を許可する
-                debugtext1.text = "移動に適切なコマがありません。";
-                if ((lkoma[komaid] - 1) < diceti)
-                {
-                    switch (diceti)
-                    {
-                        case 1:
-                            //後方（２，３マス目）にコマがあるか見る
-                            if ((ground[3] != 0 && lkoma[komaid] == 3) || (ground[4] != 0 && lkoma[komaid] == 4))
-                            {
-                                ans = true;
-                            }
-                            else
-                            {
-                                todotext.text = "最後尾のコマを優先的に動かしましょう。";
-                            }
-                            break;
-                        case 2:
-                            //後方（３マス目）にコマがあるか見る
-                            if (ground[4] != 0 && lkoma[komaid] == 4)
-                            {
-                                ans = true;
-                            }
-                            else
-                            {
-                                todotext.text = "一番後ろのコマを優先で動かしましょう。";
-                            }
-                            break;
-                        default:
-                            //do nothing
-                            break;
-                    }
-                }
-                else
-                {
-                    ans = true;
-                }
+                ans = true;
             }
             debugtext1.text = "bg[" + (diceti + 1) + "] / " + ground[(diceti + 1)];
         }
         else
         {
             //赤ターン
-            if (ground[(15 - diceti - 1)] >= 1)
+            if ((15 - rkoma[komaid] - 1) < diceti)
             {
-                debugtext1.text = "移動に適切なコマがあります。";
-                //コマがある場合は、選択したコマがジャストで動けるコマかチェックする
-                if (rkoma[komaid] == (15 - diceti - 1))
+                switch (diceti)
                 {
-                    debugtext1.text = "移動に適切なコマを選択。";
-                    //ダイスの値とジャストで移動できるコマ
-                    ans = true;
-                }
-                else
-                {
-                    //選択したコマ以外にジャストで動かせるコマがある
+                    case 2:
+                        if (rkoma[komaid] == 13)
+                        {
+                            //後方（３マス目）にコマがあるか見る
+                            if (ground[12] >= 1 || ground[11] >= 1)
+                            {
+                                ans = false;
+                            }
+                            else
+                            {
+                                ans = true;
+                            }
+                        }
+                        else
+                        {
+                            ans = true;
+                        }
+                        break;
 
-                    if (remain >= 2 && rkoma[komaid] == 11)
-                    {
-                        //lkomaがground[4]に位置し、3の目ダイスでゴール出来る場合
-                        if (roll1 == 0 && roll2 == 1)
+                    case 3:
+                        if (rkoma[komaid] == 13)
                         {
-                            //1と2の目のとき、ダイスを２個使ってゴールへ
-                            ans = true;
+                            if (ground[11] >= 1 || ground[12] >= 1)
+                            {
+                                ans = false;
+                            }
+                            else
+                            {
+                                ans = true;
+                            }
                         }
-                        else if (roll1 == 1 && roll2 == 0)
+                        else if (rkoma[komaid] == 12)
                         {
-                            //2と1の目のとき、ダイスを２個使ってゴールへ
-                            ans = true;
+                            if (ground[11] >= 1)
+                            {
+                                ans = false;
+                            }
+                            else
+                            {
+                                ans = true;
+                            }
                         }
-                        else if (roll1 == 0 && roll2 == 0 && remain >= 3)
-                        {
-                            //ダイスを３つ使ってコマをゴールに導く
-                            ans = true;
-                        }
-                    }
-                    else if (remain >= 2 && rkoma[komaid] == 12)
-                    {
-                        //lkomaがground[3]に位置し、2の目ダイスでゴールできる場合
-                        if (roll1 == 0 && roll2 == 0)
-                        {
-                            //1と1の目のとき
-                            ans = true;
-                        }
-                    }
-                    else
-                    {
-                        todotext.text = "他に移動可能なコマがあります。";
-                        debugtext1.text = "他に移動可能なコマあり。";
-                    }
+                        break;
+
+                    default:
+                        //do nothing
+                        ans = true;
+                        break;
                 }
             }
             else
             {
-                //フィールドにコマがない場合はほかのコマ移動を許可する
-                debugtext1.text = "移動に適切なコマがありません。";
-                if ((15 - rkoma[komaid] - 1) > diceti)
-                {
-                    switch (diceti)
-                    {
-                        case 1:
-                            //後方（２，３マス目）にコマがあるか見る
-                            if ((ground[12] != 0 && rkoma[komaid] == 12) || (ground[11] != 0 && rkoma[komaid] == 11))
-                            {
-                                ans = true;
-                            }
-                            else
-                            {
-                                ans = false;
-                                todotext.text = "最後尾のコマを優先的に動かしましょう。";
-                            }
-                            break;
-
-                        case 2:
-                            //後方（３マス目）にコマがあるか見る
-                            if (ground[11] != 0 && rkoma[komaid] == 11)
-                            {
-                                ans = true;
-                            }
-                            else
-                            {
-                                ans = false;
-                                todotext.text = "一番後ろのコマを優先で動かしましょう。";
-                            }
-                            break;
-
-                        default:
-                            //do nothing
-                            break;
-                    }
-                }
-                else
-                {
-                    ans = true;
-                }
+                ans = true;
             }
-            debugtext1.text = "rg[" + (15 - diceti - 1) + "] / " + ground[(15 - diceti - 1)];
         }
+        debugtext1.text = "rg[" + (15 - diceti - 1) + "] / " + ground[(15 - diceti - 1)];
 
         if (ans == false)
         {
+            todotext.text = "一番後ろのコマを優先で動かしましょう。";
             if (playsound)
             {
                 se.clip = cantse;
@@ -2347,6 +2453,84 @@ public class pvp_game_load : MonoBehaviour
         }
 
         return ans;
+    }
+
+    void komapreview(bool isblue, int komaid, int diceti, bool reset = false)
+    {
+        int posX = -255;
+        int idousu = -1;
+        int newposX = -1;
+        int fieldid = -1;
+
+        if (reset)
+        {
+            komapreview_obj.GetComponent<Image>().material = null;
+            komapreview_obj.GetComponent<Image>().material = null;
+        }
+        else
+        {
+            if (isblue)
+            {
+                //青ターン
+                if (lkoma[komaid] - diceti <= 1)
+                {
+                    fieldid = 2;
+                }
+                else
+                {
+                    fieldid = lkoma[komaid] - diceti;
+                }
+                komapreview_obj.GetComponent<Image>().material = hlkoma;
+            }
+            else
+            {
+                //赤ターン
+                if (rkoma[komaid] + diceti >= 14)
+                {
+                    fieldid = 13;
+                }
+                else
+                {
+                    fieldid = rkoma[komaid] + diceti;
+                }
+                komapreview_obj.GetComponent<Image>().material = hrkoma;
+            }
+
+            idousu = ((fieldid - 1) * 39);
+            newposX = posX + idousu;
+
+            switch (komaid)
+            {
+                case 0:
+                    komapreview_obj.transform.localPosition = new Vector3(newposX, -60, 0);
+                    break;
+                case 1:
+                    komapreview_obj.transform.localPosition = new Vector3(newposX, -10, 0);
+                    break;
+                case 2:
+                    komapreview_obj.transform.localPosition = new Vector3(newposX, -35, 0);
+                    break;
+                case 3:
+                    komapreview_obj.transform.localPosition = new Vector3(newposX, 15, 0);
+                    break;
+                case 4:
+                    komapreview_obj.transform.localPosition = new Vector3(newposX, 65, 0);
+                    break;
+                case 5:
+                    komapreview_obj.transform.localPosition = new Vector3(newposX, 40, 0);
+                    break;
+                case 6:
+                    komapreview_obj.transform.localPosition = new Vector3(newposX, 90, 0);
+                    break;
+                case 7:
+                    komapreview_obj.transform.localPosition = new Vector3(newposX, 135, 0);
+                    break;
+                default:
+                    Debug.Log("[Error] (goal) switch overflow!!! [" + isblue + " / " + komaid + "]");
+                    break;
+            }
+        }
+        return;
     }
 
 }
