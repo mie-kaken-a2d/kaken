@@ -59,19 +59,19 @@ ScriptsOnlyBuild:
     - Class: 108
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 11338}
+      Script: {instanceID: 11336}
     - Class: 114
-      Script: {instanceID: 11364}
+      Script: {instanceID: 11362}
     - Class: 114
-      Script: {instanceID: 11782}
+      Script: {instanceID: 11780}
     - Class: 114
-      Script: {instanceID: 12618}
+      Script: {instanceID: 12616}
     - Class: 114
-      Script: {instanceID: 13524}
+      Script: {instanceID: 13522}
     - Class: 114
-      Script: {instanceID: 14428}
+      Script: {instanceID: 14426}
     - Class: 114
-      Script: {instanceID: 14902}
+      Script: {instanceID: 14900}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -114,19 +114,19 @@ ScriptsOnlyBuild:
     - Class: 108
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 11338}
+      Script: {instanceID: 11336}
     - Class: 114
-      Script: {instanceID: 11364}
+      Script: {instanceID: 11362}
     - Class: 114
-      Script: {instanceID: 11782}
+      Script: {instanceID: 11780}
     - Class: 114
-      Script: {instanceID: 12618}
+      Script: {instanceID: 12616}
     - Class: 114
-      Script: {instanceID: 13524}
+      Script: {instanceID: 13522}
     - Class: 114
-      Script: {instanceID: 14428}
+      Script: {instanceID: 14426}
     - Class: 114
-      Script: {instanceID: 14902}
+      Script: {instanceID: 14900}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -167,19 +167,19 @@ ScriptsOnlyBuild:
     - Class: 104
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 11338}
+      Script: {instanceID: 11336}
     - Class: 114
-      Script: {instanceID: 11364}
+      Script: {instanceID: 11362}
     - Class: 114
-      Script: {instanceID: 11782}
+      Script: {instanceID: 11780}
     - Class: 114
-      Script: {instanceID: 12118}
+      Script: {instanceID: 12116}
     - Class: 114
-      Script: {instanceID: 12608}
+      Script: {instanceID: 12606}
     - Class: 114
-      Script: {instanceID: 14428}
+      Script: {instanceID: 14426}
     - Class: 114
-      Script: {instanceID: 15176}
+      Script: {instanceID: 15174}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -218,31 +218,31 @@ ScriptsOnlyBuild:
     - Class: 104
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 11338}
+      Script: {instanceID: 11336}
     - Class: 114
-      Script: {instanceID: 11364}
+      Script: {instanceID: 11362}
     - Class: 114
-      Script: {instanceID: 11782}
+      Script: {instanceID: 11780}
     - Class: 114
-      Script: {instanceID: 12030}
+      Script: {instanceID: 12028}
     - Class: 114
-      Script: {instanceID: 12210}
+      Script: {instanceID: 12208}
     - Class: 114
-      Script: {instanceID: 12608}
+      Script: {instanceID: 12606}
     - Class: 114
-      Script: {instanceID: 12728}
+      Script: {instanceID: 12726}
     - Class: 114
-      Script: {instanceID: 13148}
+      Script: {instanceID: 13146}
     - Class: 114
-      Script: {instanceID: 13524}
+      Script: {instanceID: 13522}
     - Class: 114
-      Script: {instanceID: 13696}
+      Script: {instanceID: 13694}
     - Class: 114
-      Script: {instanceID: 14428}
+      Script: {instanceID: 14426}
     - Class: 114
-      Script: {instanceID: 14808}
+      Script: {instanceID: 14806}
     - Class: 114
-      Script: {instanceID: 15176}
+      Script: {instanceID: 15174}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -562,7 +562,7 @@ ScriptsOnlyBuild:
     className: ControlPlayableAsset
   - hash:
       serializedVersion: 2
-      Hash: 41b7078fcce0f71b2c8b2c332bda03c9
+      Hash: 4db6e21a95321901901470b076e731ea
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: pvp_game_load
@@ -981,4 +981,4 @@ ScriptsOnlyBuild:
   - Assets/Scenes/go_multiplay.unity
   - Assets/Scenes/howto.unity
   playerPath: "C:/Users/fanta/Documents/MIE/sotuken/Otakku Gyamon/bin/\uFF73\uFF6B\uFF75\uFF75\uFF75\uFF75\uFF75\uFF75\uFF75\uFF75\uFF75\u30BF\u30C3\u30AF\u30AE\u30E3\u30E2\u30F3
-    Ver.0.26 (dev).exe"
+    Ver.0.30 (dev).exe"

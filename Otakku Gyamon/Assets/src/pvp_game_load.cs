@@ -9,9 +9,9 @@ public class pvp_game_load : MonoBehaviour
     /*
      * [TODO]
      *  * 解説動画へのリンク
-     *  * 移動先プレビュー
      [改善点]
         * 先攻ターンがどっちか直感的にわからない
+        * 移動先がゴールの場合、コマをゴールプレビュー。ただしゴール可否判定を追加し、だめならｘ字などに。
     */
 
     bool user = false;  //プレイヤー(左側がtrue)
@@ -72,6 +72,7 @@ public class pvp_game_load : MonoBehaviour
     public Material rkoma_goal;
     public Material hlkoma;
     public Material hrkoma;
+    public Material cantgoal;
     public Text turntext;
     public Text todotext;
     public Text turnuser;
@@ -446,7 +447,6 @@ public class pvp_game_load : MonoBehaviour
                                 {
                                     //移動完了
                                     remain--;
-                                    selected_koma = 0;
                                     activekoma_change(user, -1);
                                     activekoma_change(user, selected_koma);
                                 }
@@ -1986,11 +1986,25 @@ public class pvp_game_load : MonoBehaviour
             todotext.text = "青色ペンギンさんチームの勝利！\nおめでとう！\n[R]を押してもう一度プレイできるぞ！";
             if (ground[15] == 0)
             {
-                todotext.text = "青色ペンギンさんチームのギャモン勝ち！\n戦略ゲーは得意なのかな？\n[R]を押してもう一度プレイできるぞ！";
-                if (playsound)
+                //ギャモン勝ち判定ここから
+                if (ground[2] >= 1 || ground[3] >= 1 || ground[4] >= 1)
                 {
-                    se.clip = gyamonwin;
-                    se.Play();
+                    //バックギャモン勝ち
+                    todotext.text = "青色ペンギンチームのバックギャモン勝ち！\n圧倒的戦略に感服です・・・\n[R]を押すともう一度プレイできます。";
+                    if (playsound)
+                    {
+                        se.clip = gyamonwin;
+                        se.Play();
+                    }
+                }
+                else
+                {
+                    todotext.text = "青色ペンギンチームのギャモン勝ち！\n戦略ゲーは得意なのかな？\n[R]を押してもう一度プレイできるぞ！";
+                    if (playsound)
+                    {
+                        se.clip = gyamonwin;
+                        se.Play();
+                    }
                 }
             }
         }
@@ -1999,11 +2013,24 @@ public class pvp_game_load : MonoBehaviour
             todotext.text = "赤色ペンギンさんチームの勝利！\nおめでとう！！\n[R]を押してもう一度プレイできるぞ！";
             if (ground[0] == 0)
             {
-                todotext.text = "赤色ペンギンさんチームのギャモン勝ち！\nオリジナルのバックギャモンにも挑戦してみて！\n[R]を押してもう一度プレイできるぞ！";
-                if (playsound)
+                //ギャモン勝ち判定ここから
+                if (ground[13] <= -1 || ground[12] <= -1 || ground[11] <= -1)
                 {
-                    se.clip = gyamonwin;
-                    se.Play();
+                    todotext.text = "赤色ペンギンチームのバックギャモン勝ち！\n圧倒的ですね・・・\n[R]を押すともう一度プレイできますよ。";
+                    if (playsound)
+                    {
+                        se.clip = gyamonwin;
+                        se.Play();
+                    }
+                }
+                else
+                {
+                    todotext.text = "赤色ペンギンさんチームのギャモン勝ち！\nオリジナルのバックギャモンにも挑戦してみて！\n[R]を押してもう一度プレイできるぞ！";
+                    if (playsound)
+                    {
+                        se.clip = gyamonwin;
+                        se.Play();
+                    }
                 }
             }
         }
