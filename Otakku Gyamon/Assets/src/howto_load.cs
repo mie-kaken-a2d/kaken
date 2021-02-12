@@ -9,14 +9,16 @@ public class howto_load : MonoBehaviour
     public AudioSource bgm;
     public Text hyoudai;
     public Text bio;
+    public Button goyoutube;
     bool playing = true;
     int page = 1;
-    int maxpage = 14;
+    int maxpage = 13;
 
     void Start()
     {
         page = 1;
         updatetext();
+        goyoutube.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -41,14 +43,15 @@ public class howto_load : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            if(page > 1)
+            if (page > 1)
             {
                 page--;
                 updatetext();
             }
-        }else if (Input.GetKeyDown(KeyCode.RightArrow))
+        }
+        else if (Input.GetKeyDown(KeyCode.RightArrow))
         {
-            if(page < maxpage)
+            if (page < maxpage)
             {
                 page++;
                 updatetext();
@@ -66,11 +69,11 @@ public class howto_load : MonoBehaviour
                 break;
             case 2:
                 hyoudai.text = "操作方法 (" + page + "/" + maxpage + ")";
-                bio.text = "現在、キーボードのみの操作に対応しています。\n\n[D] ダイスを振る\n[1]～[4] ダイスを選択\n[←] [→] コマを選択\n[Space] 決定（移動）\n[Z] １手戻る\n[M] BGMミュート\n[Esc] タイトルに戻る（確認なし）";
+                bio.text = "キーボードのみの操作に対応しています。\n\n[D] ダイスを振る\n[1]～[4] ダイスを選択\n[←] [→] コマを選択\n[Space] 決定（移動）\n[Z] １手戻る\n[M] BGMミュート\n[Esc] タイトルに戻る（確認なし）";
                 break;
             case 3:
                 hyoudai.text = "プレイ方法 (" + page + "/" + maxpage + ")";
-                bio.text = "[Esc] でタイトルに戻り、\n好きなプレイ方法を選択します。\n\n現在は\n同一端末上でのマルチプレイ（PvP）\nに対応。";
+                bio.text = "[Esc] でタイトルに戻り、\n好きなプレイ方法を選択します。\n\n現在は\n同一端末上でのマルチプレイ（PvP）\nに対応していますよ。";
                 break;
             case 4:
                 hyoudai.text = "ルール (" + page + "/" + maxpage + ")";
@@ -86,7 +89,7 @@ public class howto_load : MonoBehaviour
                 break;
             case 7:
                 hyoudai.text = "ルール (" + page + "/" + maxpage + ")";
-                bio.text = "4.\n漂流しているコマがある場合は\nそれを最優先で動かす。\n\nペンギンたちは、仲間意識がとても高いです。\n漂流している仲間がいると、\nそのペンギンが氷に上がるまで待機します。\n漂流ペンギンは、最優先で\n動かさなければなりません。\n氷に上がれる場所がなければ漂流し（スタック）、\n相手のターンになります。";
+                bio.text = "4.\n漂流しているコマがある場合は\nそれを最優先で動かす。\n\nペンギンたちは、仲間意識がとても高いです。\n漂流している仲間がいると、\nそのペンギンが氷に上がるまで待機します。\n漂流ペンギンは、最優先で\n動かさなければなりません。\n氷に上がれる場所がなければ漂流し、\n相手のターンになります。";
                 break;
             case 8:
                 hyoudai.text = "ルール (" + page + "/" + maxpage + ")";
@@ -103,18 +106,17 @@ public class howto_load : MonoBehaviour
             case 11:
                 hyoudai.text = "ルール (" + page + "/" + maxpage + ")";
                 bio.text = "8.\n先に、フィールドにいる\n全ての同じ色のコマがゴールすれば勝利。\n\n青と桃の２色のペンギンがいます。\nプレイヤーは、どちらか好きな方を決めましょう。\n選んだ色と同じ色のペンギンを動かします。\n先に８体全てを帰宅させたプレイヤーの勝利です。";
+                goyoutube.gameObject.SetActive(false);
                 break;
             case 12:
-                hyoudai.text = "プレイ方法 (" + page + "/" + maxpage + ")";
-                bio.text = "どうやってゲームをするの？";
+                hyoudai.text = "ルール (" + page + "/" + maxpage + ")";
+                bio.text = "動画を見ると分かりやすいかもしれません。";
+                goyoutube.gameObject.SetActive(true);
                 break;
             case 13:
-                hyoudai.text = "プレイ方法 (" + page + "/" + maxpage + ")";
-                bio.text = "どうやってゲームをするの？";
-                break;
-            case 14:
-                hyoudai.text = "プレイ方法 (" + page + "/" + maxpage + ")";
-                bio.text = "どうやってゲームをするの？";
+                hyoudai.text = "免責 (" + page + "/" + maxpage + ")";
+                bio.text = "このゲームを遊んで発生した\n損害・損失及び友情の崩壊などについては、\n製作陣は一切の責任を負わないものとします。\n自己責任で、楽しくプレイしましょう。";
+                goyoutube.gameObject.SetActive(false);
                 break;
         }
         return;
