@@ -63,6 +63,7 @@
      <Compile Include="Assets\src\click_title_pve.cs" />
      <Compile Include="Assets\src\click_title_pvp.cs" />
      <Compile Include="Assets\src\howto_load.cs" />
+     <Compile Include="Assets\src\pve_game_load.cs" />
      <Compile Include="Assets\src\pvp_game_load.cs" />
  <Reference Include="UnityEngine">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.17f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
