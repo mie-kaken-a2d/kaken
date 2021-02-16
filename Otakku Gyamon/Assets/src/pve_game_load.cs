@@ -543,7 +543,7 @@ public class pve_game_load : MonoBehaviour
                 /* ---------------------------- */
 
                 /* -----------NPC移動---------- */
-                int[] Dice = new int[4] { -10, -10, -10, -10 };/* ダイスの数と格納 */
+                int[] Dice = new int[4] { -10, -10, -10, -10 };/* ダイスの数を格納 */
                 int[] Gstatus = new int[16];/* フィールドの状態格納 */
                 int[] Nkoma = new int[8];/* NPC駒の位置格納 */
                 int[,] Score = new int[4, 8];/* 移動確定のためのスコア格納 */
@@ -581,118 +581,85 @@ public class pve_game_load : MonoBehaviour
                     Nkoma[i] = rkoma[i];
                 }
                 /* ------------------ */
-
-                /* ----スコア計算---- */
-                //debug.text = "";
-                for (int x = 0; x < remain; x++)/* Score配列・行 */
+                for (int Brain = 0; Brain < remain; Brain++)//移動させるコマの決定
                 {
-                    //Debug.Log("xるープ:" + x);
-                    for (int y = 0; y < 8; y++)/* Score配列・列 */
+                    /* -------------------- スコア計算 -------------------- */
+                    for (int x = 0; x < remain; x++)//Score配列・行
                     {
-                        /*Debug.Log("yループ:" + y);
-                        Debug.Log("[1] Nkoma[y]:" + Nkoma[y] + " / y:" + y);
-                        Debug.Log("[2] Dice[x]:" + Dice[x] + " / x:" + x);*/
-                        //debug.text += "[1]" + Nkoma[y] + " [2] " + Dice[x] + " [3] " + Gstatus[Nkoma[y] + Dice[x]] + "\n";
-                        //Debug.Log("[3] Gstatus:" + Gstatus[Nkoma[y] + Dice[x]]);
-                        if (Nkoma[y] + Dice[x] >= 16 || Nkoma[y] +　Dice[x] == 14)/* ゴールを超える場合の処理 */
+                        for (int y = 0; y < 8; y++)//Scoire配列・列
                         {
-                            Debug.Log("overscore");
-                            Score[x, y] = 0;
-                        }
-                        else if(Nkoma[y] + Dice[x] == 15)
-                        {
-                            for(int i = 1; i < 10; i++)
+                            Score[x, y] = 0;//Score配列の初期化
+                            if (Nkoma[y] + Dice[x] >= 16)//ゴール越え対策
                             {
-                                if(Gstatus[i] > 0)
+                                for (int i = 1; i < 11; i++)//ゴールできるか判定
                                 {
-                                    Gool = false;
-                                }
-                                if (!Gool)
-                                {
-                                    Score[x, y] = 0;
-                                }
-                                else
-                                {
-                                    Score[x, y] = 100;
-                                }
-                            }
-                        }
-                        else if (Gstatus[(Nkoma[y] + Dice[x])] >= -1)/* 動ける場合 */
-                        {
-                            if (Gstatus[Nkoma[y] + Dice[x]] == -1)/* 移動先の敵の数が1 */
-                            {
-                                Debug.Log("if 1");
-                                Score[x, y] = 3 * (15 - Nkoma[y]);
-                            }
-                            else if (Gstatus[Nkoma[y] + Dice[x]] == 0)/* 移動先に誰もいない */
-                            {
-                                Debug.Log("if 2");
-                                Score[x, y] = 2 * (15 - Nkoma[y]);
-                            }
-                            else/* 移動先に味方がいる */
-                            {
-                                Debug.Log("if 3");
-                                Score[x, y] = 1 * (15 - Nkoma[y]);
-                            }
-                        }
-                        else/* 移動ができない */
-                        {
-                            Debug.Log("if 4");
-                            Score[x, y] = 0;
-                        }
-
-                        //Gstatus[Nkoma[y] + Dice[x]] += 1;/* フィールドの状況更新 */
-                        Debug.Log(x + ":" + y + ":" + Score[x,y]);
-                    }
-                }
-                /* ------------------ */
-
-                /* -----駒の確定----- */
-                for (int x = 0; x < remain; x++)/* Score配列・行 */
-                {
-                    for (int y = 0; y < 8; y++)/* Score配列・列 */
-                    {
-                        for (int i = 0; i < remain; i++)/* 比較用 */
-                        {
-                            if (Move[i] < Score[x, y])
-                            {
-                                if (i > 0)
-                                {
-                                    if (DiceNo[i - 1] == x)
+                                    if (Gstatus[i] > 0)
+                                    {
+                                        Score[x, y] = 0;
                                         break;
+                                    }
                                     else
                                     {
-                                        for (int z = 2; z >= i; z--)
-                                        {
-                                            Move[z] = Temp;
-                                            Temp = Move[z + 1];
-                                            KomaNo[z] = Temp;
-                                            Temp = KomaNo[z + 1];
-                                            DiceNo[z] = Temp;
-                                            Temp = DiceNo[z + 1];
-
-                                        }
-                                        Move[i] = Score[x, y];
-                                        KomaNo[i] = y;
-                                        DiceNo[i] = x;
+                                        Score[x, y] = 100;
                                     }
                                 }
-                                else
+                            }
+                            else if (Nkoma[y] + Dice[x] == 14)//プレイヤー側島流し対策
+                            {
+                                Score[x, y] = 0;
+                            }
+                            else if (Gstatus[(Nkoma[y] + Dice[x])] >= -1)//動ける場合 
+                            {
+                                if (Gstatus[Nkoma[y] + Dice[x]] == -1)//移動先の敵の数が1
                                 {
-                                    Move[i] = Score[x, y];
-                                    KomaNo[i] = y;
-                                    DiceNo[i] = x;
+                                    Score[x, y] = 3 * (15 - Nkoma[y]);
+                                }
+                                else if (Gstatus[Nkoma[y] + Dice[x]] == 0)//移動先に誰もいない
+                                {
+                                    Score[x, y] = 2 * (15 - Nkoma[y]);
+                                }
+                                else//移動先に味方がいる
+                                {
+                                    Score[x, y] = 1 * (15 - Nkoma[y]);
                                 }
                             }
+                            else//移動ができない
+                            {
+                                Score[x, y] = 0;
+                            }
+
+                        }//Score配列・列終点
+                    }//Score配列・行終点
+                    /* -------------------- スコア計算 -------------------- */
+
+                    /* -------------------- コマの決定 -------------------- */
+                    for (int x = 0; x < remain; x++)//Score配列・行
+                    {
+                        for (int Dicecheak = 0; Dicecheak < remain; Dicecheak++)//同じサイコロが使われているかチェックする
+                        {
+                            if (DiceNo[Dicecheak] == Dicecheak)
+                                x++;
                         }
-                    }
-                }
+                        if (x >= remain)//サイコロチェックでサイコロを最後まで使われていた場合処理を抜ける
+                            break;
+                        for (int y = 0; y < 8; y++)//Score配列・列
+                        {
+                            if (Move[Brain] <= Score[x, y])
+                            {
+                                Move[Brain] = Score[x, y];
+                                KomaNo[Brain] = y;
+                                DiceNo[Brain] = x;
+                            }
+                        }//Score配列・列終点
+                    }//Score配列・行終点
+                    /* -------------------- コマの決定 -------------------- */
+                    Gstatus[Nkoma[KomaNo[Brain]] + Dice[DiceNo[Brain]]] += 1;//フィールドの状況更新
+                }//Brain終点
+
                 for(int i = 0; i < 15; i++)
                 {
                     Debug.Log("Gsutatus[" + i + "]:" + Gstatus[i]);
                 }
-
-                /* ------------------ */
 
                 for (int i = 0; i < 8; i++)
                 {
