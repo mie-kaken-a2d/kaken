@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Threading;
 
 public class pve_game_load : MonoBehaviour
 {
@@ -27,6 +28,7 @@ public class pve_game_load : MonoBehaviour
     int selected = 0;   //選択中のダイス
     int selected_koma = 0;  //選択中のコマ
     bool activedice1, activedice2, activedice3, activedice4;    //ダイス使用済みか
+    bool isfirstturn;   //初期ターンか
     bool rb_canback;
     int rb_lp, rb_rp;           //【Return Buffer】blueコマの前の位置、redコマの前の位置
     int rb_lid, rb_rid;         //【Return Buffer】blueコマのID、redコマのID
@@ -93,7 +95,6 @@ public class pve_game_load : MonoBehaviour
     public AudioClip gyamonwin;
     public AudioClip stackse;
     public AudioClip rollbackse;
-    public Text debug;
 
     // Start is called before the first frame update
     void Start()
@@ -225,6 +226,7 @@ public class pve_game_load : MonoBehaviour
         canroll = false;
         gameready = true;
         selectkoma = false;
+        isfirstturn = true;
         rb_canback = false;
         rb_lp = -1;
         rb_rp = -1;
@@ -253,13 +255,6 @@ public class pve_game_load : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        /* turntext.text = "groundデバッグ\n";
-        for (int i = 0; i < 16; i++)
-        {
-            //デバッグ用Ground出力
-            turntext.text += "ground[" + i + "]@" + ground[i] + "\n";
-        } */
-
         if (Input.GetKeyDown(KeyCode.M))
         {
             if (playsound)
@@ -296,24 +291,23 @@ public class pve_game_load : MonoBehaviour
 
         if (ongame)
         {
-            if (user)
-            {    /* プレイヤーの動き */
-                //勝利しましたか？
-                if (ground[0] <= -8)
-                {
-                    //Left側の勝利
-                    /* 勝利イベントここ */
-                    gamewin(true);
-                    return;
-                }
-                else if (ground[15] >= 8)
-                {
-                    //Right側の勝利
-                    /* 勝利イベントここ */
-                    gamewin(false);
-                    return;
-                }
+            /* 勝利判定 */
+            if (ground[0] <= -8)
+            {
+                //Left側の勝利
+                gamewin(true);
+                return;
+            }
+            else if (ground[15] >= 8)
+            {
+                //Right側の勝利
+                gamewin(false);
+                return;
+            }
+            /* ---------- */
 
+            if (user) /* プレイヤー判定 */
+            {
                 if (Input.GetKeyDown(KeyCode.Z))
                 {
                     returnmove();
@@ -324,13 +318,12 @@ public class pve_game_load : MonoBehaviour
                     }
                 }
 
-                if (canroll)
+                if (canroll) /* ダイスが振れる状態 */
                 {
                     if (Input.GetKeyDown(KeyCode.D))    /* ダイスロール */
                     {
                         canroll = false;
                         rb_canback = false;
-
 
                         todotext.text = "ダイスを振っています…";
                         roll1 = diceroll();
@@ -465,7 +458,7 @@ public class pve_game_load : MonoBehaviour
                         else
                         {
                             Debug.Log("動かせるコマがありません！！(stucked!!)");
-                            todotext.text = "スタックしました！\n[Space]キーを押して交代です。";
+                            todotext.text = "動かせるコマがありません！\n[Space]キーを押して交代です。";
                             if (Input.GetKeyDown(KeyCode.Space))
                             {
                                 activekoma_change(user, -1);
@@ -482,14 +475,15 @@ public class pve_game_load : MonoBehaviour
                         user = !user;
                         if (user)
                         {
-                            turnuser.transform.localPosition = new Vector3(-315, -75, 0);
+                            turnuser.transform.localPosition = new Vector3(-315, -110, 0);
                         }
                         else
                         {
-                            turnuser.transform.localPosition = new Vector3(315, -75, 0);
+                            turnuser.transform.localPosition = new Vector3(315, -110, 0);
                         }
-                        todotext.text = "ターンチェンジ。\n[D]キーを押してダイスを振りましょう。";
-                        canroll = true;
+                        //テキストの変更
+                        todotext.text = "NPCの処理中です。\nしばらくお待ちください。";
+                        canroll = false;
                         selected_koma = 0;
                         playedse = false;
                         activekoma_change(user, -1);
@@ -501,44 +495,25 @@ public class pve_game_load : MonoBehaviour
             }
             else   /* NPCの動き */
             {
-                /* ----------勝利判定---------- */
-                //勝利しましたか？
-                if (ground[0] <= -8)
-                {
-                    //Left側の勝利
-                    /* 勝利イベントここ */
-                    gamewin(true);
-                    return;
-                }
-                else if (ground[15] >= 8)
-                {
-                    //Right側の勝利
-                    /* 勝利イベントここ */
-                    gamewin(false);
-                    return;
-                }
-                /* ---------------------------- */
-
                 /* ----------さいころ---------- */
-                canroll = false;
-                rb_canback = false;
+                rb_canback = false; //ロールバック不能にする
 
-
-                todotext.text = "ダイスを振っています…";
-                roll1 = diceroll();
-                roll2 = diceroll();
-                todotext.text = "ダイスを振りました。\n数字／スペースキーでコマを移動しましょう。";
-
+                if (!isfirstturn) /* 初期ターンでない場合にダイスを振る */
+                {
+                    roll1 = diceroll();
+                    roll2 = diceroll();
+                    isfirstturn = false;
+                }
 
                 if (roll1 == roll2)
                 {
                     remain = 4;
-                    //diceapply(roll1, roll2, true);
+                    diceapply(roll1, roll2, true);
                 }
                 else
                 {
                     remain = 2;
-                    //diceapply(roll1, roll2);
+                    diceapply(roll1, roll2);
                 }
                 /* ---------------------------- */
 
@@ -549,9 +524,11 @@ public class pve_game_load : MonoBehaviour
                 int[,] Score = new int[4, 8];/* 移動確定のためのスコア格納 */
                 int[] Move = new int[4] { 0, 0, 0, 0 };/* 移動確定比較変数 */
                 int[] KomaNo = new int[4];/* 移動が確定した駒の値格納 */
-                int[] DiceNo = new int[4] { -1, -1, -1, -1};/* 移動が確定したダイスの格納 */
+                int[] DiceNo = new int[4] { -1, -1, -1, -1 };/* 移動が確定したダイスの格納 */
                 int Temp = 0;/* 入れ替え変数 */
-                bool Gool = true;/* ゴールできるかの判定 */
+                bool Gool = false;/* ゴールできるかの判定 */
+                bool Stuckcheak;/* スタックしてるか判定 */
+                int test = 0;
 
                 /* --ダイスの値格納-- */
                 if (remain == 4)/* ダイスの値が同じ時の処理 */
@@ -568,45 +545,123 @@ public class pve_game_load : MonoBehaviour
                 }
                 /* ------------------ */
 
-                /* フィールド状態格納 */
-                for (int i = 0; i < 16; i++)
-                {
-                    Gstatus[i] = ground[i];
-                }
                 /* ------------------ */
-
-                /* ---NPC駒位置格納-- */
-                for (int i = 0; i < 8; i++)
+                /* -------------------- Brain -------------------- */
+                for (int Brain = 0; Brain < remain; Brain++)
                 {
-                    Nkoma[i] = rkoma[i];
-                }
-                /* ------------------ */
-                for (int Brain = 0; Brain < remain; Brain++)//移動させるコマの決定
-                {
+                    Stuckcheak = false;
+                    Gool = false;
+                    test = 0;
+                    if (isstuck(user, roll1) && isstuck(user, roll2))
+                    {
+                        //ダイスがすべてスタックしている場合の処理
+                        Stuckcheak = true;
+                        test = 1;
+                        break;
+                    }
+                    /* フィールド状態格納 */
+                    for (int i = 0; i < 16; i++)
+                    {
+                        Gstatus[i] = ground[i];
+                    }
+                    /* ------------------ */
+                    /* ---NPC駒位置格納-- */
+                    for (int i = 0; i < 8; i++)
+                    {
+                        Nkoma[i] = rkoma[i];
+                    }
+                    for (int y = 0; y < 8; y++)//漂流から上がれない場合の処理
+                    {
+                        if (Nkoma[y] == 1 && Gstatus[Nkoma[y] + Dice[0]] < -1 && Gstatus[Nkoma[y] + Dice[1]] < -1)
+                        {
+                            Stuckcheak = true;
+                            test = 1;
+                            break;
+                        }
+                        else if (Brain > 0)
+                        {
+                            if (Nkoma[y] == 1 && Gstatus[Nkoma[y] + Dice[0]] < -1 && Dice[1] == Dice[DiceNo[0]])
+                            {
+                                Stuckcheak = true;
+                                test = 1;
+                                break;
+                            }
+                            else if (Nkoma[y] == 1 && Gstatus[Nkoma[y] + Dice[1]] < -1 && Dice[0] == Dice[DiceNo[0]])
+                            {
+                                Stuckcheak = true;
+                                test = 1;
+                                break;
+                            }
+                        }
+                    }
+                    if (Stuckcheak)
+                    {
+                        break;
+                    }
                     /* -------------------- スコア計算 -------------------- */
                     for (int x = 0; x < remain; x++)//Score配列・行
                     {
                         for (int y = 0; y < 8; y++)//Scoire配列・列
                         {
                             Score[x, y] = 0;//Score配列の初期化
-                            if (Nkoma[y] + Dice[x] >= 16)//ゴール越え対策
+                            if (Nkoma[y] + Dice[x] >= 14)//ゴール越え対策
                             {
                                 for (int i = 1; i < 11; i++)//ゴールできるか判定
                                 {
-                                    if (Gstatus[i] > 0)
+                                    if (Gstatus[i] > 0)//ゴールできない
+                                    {
+                                        Score[x, y] = 0;
+                                        break;
+                                    }
+                                    else if (Nkoma[y] == 15)//既にゴールにいる
                                     {
                                         Score[x, y] = 0;
                                         break;
                                     }
                                     else
                                     {
-                                        Score[x, y] = 100;
+                                        if (Nkoma[y] + Dice[x] == 14)//プレイヤー側島流し関係
+                                        {
+                                            Score[x, y] = 150;
+                                            Gool = true;
+                                        }
+                                        else if (Nkoma[y] + Dice[x] == 15)//ちょうどゴールに付ける場合
+                                        {
+                                            Score[x, y] = 150;
+                                            Gool = true;
+                                        }
+                                        else
+                                        {
+                                            for (int z = 11; z < Nkoma[y]; z++)//ゴールを超える場合後方にコマがあるか確認
+                                            {
+                                                if (Gstatus[z] > 0)
+                                                {
+                                                    Gool = false;
+                                                    break;
+                                                }
+                                                else
+                                                {
+                                                    Gool = true;
+                                                }
+                                            }
+                                            if (Gool = false)//後方にいる場合
+                                            {
+                                                Score[x, y] = 0;
+                                            }
+                                            else//後方にいない場合
+                                            {
+                                                Score[x, y] = 100;
+                                            }
+                                        }
                                     }
                                 }
                             }
-                            else if (Nkoma[y] + Dice[x] == 14)//プレイヤー側島流し対策
+                            else if (Gstatus[1] > 0 && Nkoma[y] == 1)//島流し優先
                             {
-                                Score[x, y] = 0;
+                                if (Gstatus[(Nkoma[y] + Dice[x])] < -1)
+                                    Score[x, y] = 0;
+                                else
+                                    Score[x, y] = 200;
                             }
                             else if (Gstatus[(Nkoma[y] + Dice[x])] >= -1)//動ける場合 
                             {
@@ -637,14 +692,14 @@ public class pve_game_load : MonoBehaviour
                     {
                         for (int Dicecheak = 0; Dicecheak < remain; Dicecheak++)//同じサイコロが使われているかチェックする
                         {
-                            if (DiceNo[Dicecheak] == Dicecheak)
+                            if (DiceNo[Dicecheak] == x)
                                 x++;
                         }
                         if (x >= remain)//サイコロチェックでサイコロを最後まで使われていた場合処理を抜ける
                             break;
                         for (int y = 0; y < 8; y++)//Score配列・列
                         {
-                            if (Move[Brain] <= Score[x, y])
+                            if (Move[Brain] < Score[x, y])
                             {
                                 Move[Brain] = Score[x, y];
                                 KomaNo[Brain] = y;
@@ -653,67 +708,85 @@ public class pve_game_load : MonoBehaviour
                         }//Score配列・列終点
                     }//Score配列・行終点
                     /* -------------------- コマの決定 -------------------- */
-                    Gstatus[Nkoma[KomaNo[Brain]] + Dice[DiceNo[Brain]]] += 1;//フィールドの状況更新
-                }//Brain終点
 
-                for(int i = 0; i < 15; i++)
-                {
-                    Debug.Log("Gsutatus[" + i + "]:" + Gstatus[i]);
-                }
-
-                for (int i = 0; i < 8; i++)
-                {
-                    Debug.Log("Score[" + i + "]:" + Score[0, i] + ":" + Score[1, i] + ":" + Score[2, i] + ":" + Score[3, i]);
-                }
-                Debug.Log("move[0]:" + Move[0] + "komano[0]:" + KomaNo[0] + "diceno[0]:" + DiceNo[0]);
-                Debug.Log("move[1]:" + Move[1] + "komano[1]:" + KomaNo[1] + "diceno[1]:" + DiceNo[1]);
-                Debug.Log("move[2]:" + Move[2] + "komano[2]:" + KomaNo[2] + "diceno[2]:" + DiceNo[2]);
-                Debug.Log("move[3]:" + Move[3] + "komano[3]:" + KomaNo[3] + "diceno[3]:" + DiceNo[3]);
-                Debug.Log("Dice[0]" + Dice[0]);
-                Debug.Log("Dice[1]" + Dice[1]);
-                Debug.Log("Dice[2]" + Dice[2]);
-                Debug.Log("Dice[3]" + Dice[3]);
-
-                /* -------移動------- */
-                for (int i = 0; i < remain; i++)
-                {
-                    if (ground[Nkoma[KomaNo[i]] + Dice[DiceNo[i]]] <= -1) {
-                        movekoma(user, KomaNo[i], Nkoma[KomaNo[i]], Dice[DiceNo[i]], true, DiceNo[i] + 1);
-                    }
-                    else
+                    /* -------------------- コマの移動 -------------------- */
+                    if (Stuckcheak == false && DiceNo[Brain] > -1)//スタックについての判別
                     {
-                        movekoma(user, KomaNo[i], Nkoma[KomaNo[i]], Dice[DiceNo[i]], false, DiceNo[i] + 1);
+                        Debug.Log("Nkoma:" + Nkoma[KomaNo[Brain]]);
+                        Debug.Log(DiceNo[Brain]);
+                        Debug.Log("Dice:" + Dice[DiceNo[Brain]]);
+                        if (Nkoma[KomaNo[Brain]] + Dice[DiceNo[Brain]] == 14)//grounf[14]の時にゴール扱い
+                        {
+                            movekoma(user, KomaNo[Brain], Nkoma[KomaNo[Brain]], Dice[DiceNo[Brain]] + 1, false, DiceNo[Brain] + 1);
+                            Thread.Sleep(1000);
+                        }
+                        else if (Nkoma[KomaNo[Brain]] + Dice[DiceNo[Brain]] >= 16)//16以上の場合の移動処理
+                        {
+                            int Box = 15 - Nkoma[KomaNo[Brain]];
+                            movekoma(user, KomaNo[Brain], Nkoma[KomaNo[Brain]], Box, false, DiceNo[Brain] + 1);
+                            Thread.Sleep(1000);
+                        }
+                        else if (ground[Nkoma[KomaNo[Brain]] + Dice[DiceNo[Brain]]] <= -1)//プレイヤーのコマを取る時の処理
+                        {
+                            movekoma(user, KomaNo[Brain], Nkoma[KomaNo[Brain]], Dice[DiceNo[Brain]], true, DiceNo[Brain] + 1);
+                            Thread.Sleep(1000);
+                        }
+                        else//移動先に敵がいない場合の処理
+                        {
+                            movekoma(user, KomaNo[Brain], Nkoma[KomaNo[Brain]], Dice[DiceNo[Brain]], false, DiceNo[Brain] + 1);
+                            Thread.Sleep(1000);
+                        }
+                        if (Nkoma[KomaNo[Brain]] == 15)//ゴールに行ったか判定
+                        {
+                            goal(user, Nkoma[KomaNo[Brain]]);
+                        }
                     }
-
+                    /* -------------------- コマの移動 -------------------- */
                 }
+                /* -------------------- Brain -------------------- */
+
                 for (int i = 0; i < 8; i++)
                 {
                     Debug.Log("Score[" + i + "]:" + Score[0, i] + ":" + Score[1, i] + ":" + Score[2, i] + ":" + Score[3, i]);
                 }
+
+                for (int i = 0; i < 16; i++)
+                {
+                    Debug.Log("Ground[" + i + "]:" + ground[i]);
+                }
+
                 Debug.Log("move[0]:" + Move[0] + "komano[0]:" + KomaNo[0] + "diceno[0]:" + DiceNo[0]);
                 Debug.Log("move[1]:" + Move[1] + "komano[1]:" + KomaNo[1] + "diceno[1]:" + DiceNo[1]);
                 Debug.Log("move[2]:" + Move[2] + "komano[2]:" + KomaNo[2] + "diceno[2]:" + DiceNo[2]);
                 Debug.Log("move[3]:" + Move[3] + "komano[3]:" + KomaNo[3] + "diceno[3]:" + DiceNo[3]);
-                Debug.Log("Dice[0]" + Dice[0]);
-                Debug.Log("Dice[1]" + Dice[1]);
-                Debug.Log("Dice[2]" + Dice[2]);
-                Debug.Log("Dice[3]" + Dice[3]);
+                Debug.Log("dice[0]:" + Dice[0]);
+                Debug.Log("dice[1]:" + Dice[1]);
+                Debug.Log("dice[2]:" + Dice[2]);
+                Debug.Log("dice[3]:" + Dice[3]);
+                Debug.Log("test:" + test);
+
                 /* ------------------ */
+                rb_canback = false;
                 remain = 0;
                 user = !user;
                 if (user)
                 {
-                    turnuser.transform.localPosition = new Vector3(-315, -75, 0);
+                    turnuser.transform.localPosition = new Vector3(-315, -110, 0);
                 }
                 else
                 {
-                    turnuser.transform.localPosition = new Vector3(315, -75, 0);
+                    turnuser.transform.localPosition = new Vector3(315, -110, 0);
                 }
                 todotext.text = "ターンチェンジ。\n[D]キーを押してダイスを振りましょう。";
                 canroll = true;
                 selected_koma = 0;
                 playedse = false;
+                Debug.Log("NPC処理終了");
+                activekoma_change(user, -1);
+                activekoma_change(user, selected_koma);
+                activedice_change(-1);
             }
+            /*---------- NPC ----------*/
         }
         else if (gameready)
         {
@@ -732,16 +805,15 @@ public class pve_game_load : MonoBehaviour
                 if (roll1 > roll2)
                 {
                     user = true;
-                    turnuser.transform.localPosition = new Vector3(-315, -75, 0);
-                    todotext.text = "←　先攻が決まりました！";
+                    turnuser.transform.localPosition = new Vector3(-315, -110, 0);
+                    todotext.text = "あなたの先攻です！\nダイスとコマを選んで動かしましょう。";
                 }
                 else
                 {
                     user = false;
-                    turnuser.transform.localPosition = new Vector3(315, -75, 0);
-                    todotext.text = "先攻が決まりました！　→";
+                    turnuser.transform.localPosition = new Vector3(315, -110, 0);
+                    todotext.text = "NPCの先攻です！";
                 }
-                todotext.text += "\nダイスとコマを選んで動かしましょう。";
                 activekoma_change(user, 0);
                 remain = 2;
                 canroll = false;
@@ -757,7 +829,6 @@ public class pve_game_load : MonoBehaviour
             }
         }
     }
-
 
     int diceroll()  /* ダイスを振る */
     {
@@ -1046,6 +1117,16 @@ public class pve_game_load : MonoBehaviour
     {
         switch (value)
         {
+            case -1:
+                activedice1 = false;
+                diceview1_obj.GetComponent<Image>().material = null;
+                activedice2 = false;
+                diceview2_obj.GetComponent<Image>().material = null;
+                activedice3 = false;
+                diceview3_obj.GetComponent<Image>().material = null;
+                activedice4 = false;
+                diceview4_obj.GetComponent<Image>().material = null;
+                break;
             case 1:
                 activedice1 = false;
                 diceview1_obj.GetComponent<Image>().material = null;
@@ -1176,112 +1257,6 @@ public class pve_game_load : MonoBehaviour
                             lkoma7_obj.GetComponent<Image>().material = lkoma_notselected;
                         }
                         komapreview(true, 0, 0, true);
-                        break;
-                }
-            }
-            else
-            {
-                if (komaid != -1)
-                {
-                    if (ground[1] != 0)
-                    {
-                        //漂流コマがいる場合はそれを優先する
-                        int koma = getenemykomaid(1);
-                        komaid = koma;
-                        selected_koma = koma;
-                    }
-                    else
-                    {
-                        if (keydownleft)
-                        {
-                            while (rkoma[komaid] >= 15)
-                            {
-                                komaid--;
-                                selected_koma--;
-                                if (komaid <= -1)
-                                {
-                                    komaid = 7;
-                                    selected_koma = 7;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            while (rkoma[komaid] >= 15)
-                            {
-                                komaid++;
-                                selected_koma++;
-                                if (komaid >= 8)
-                                {
-                                    komaid = 0;
-                                    selected_koma = 0;
-                                }
-                            }
-                        }
-                    }
-                    Debug.Log(komaid + "を選択します。");
-                }
-
-                switch (komaid)
-                {
-                    case 0:
-                        rkoma0_obj.GetComponent<Image>().material = rkoma_selected;
-                        break;
-                    case 1:
-                        rkoma1_obj.GetComponent<Image>().material = rkoma_selected;
-                        break;
-                    case 2:
-                        rkoma2_obj.GetComponent<Image>().material = rkoma_selected;
-                        break;
-                    case 3:
-                        rkoma3_obj.GetComponent<Image>().material = rkoma_selected;
-                        break;
-                    case 4:
-                        rkoma4_obj.GetComponent<Image>().material = rkoma_selected;
-                        break;
-                    case 5:
-                        rkoma5_obj.GetComponent<Image>().material = rkoma_selected;
-                        break;
-                    case 6:
-                        rkoma6_obj.GetComponent<Image>().material = rkoma_selected;
-                        break;
-                    case 7:
-                        rkoma7_obj.GetComponent<Image>().material = rkoma_selected;
-                        break;
-                    default:
-                        if (rkoma[0] != 15)
-                        {
-                            rkoma0_obj.GetComponent<Image>().material = rkoma_notselected;
-                        }
-                        if (rkoma[1] != 15)
-                        {
-                            rkoma1_obj.GetComponent<Image>().material = rkoma_notselected;
-                        }
-                        if (rkoma[2] != 15)
-                        {
-                            rkoma2_obj.GetComponent<Image>().material = rkoma_notselected;
-                        }
-                        if (rkoma[3] != 15)
-                        {
-                            rkoma3_obj.GetComponent<Image>().material = rkoma_notselected;
-                        }
-                        if (rkoma[4] != 15)
-                        {
-                            rkoma4_obj.GetComponent<Image>().material = rkoma_notselected;
-                        }
-                        if (rkoma[5] != 15)
-                        {
-                            rkoma5_obj.GetComponent<Image>().material = rkoma_notselected;
-                        }
-                        if (rkoma[6] != 15)
-                        {
-                            rkoma6_obj.GetComponent<Image>().material = rkoma_notselected;
-                        }
-                        if (rkoma[7] != 15)
-                        {
-                            rkoma7_obj.GetComponent<Image>().material = rkoma_notselected;
-                        }
-                        komapreview(false, 0, 0, true);
                         break;
                 }
             }
@@ -1620,7 +1595,7 @@ public class pve_game_load : MonoBehaviour
     void movekoma(bool isblue, int komaid, int komapos, int move, bool hasenemy, int diceid) /* コマを移動 */
     {
         //ダイス移動処理ここから
-        Debug.Log("[Function Join] movekoma\nisBlue?:" + isblue + " / コマID:" + komaid + " / コマの座標:" + komapos + " / 移動コマ数:" + move + " / 敵がいるか？:" + hasenemy);
+        Debug.Log("[Function Join] movekoma\n左側？:" + isblue + " / コマID:" + komaid + " / コマの座標:" + komapos + " / 移動コマ数:" + move + " / 敵がいるか？:" + hasenemy);
         if (isblue)
         {
             //左側プレイヤー
@@ -1700,10 +1675,9 @@ public class pve_game_load : MonoBehaviour
             if (hasenemy)
             {
                 int enemy = getenemykomaid(komapos + move); //飛ばされる敵のコマを取得
-                Debug.Log("[Debug] enemy:" + enemy);
-                Debug.Log("[Debug] lkoma[enemy]" + lkoma[enemy]);
+
                 //ロールバック処理のための記録
-               /* rb_prison = true;
+                rb_prison = true;
                 rb_prisonid = enemy;
                 rb_lp = lkoma[enemy];
                 rb_rp = rkoma[komaid];
@@ -1714,7 +1688,7 @@ public class pve_game_load : MonoBehaviour
                 rb_ag = ground[14];
                 rb_diceid = diceid;
                 rb_wasblue = isblue;
-                rb_canback = true;*/
+                rb_canback = true;
 
                 //移動先マスに敵が1コマいる場合
                 ground[14]--;    //監獄に加算
@@ -1805,7 +1779,7 @@ public class pve_game_load : MonoBehaviour
                     notfound = false;
                     break;
                 }
-                Debug.Log("[Info] (getenemykomaid)\nlkoma[" + cnt + "] != " + groundid + " (in " + lkoma[cnt] + ") / Check:" + notfound);
+                Debug.Log("[Info] (getenemykomaid)\nlkoma[" + cnt + "] != " + groundid + " / Check:" + notfound);
                 cnt++;
                 if (cnt >= 8)
                 {
@@ -1820,7 +1794,7 @@ public class pve_game_load : MonoBehaviour
                     notfound = false;
                     break;
                 }
-                Debug.Log("[Info] (getenemykomaid)\nrkoma[" + cnt + "] != " + groundid + " (in " + rkoma[cnt] + ") / Check:" + notfound);
+                Debug.Log("[Info] (getenemykomaid)\nrkoma[" + cnt + "] != " + groundid + " / Check:" + notfound);
                 cnt++;
                 if (cnt > 7)
                 {
@@ -2163,14 +2137,14 @@ public class pve_game_load : MonoBehaviour
         Debug.Log("[Function Join] (gamewin)");
         if (isblue)
         {
-            todotext.text = "青色ペンギンチームの勝利！おめでとう！\n[R]を押してもう一度プレイできるぞ！";
+            todotext.text = "あなたの勝利！\nおめでとう！\n[R]を押してもう一度プレイできるぞ！";
             if (ground[15] == 0)
             {
                 //ギャモン勝ち判定ここから
                 if (ground[2] >= 1 || ground[3] >= 1 || ground[4] >= 1)
                 {
                     //バックギャモン勝ち
-                    todotext.text = "青色ペンギンチームのバックギャモン勝ち！圧倒的戦略に感服です\n[R]を押すともう一度プレイできます。";
+                    todotext.text = "あなたのバックギャモン勝ち！\n圧倒的戦略に感服です\n[R]を押すともう一度プレイできます。";
                     if (playsound)
                     {
                         se.clip = gyamonwin;
@@ -2179,7 +2153,7 @@ public class pve_game_load : MonoBehaviour
                 }
                 else
                 {
-                    todotext.text = "青色ペンギンチームのギャモン勝ち！戦略ゲーは得意なのかな？\n[R]を押してもう一度プレイできるぞ！";
+                    todotext.text = "あなたのギャモン勝ち！\n戦略ゲーは得意なのかな？\n[R]を押してもう一度プレイできるぞ！";
                     if (playsound)
                     {
                         se.clip = gyamonwin;
@@ -2190,13 +2164,13 @@ public class pve_game_load : MonoBehaviour
         }
         else
         {
-            todotext.text = "赤色ペンギンチームの勝利！おめでとう！！\n[R]を押してもう一度プレイできるぞ！";
+            todotext.text = "惜しい！NPCの勝利\n[R]を押してもう一度チャレンジしよう！";
             if (ground[0] == 0)
             {
                 //ギャモン勝ち判定ここから
                 if (ground[13] <= -1 || ground[12] <= -1 || ground[11] <= -1)
                 {
-                    todotext.text = "赤色ペンギンチームのバックギャモン勝ち！圧倒的ですね・・・\n[R]を押すともう一度プレイできますよ。";
+                    todotext.text = "NPCのバックギャモン勝ち！\n「取る作る逃げる」を心がけて！\n[R]を押すともう一度チャレンジできますよ。";
                     if (playsound)
                     {
                         se.clip = gyamonwin;
@@ -2205,7 +2179,7 @@ public class pve_game_load : MonoBehaviour
                 }
                 else
                 {
-                    todotext.text = "赤色ペンギンチームのギャモン勝ち！\n[R]を押してもう一度プレイできるぞ！";
+                    todotext.text = "NPCのギャモン勝ち！\n[R]を押してもう一度チャレンジしよう！";
                     if (playsound)
                     {
                         se.clip = gyamonwin;

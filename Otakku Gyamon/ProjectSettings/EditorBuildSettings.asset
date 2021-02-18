@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/howto.unity
     guid: 097d631293a19e24485355f108bac460
+  - enabled: 1
+    path: Assets/Scenes/staffroll.unity
+    guid: fa5ddcfd1414c4c46a26237d82a06f3f
   m_configObjects: {}
