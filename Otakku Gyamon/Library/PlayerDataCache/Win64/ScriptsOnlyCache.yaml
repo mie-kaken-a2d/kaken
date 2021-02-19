@@ -75,7 +75,7 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 14434}
     - Class: 114
-      Script: {instanceID: 16084}
+      Script: {instanceID: 16684}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -132,7 +132,7 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 15032}
     - Class: 114
-      Script: {instanceID: 16084}
+      Script: {instanceID: 16684}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -1071,4 +1071,4 @@ ScriptsOnlyBuild:
   - Assets/Scenes/howto.unity
   - Assets/Scenes/staffroll.unity
   playerPath: "C:/Users/fanta/Documents/MIE/sotuken/Otakku Gyamon/bin/\u304A\u3046\u3061\u306B\u5E30\u308B\u307E\u3067\u304C\u30AE\u30E3\u30E2\u30F3\u3067\u3059
-    Ver.1.00 build.1.exe"
+    Ver.1.02 build.1.exe"
