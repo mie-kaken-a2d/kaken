@@ -667,15 +667,41 @@ public class pve_game_load : MonoBehaviour
                             {
                                 if (Gstatus[Nkoma[y] + Dice[x]] == -1)//移動先の敵の数が1
                                 {
-                                    Score[x, y] = 3 * (15 - Nkoma[y]);
+                                    if(Nkoma[y] + Dice[x] <= 10)//移動先が10以下の場合
+                                    {
+                                        Score[x, y] = 3 * (15 - Nkoma[y]);
+                                    }
+                                    else//移動先が11以上の場合
+                                    {
+                                        Score[x, y] = 2 * (15 - Nkoma[y]);
+                                    }
                                 }
                                 else if (Gstatus[Nkoma[y] + Dice[x]] == 0)//移動先に誰もいない
                                 {
-                                    Score[x, y] = 2 * (15 - Nkoma[y]);
+                                    for(int i = y; i < 15; i++)
+                                    {
+                                        if(Gstatus[Nkoma[y]] <= -1)
+                                        {
+                                            Score[x, y] = 1 * (15 - Nkoma[y]);
+                                            break;
+                                        }
+                                        else
+                                        {
+                                            Score[x, y] = 5 * (15 - Nkoma[y]);
+                                        }
+                                    }
+                                    Score[x, y] = 1 * (15 - Nkoma[y]);
                                 }
                                 else//移動先に味方がいる
                                 {
-                                    Score[x, y] = 1 * (15 - Nkoma[y]);
+                                    if(Nkoma[y] + Dice[x] <= 10)//移動先が10以下の場合
+                                    {
+                                        Score[x, y] = 2 * (15 - Nkoma[y]);
+                                    }
+                                    else//移動先が11以上の場合
+                                    {
+                                        Score[x, y] = 3 * (15 - Nkoma[y]);
+                                    }
                                 }
                             }
                             else//移動ができない
@@ -736,9 +762,9 @@ public class pve_game_load : MonoBehaviour
                             movekoma(user, KomaNo[Brain], Nkoma[KomaNo[Brain]], Dice[DiceNo[Brain]], false, DiceNo[Brain] + 1);
                             Thread.Sleep(1000);
                         }
-                        if (Nkoma[KomaNo[Brain]] == 15)//ゴールに行ったか判定
+                        if (Nkoma[KomaNo[Brain]] + Dice[DiceNo[Brain]] >= 14)//ゴールに行ったか判定
                         {
-                            goal(user, Nkoma[KomaNo[Brain]]);
+                            goal(user, KomaNo[Brain]);
                         }
                     }
                     /* -------------------- コマの移動 -------------------- */
