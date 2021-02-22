@@ -4611,7 +4611,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 2.5, y: 206}
+  m_AnchoredPosition: {x: 0, y: 203}
   m_SizeDelta: {x: 745, y: 95}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1621271215
@@ -4635,7 +4635,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: ea23b63041bac9749bf31762a77c31c2, type: 3}
-    m_FontSize: 28
+    m_FontSize: 27
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 0
@@ -4739,6 +4739,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1696284078}
   - component: {fileID: 1696284079}
+  - component: {fileID: 1696284080}
   m_Layer: 0
   m_Name: '[Admin] Moderator'
   m_TagString: Untagged
@@ -4828,6 +4829,44 @@ MonoBehaviour:
   gyamonwin: {fileID: 8300000, guid: 1832100adae82054b906aa638054a5c4, type: 3}
   stackse: {fileID: 8300000, guid: 7af8949e0c26715429b80c32fa7c6e7e, type: 3}
   rollbackse: {fileID: 8300000, guid: 726e4c52e06718b47bf5e395e6ec2cf2, type: 3}
+--- !u!114 &1696284080
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1696284077}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df15c706e34a9ea499c3d1bacc14b2f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  applicationId: 812517421968916523
+  optionalSteamId: 
+  issolo: 0
+  joinRequest:
+    userId: 
+    username: 
+    discriminator: 
+    avatar: 
+  onConnect:
+    m_PersistentCalls:
+      m_Calls: []
+  onDisconnect:
+    m_PersistentCalls:
+      m_Calls: []
+  hasResponded:
+    m_PersistentCalls:
+      m_Calls: []
+  onJoin:
+    m_PersistentCalls:
+      m_Calls: []
+  onSpectate:
+    m_PersistentCalls:
+      m_Calls: []
+  onJoinRequest:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1696430125
 GameObject:
   m_ObjectHideFlags: 0

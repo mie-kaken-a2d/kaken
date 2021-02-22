@@ -258,6 +258,7 @@ GameObject:
   m_Component:
   - component: {fileID: 622454772}
   - component: {fileID: 622454771}
+  - component: {fileID: 622454773}
   m_Layer: 0
   m_Name: GameObject
   m_TagString: Untagged
@@ -292,6 +293,46 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &622454773
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 622454770}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df15c706e34a9ea499c3d1bacc14b2f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  applicationId: 812517421968916523
+  optionalSteamId: 
+  issolo: 0
+  ishowto: 1
+  isstaffroll: 1
+  joinRequest:
+    userId: 
+    username: 
+    discriminator: 
+    avatar: 
+  onConnect:
+    m_PersistentCalls:
+      m_Calls: []
+  onDisconnect:
+    m_PersistentCalls:
+      m_Calls: []
+  hasResponded:
+    m_PersistentCalls:
+      m_Calls: []
+  onJoin:
+    m_PersistentCalls:
+      m_Calls: []
+  onSpectate:
+    m_PersistentCalls:
+      m_Calls: []
+  onJoinRequest:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &673838738
 GameObject:
   m_ObjectHideFlags: 0
@@ -665,8 +706,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebca7fbb0f3e74a498498b65317c1fb4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  textScrollSpeed: 31
-  limitPosition: 3650
+  textScrollSpeed: 33
+  limitPosition: 3900
 --- !u!114 &1735345517
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -699,11 +740,11 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: "<color=><size=23>\u304A\u3046\u3061\u306B\u5E30\u308B\u307E\u3067\u304C\u904A\u622F\u300A\u30AE\u30E3\u30E2\u30F3\u300B\u3067\u3059\n\n\u30B9\u30BF\u30C3\u30D5\u30ED\u30FC\u30EB</size></color>\r\n\n\r\n\r\n<color=\"#DDA1E5\"><size=30>\u88FD\u4F5C\u30EA\u30FC\u30C0\u30FC</size></color>\r\n\r\n\u30E6\u30AD\uFF20\u30CB\u30FC\u30CF\u30A4\r\n\r\n\r\n\n\r\n<color=\"#DDA1E5\"><size=30>\u30B0\u30E9\u30D5\u30A3\u30C3\u30AF</size></color>\r\n\r\n\u30E6\u30AD\uFF20\u30CB\u30FC\u30CF\u30A4\n\r\n\n\r\n\r\n<color=\"#DDA1E5\"><size=30>\u30E1\u30A4\u30F3\u30D7\u30ED\u30B0\u30E9\u30E0\r</size></color>\r\n\r\ndeko\uFF20\u548C\u670D\r\n\r\n\r\n\n\r\n<color=\"#DDA1E5\"><size=30>PvP\r\uFF08\u5BFE\u4EBA\u6226\uFF09</size></color>\r\n\r\ndeko\uFF20\u548C\u670D\r\n\r\r\n\n\r\n\n<color=\"#DDA1E5\"><size=30>PvE\uFF08NPC\u6226\uFF09</size></color>\r\n\r\n\u308A\u3064\u304F\u3093\uFF20\u30DF\u30E5\u30B2\r\n\r\n\n\r\n\r\n<color=#DDA1E5><size=30>BGM\uFF0F\u52B9\u679C\u97F3</size></color>\r\n\r\nDOVA-SYNDROME
-    (dova-s.jp)\r\n\r\u30CB\u30B3\u30CB\u30B3\u30E2\u30F3\u30BA (commons.nicovideo.jp)\n\n\n\r\n<color=#DDA1E5><size=30>\u30C7\u30D0\u30C3\u30B0</size></color>\r\n\r\n\u30E6\u30AD\uFF20\u30CB\u30FC\u30CF\u30A4\ndeko\uFF20\u548C\u670D\r\n\u308A\u3064\u304F\u3093\uFF20\u30DF\u30E5\u30B2\r\n\u304B\u3089\u304A\uFF20\u5236\u670D\r\n\u9811\u5F35\u3089\u306A\u3044\uFF20GL\r\n\u306D\u308B\uFF20BL\r\n\uFF12\uFF15\uFF20\u4F4E\u97F3\u30DC\u30A4\u30B9\nSterben\uFF20\u7D76\u5BFE\u9818\u57DF\n500LZONE\uFF20NTR\n\u3084\u306E\u3063\u3061\r\uFF20\u30C9M\n\u30DC\u30B9\uFF20\u304F\u307E\u3055\u3093\r\n\r\n\r\n\n\r\n<color=#DDA1E5><size=30>\u76E3\u4FEE</size></color>\r\n\r\n\u3084\u306E\u3063\u3061\uFF20\u30C9M\n\n\n\n\n\r<color=#DDA1E5><size=30>Special
-    Thanks</size></color>\r\n \r\n\u30DC\u30B9\uFF20\u304F\u307E\u3055\u3093\r\n\r\n\r\n\r\n\n\n\n\r\n\n<color=#DDA1E5><size=30>\u88FD\u4F5C</size></color>\r\n\r\nTeam
-    \u3081\u304C\u306D\u304F\u3089\u3076\n\n\n\n\n\n\n\n\n\n\n\n<size=35>Thank you
-    for playing!</size>"
+  m_Text: "<color=><size=23>\u304A\u3046\u3061\u306B\u5E30\u308B\u307E\u3067\u304C\u904A\u622F\u300A\u30AE\u30E3\u30E2\u30F3\u300B\u3067\u3059\n\n\u30B9\u30BF\u30C3\u30D5\u30ED\u30FC\u30EB</size></color>\r\n\n\r\n\r\n<color=\"#DDA1E5\"><size=30>\u88FD\u4F5C\u30EA\u30FC\u30C0\u30FC</size></color>\r\n\r\n\u30E6\u30AD\uFF20\u30CB\u30FC\u30CF\u30A4\r\n\r\n\r\n\n\r\n<color=\"#DDA1E5\"><size=30>\u30B0\u30E9\u30D5\u30A3\u30C3\u30AF</size></color>\r\n\r\n\u30E6\u30AD\uFF20\u30CB\u30FC\u30CF\u30A4\n\r\n\n\r\n\r\n<color=\"#DDA1E5\"><size=30>\u30E1\u30A4\u30F3\u30D7\u30ED\u30B0\u30E9\u30E0\r</size></color>\r\n\r\ndeko\uFF20\u548C\u670D\r\n\r\n\r\n\n\r\n<color=\"#DDA1E5\"><size=30>PvP\r\uFF08\u5BFE\u4EBA\u6226\uFF09\u30D7\u30ED\u30B0\u30E9\u30E0</size></color>\r\n\r\ndeko\uFF20\u548C\u670D\r\n\r\r\n\n\r\n\n<color=\"#DDA1E5\"><size=30>PvE\uFF08NPC\u6226\uFF09\u30D7\u30ED\u30B0\u30E9\u30E0</size></color>\r\n\r\n\u308A\u3064\u304F\u3093\uFF20\u30DF\u30E5\u30B2\r\n\r\n\n\r\n\r\n<color=#DDA1E5><size=30>BGM\uFF0F\u52B9\u679C\u97F3</size></color>\r\n\r\nDOVA-SYNDROME
+    (dova-s.jp)\r\n\r\u30CB\u30B3\u30CB\u30B3\u30E2\u30F3\u30BA (commons.nicovideo.jp)\n\n\n\n\r\n<color=#DDA1E5><size=30>\u30C7\u30D0\u30C3\u30B0</size></color>\r\n\r\n\u30E6\u30AD\uFF20\u30CB\u30FC\u30CF\u30A4\ndeko\uFF20\u548C\u670D\r\n\u308A\u3064\u304F\u3093\uFF20\u30DF\u30E5\u30B2\r\n\u304B\u3089\u304A\uFF20\u5236\u670D\r\n\u9811\u5F35\u3089\u306A\u3044\uFF20GL\r\n\u306D\u308B\uFF20BL\r\n\uFF12\uFF15\uFF20\u4F4E\u97F3\u30DC\u30A4\u30B9\nSterben\uFF20\u7D76\u5BFE\u9818\u57DF\n500LZONE\uFF20NTR\n\u3084\u306E\u3063\u3061\r\uFF20\u30C9M\n\u30DC\u30B9\uFF20\u304F\u307E\u3055\u3093\r\n\r\n\r\n\n\r\n<color=#DDA1E5><size=30>\u76E3\u4FEE</size></color>\r\n\r\n\u3084\u306E\u3063\u3061\uFF20\u30C9M\n\n\n\n\n\r<color=#DDA1E5><size=30>Special
+    Thanks</size></color>\r\n \r\n\u30DC\u30B9\uFF20\u304F\u307E\u3055\u3093\r\n\r\n\r\n\r\n\n<color=#DDA1E5><size=30>\u30AA\u30EA\u30B8\u30CA\u30EB\u30B2\u30FC\u30E0</size></color>\r\n\r\n\u300C\u304A\u3055\u3093\u307D\u30AE\u30E3\u30E2\u30F3\u300D\n\u65E5\u672C\u30D0\u30C3\u30AF\u30AE\u30E3\u30E2\u30F3\u5354\u4F1A\n\n\r\n\n\n\n\n<color=#DDA1E5><size=30>\u88FD\u4F5C</size></color>\r\n\r\nTeam
+    \u3081\u304C\u306D\u304F\u3089\u3076\n\n\n\n\n\n\n\n\n\n\n\n\n<size=35>Thank
+    you for playing!</size>"
 --- !u!222 &1735345518
 CanvasRenderer:
   m_ObjectHideFlags: 0

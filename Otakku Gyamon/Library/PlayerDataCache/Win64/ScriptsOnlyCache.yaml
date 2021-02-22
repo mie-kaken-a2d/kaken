@@ -1,6 +1,7 @@
 ScriptsOnlyBuild:
   usedScripts:
     Assembly-CSharp.dll:
+    - DiscordController
     - GFramework.SimpleRoundedImage
     - click_btn_openyoutube
     - click_btn_staffroll
@@ -75,7 +76,9 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 14434}
     - Class: 114
-      Script: {instanceID: 16684}
+      Script: {instanceID: 16086}
+    - Class: 114
+      Script: {instanceID: 16332}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -132,7 +135,9 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 15032}
     - Class: 114
-      Script: {instanceID: 16684}
+      Script: {instanceID: 16086}
+    - Class: 114
+      Script: {instanceID: 16332}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -192,6 +197,8 @@ ScriptsOnlyBuild:
       Script: {instanceID: 14434}
     - Class: 114
       Script: {instanceID: 15182}
+    - Class: 114
+      Script: {instanceID: 16332}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -245,6 +252,8 @@ ScriptsOnlyBuild:
       Script: {instanceID: 14434}
     - Class: 114
       Script: {instanceID: 15182}
+    - Class: 114
+      Script: {instanceID: 16332}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -1063,6 +1072,12 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: PlayableTrack
+  - hash:
+      serializedVersion: 2
+      Hash: b8120e76d8babda7571663b7e0304bb7
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: DiscordController
   platform: 19
   scenePathNames:
   - Assets/Scenes/title.unity
@@ -1071,4 +1086,4 @@ ScriptsOnlyBuild:
   - Assets/Scenes/howto.unity
   - Assets/Scenes/staffroll.unity
   playerPath: "C:/Users/fanta/Documents/MIE/sotuken/Otakku Gyamon/bin/\u304A\u3046\u3061\u306B\u5E30\u308B\u307E\u3067\u304C\u30AE\u30E3\u30E2\u30F3\u3067\u3059
-    Ver.1.02 build.1.exe"
+    Ver.1.04 build.5.exe"

@@ -6,12 +6,6 @@ using UnityEngine.SceneManagement;
 
 public class pvp_game_load : MonoBehaviour
 {
-    /*
-     [改善点]
-        * 先攻ターンがどっちか直感的にわからない
-        * 異なる値のダイスがでた場合、大きいコマから優先的に使う。
-    */
-
     bool user = false;  //プレイヤー(左側がtrue)
     bool gameready = false; //ready to game
     bool ongame = false;    //playing game
@@ -127,30 +121,6 @@ public class pvp_game_load : MonoBehaviour
                     break;
             }
         }
-
-        /*
-        【補足】
-        たとえば、Left Playerがground[2]に3体いるならば、"ground[2] = -3" になり、
-        RightPlayerがground[6]に1体ならば、"ground[6] = 1" となる。
-
-        【値早見表】
-        ground[0] = 右側ゴール (Left Cassle)
-              [1] = 右側島流し (Right側のコマが監禁)
-              [2] = フィールド1 (Left側陣地@1)
-              [3] = フィールド2 (Left側陣地@2)
-              [4] = フィールド3 (Left側陣地@3)
-              [5] = フィールド4 (Mid陣地Left側@1)
-              [6] = フィールド5 (Mid陣地Left側@2)
-              [7] = フィールド6 (Mid陣地Left側@3)
-              [8] = フィールド7 (Mid陣地Right側@3)
-              [9] = フィールド8 (Mid陣地Right側@2)
-              [10] = フィールド9 (Mid陣地Right側@1)
-              [11] = フィールド10 (Right側陣地@3)
-              [12] = フィールド11 (Right側陣地@2)
-              [13] = フィールド12 (Right側陣地@1)
-              [14] = 左側島流し (Left側のコマが監禁)
-              [15] = 左側ゴール (Right Cassle)
-    */
 
         /* コマ初期化 */
         lkoma = new int[8];
@@ -545,49 +515,6 @@ public class pvp_game_load : MonoBehaviour
 
     void diceapply(int dice1, int dice2, bool zoro = false) /* ダイスの画像を反映 */
     {
-        /*
-         * ダイスエフェクト（墓地）
-        timecounter = 0;
-        int counter = 0;
-        int tempdice = 0;
-        while (counter != 10)
-        {
-            if (timecounter >= 2)
-            {
-                tempdice = Random.Range(0, 3);
-                switch (tempdice)
-                {
-                    case 0:
-                        diceview1_obj.GetComponent<Image>().material = di1;
-                        diceview2_obj.GetComponent<Image>().material = di1;
-                        diceview3_obj.GetComponent<Image>().material = di1;
-                        diceview4_obj.GetComponent<Image>().material = di1;
-                        break;
-                    case 1:
-                        diceview1_obj.GetComponent<Image>().material = di2;
-                        diceview2_obj.GetComponent<Image>().material = di2;
-                        diceview3_obj.GetComponent<Image>().material = di2;
-                        diceview4_obj.GetComponent<Image>().material = di2;
-                        break;
-                    case 2:
-                        diceview1_obj.GetComponent<Image>().material = di3;
-                        diceview2_obj.GetComponent<Image>().material = di3;
-                        diceview3_obj.GetComponent<Image>().material = di3;
-                        diceview4_obj.GetComponent<Image>().material = di3;
-                        break;
-                }
-                counter++;
-                timecounter = 0;
-            }
-            timecounter += Time.deltaTime;
-        }
-
-        diceview1_obj.GetComponent<Image>().material = null;
-        diceview2_obj.GetComponent<Image>().material = null;
-        diceview3_obj.GetComponent<Image>().material = null;
-        diceview4_obj.GetComponent<Image>().material = null;
-        */
-
         if (zoro)
         {
             switch (dice1)
@@ -1398,7 +1325,6 @@ public class pvp_game_load : MonoBehaviour
             //左側プレイヤー
             if (hasenemy)
             {
-
                 //移動先マスに敵が1体いる場合
                 int enemy = getenemykomaid(komapos - move); //飛ばされる敵のコマを取得
 
@@ -1938,7 +1864,7 @@ public class pvp_game_load : MonoBehaviour
             if (ground[15] == 0)
             {
                 //ギャモン勝ち判定ここから
-                if (ground[2] >= 1 || ground[3] >= 1 || ground[4] >= 1)
+                if (ground[1] >= 1 || ground[2] >= 1 || ground[3] >= 1 || ground[4] >= 1)
                 {
                     //バックギャモン勝ち
                     todotext.text = "青色ペンギンチームのバックギャモン勝ち！\n圧倒的戦略に感服です\n[R]を押すともう一度プレイできます。";
@@ -1965,7 +1891,7 @@ public class pvp_game_load : MonoBehaviour
             if (ground[0] == 0)
             {
                 //ギャモン勝ち判定ここから
-                if (ground[13] <= -1 || ground[12] <= -1 || ground[11] <= -1)
+                if (ground[14] <= -1 || ground[13] <= -1 || ground[12] <= -1 || ground[11] <= -1)
                 {
                     todotext.text = "赤色ペンギンチームのバックギャモン勝ち！\n圧倒的ですね・・・\n[R]を押すともう一度プレイできますよ。";
                     if (playsound)

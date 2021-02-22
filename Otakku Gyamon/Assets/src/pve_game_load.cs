@@ -130,30 +130,6 @@ public class pve_game_load : MonoBehaviour
             }
         }
 
-        /*
-        【補足】
-        たとえば、Left Playerがground[2]に3体いるならば、"ground[2] = -3" になり、
-        RightPlayerがground[6]に1体ならば、"ground[6] = 1" となる。
-
-        【値早見表】
-        ground[0] = 右側ゴール (Left Cassle)
-              [1] = 右側島流し (Right側のコマが監禁)
-              [2] = フィールド1 (Left側陣地@1)
-              [3] = フィールド2 (Left側陣地@2)
-              [4] = フィールド3 (Left側陣地@3)
-              [5] = フィールド4 (Mid陣地Left側@1)
-              [6] = フィールド5 (Mid陣地Left側@2)
-              [7] = フィールド6 (Mid陣地Left側@3)
-              [8] = フィールド7 (Mid陣地Right側@3)
-              [9] = フィールド8 (Mid陣地Right側@2)
-              [10] = フィールド9 (Mid陣地Right側@1)
-              [11] = フィールド10 (Right側陣地@3)
-              [12] = フィールド11 (Right側陣地@2)
-              [13] = フィールド12 (Right側陣地@1)
-              [14] = 左側島流し (Left側のコマが監禁)
-              [15] = 左側ゴール (Right Cassle)
-    */
-
         /* コマ初期化 */
         lkoma = new int[8];
         rkoma = new int[8];
@@ -667,7 +643,7 @@ public class pve_game_load : MonoBehaviour
                             {
                                 if (Gstatus[Nkoma[y] + Dice[x]] == -1)//移動先の敵の数が1
                                 {
-                                    if(Nkoma[y] + Dice[x] <= 10)//移動先が10以下の場合
+                                    if (Nkoma[y] + Dice[x] <= 10)//移動先が10以下の場合
                                     {
                                         Score[x, y] = 3 * (15 - Nkoma[y]);
                                     }
@@ -678,9 +654,9 @@ public class pve_game_load : MonoBehaviour
                                 }
                                 else if (Gstatus[Nkoma[y] + Dice[x]] == 0)//移動先に誰もいない
                                 {
-                                    for(int i = y; i < 15; i++)
+                                    for (int i = y; i < 15; i++)
                                     {
-                                        if(Gstatus[Nkoma[y]] <= -1)
+                                        if (Gstatus[Nkoma[y]] <= -1)
                                         {
                                             Score[x, y] = 1 * (15 - Nkoma[y]);
                                             break;
@@ -694,7 +670,7 @@ public class pve_game_load : MonoBehaviour
                                 }
                                 else//移動先に味方がいる
                                 {
-                                    if(Nkoma[y] + Dice[x] <= 10)//移動先が10以下の場合
+                                    if (Nkoma[y] + Dice[x] <= 10)//移動先が10以下の場合
                                     {
                                         Score[x, y] = 2 * (15 - Nkoma[y]);
                                     }
@@ -870,49 +846,6 @@ public class pve_game_load : MonoBehaviour
 
     void diceapply(int dice1, int dice2, bool zoro = false) /* ダイスの画像を反映 */
     {
-        /*
-         * ダイスエフェクト（墓地）
-        timecounter = 0;
-        int counter = 0;
-        int tempdice = 0;
-        while (counter != 10)
-        {
-            if (timecounter >= 2)
-            {
-                tempdice = Random.Range(0, 3);
-                switch (tempdice)
-                {
-                    case 0:
-                        diceview1_obj.GetComponent<Image>().material = di1;
-                        diceview2_obj.GetComponent<Image>().material = di1;
-                        diceview3_obj.GetComponent<Image>().material = di1;
-                        diceview4_obj.GetComponent<Image>().material = di1;
-                        break;
-                    case 1:
-                        diceview1_obj.GetComponent<Image>().material = di2;
-                        diceview2_obj.GetComponent<Image>().material = di2;
-                        diceview3_obj.GetComponent<Image>().material = di2;
-                        diceview4_obj.GetComponent<Image>().material = di2;
-                        break;
-                    case 2:
-                        diceview1_obj.GetComponent<Image>().material = di3;
-                        diceview2_obj.GetComponent<Image>().material = di3;
-                        diceview3_obj.GetComponent<Image>().material = di3;
-                        diceview4_obj.GetComponent<Image>().material = di3;
-                        break;
-                }
-                counter++;
-                timecounter = 0;
-            }
-            timecounter += Time.deltaTime;
-        }
-
-        diceview1_obj.GetComponent<Image>().material = null;
-        diceview2_obj.GetComponent<Image>().material = null;
-        diceview3_obj.GetComponent<Image>().material = null;
-        diceview4_obj.GetComponent<Image>().material = null;
-        */
-
         if (zoro)
         {
             switch (dice1)
@@ -1627,7 +1560,6 @@ public class pve_game_load : MonoBehaviour
             //左側プレイヤー
             if (hasenemy)
             {
-
                 //移動先マスに敵が1体いる場合
                 int enemy = getenemykomaid(komapos - move); //飛ばされる敵のコマを取得
 
@@ -2167,7 +2099,7 @@ public class pve_game_load : MonoBehaviour
             if (ground[15] == 0)
             {
                 //ギャモン勝ち判定ここから
-                if (ground[2] >= 1 || ground[3] >= 1 || ground[4] >= 1)
+                if (ground[1] >= 1 || ground[2] >= 1 || ground[3] >= 1 || ground[4] >= 1)
                 {
                     //バックギャモン勝ち
                     todotext.text = "あなたのバックギャモン勝ち！\n圧倒的戦略に感服です\n[R]を押すともう一度プレイできます。";
@@ -2194,7 +2126,7 @@ public class pve_game_load : MonoBehaviour
             if (ground[0] == 0)
             {
                 //ギャモン勝ち判定ここから
-                if (ground[13] <= -1 || ground[12] <= -1 || ground[11] <= -1)
+                if (ground[14] <= -1 || ground[13] <= -1 || ground[12] <= -1 || ground[11] <= -1)
                 {
                     todotext.text = "NPCのバックギャモン勝ち！\n「取る作る逃げる」を心がけて！\n[R]を押すともう一度チャレンジできますよ。";
                     if (playsound)
