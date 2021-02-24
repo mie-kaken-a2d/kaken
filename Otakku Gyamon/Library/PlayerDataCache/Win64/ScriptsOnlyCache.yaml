@@ -15,6 +15,7 @@ ScriptsOnlyBuild:
     - pvp_game_load
     - staffroll
     - staffroll_load
+    - title
     Unity.2D.Animation.Editor.dll:
     - UnityEditor.U2D.Animation.BoneGizmo
     Unity.2D.Tilemap.Editor.dll:
@@ -64,21 +65,21 @@ ScriptsOnlyBuild:
     - Class: 108
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 11336}
+      Script: {instanceID: 11340}
     - Class: 114
-      Script: {instanceID: 11362}
+      Script: {instanceID: 11366}
     - Class: 114
-      Script: {instanceID: 11782}
+      Script: {instanceID: 11786}
     - Class: 114
-      Script: {instanceID: 12620}
+      Script: {instanceID: 12624}
     - Class: 114
-      Script: {instanceID: 13526}
+      Script: {instanceID: 12918}
     - Class: 114
-      Script: {instanceID: 14434}
+      Script: {instanceID: 13536}
     - Class: 114
-      Script: {instanceID: 16086}
+      Script: {instanceID: 14444}
     - Class: 114
-      Script: {instanceID: 16332}
+      Script: {instanceID: 16102}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -121,23 +122,23 @@ ScriptsOnlyBuild:
     - Class: 108
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 11336}
+      Script: {instanceID: 11340}
     - Class: 114
-      Script: {instanceID: 11362}
+      Script: {instanceID: 11366}
     - Class: 114
-      Script: {instanceID: 11782}
+      Script: {instanceID: 11786}
     - Class: 114
-      Script: {instanceID: 12620}
+      Script: {instanceID: 12624}
     - Class: 114
-      Script: {instanceID: 13526}
+      Script: {instanceID: 12918}
     - Class: 114
-      Script: {instanceID: 14434}
+      Script: {instanceID: 13536}
     - Class: 114
-      Script: {instanceID: 15032}
+      Script: {instanceID: 14444}
     - Class: 114
-      Script: {instanceID: 16086}
+      Script: {instanceID: 15042}
     - Class: 114
-      Script: {instanceID: 16332}
+      Script: {instanceID: 16102}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -178,27 +179,27 @@ ScriptsOnlyBuild:
     - Class: 104
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 11336}
+      Script: {instanceID: 11340}
     - Class: 114
-      Script: {instanceID: 11362}
+      Script: {instanceID: 11366}
     - Class: 114
-      Script: {instanceID: 11668}
+      Script: {instanceID: 11672}
     - Class: 114
-      Script: {instanceID: 11782}
+      Script: {instanceID: 11786}
     - Class: 114
-      Script: {instanceID: 12120}
+      Script: {instanceID: 12124}
     - Class: 114
-      Script: {instanceID: 12610}
+      Script: {instanceID: 12614}
     - Class: 114
-      Script: {instanceID: 13526}
+      Script: {instanceID: 12918}
     - Class: 114
-      Script: {instanceID: 14342}
+      Script: {instanceID: 13536}
     - Class: 114
-      Script: {instanceID: 14434}
+      Script: {instanceID: 14352}
     - Class: 114
-      Script: {instanceID: 15182}
+      Script: {instanceID: 14444}
     - Class: 114
-      Script: {instanceID: 16332}
+      Script: {instanceID: 15192}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -237,23 +238,23 @@ ScriptsOnlyBuild:
     - Class: 104
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 11336}
+      Script: {instanceID: 11340}
     - Class: 114
-      Script: {instanceID: 11362}
+      Script: {instanceID: 11366}
     - Class: 114
-      Script: {instanceID: 11782}
+      Script: {instanceID: 11786}
     - Class: 114
-      Script: {instanceID: 11978}
+      Script: {instanceID: 11982}
     - Class: 114
-      Script: {instanceID: 12610}
+      Script: {instanceID: 12614}
     - Class: 114
-      Script: {instanceID: 14272}
+      Script: {instanceID: 12918}
     - Class: 114
-      Script: {instanceID: 14434}
+      Script: {instanceID: 14282}
     - Class: 114
-      Script: {instanceID: 15182}
+      Script: {instanceID: 14444}
     - Class: 114
-      Script: {instanceID: 16332}
+      Script: {instanceID: 15192}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -292,31 +293,33 @@ ScriptsOnlyBuild:
     - Class: 104
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 11336}
+      Script: {instanceID: 11340}
     - Class: 114
-      Script: {instanceID: 11362}
+      Script: {instanceID: 11366}
     - Class: 114
-      Script: {instanceID: 11782}
+      Script: {instanceID: 11786}
     - Class: 114
-      Script: {instanceID: 12032}
+      Script: {instanceID: 12036}
     - Class: 114
-      Script: {instanceID: 12212}
+      Script: {instanceID: 12216}
     - Class: 114
-      Script: {instanceID: 12610}
+      Script: {instanceID: 12614}
     - Class: 114
-      Script: {instanceID: 12730}
+      Script: {instanceID: 12734}
     - Class: 114
-      Script: {instanceID: 13150}
+      Script: {instanceID: 13160}
     - Class: 114
-      Script: {instanceID: 13526}
+      Script: {instanceID: 13536}
     - Class: 114
-      Script: {instanceID: 13698}
+      Script: {instanceID: 13708}
     - Class: 114
-      Script: {instanceID: 14434}
+      Script: {instanceID: 14444}
     - Class: 114
-      Script: {instanceID: 14814}
+      Script: {instanceID: 14824}
     - Class: 114
-      Script: {instanceID: 15182}
+      Script: {instanceID: 15192}
+    - Class: 114
+      Script: {instanceID: 16512}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -694,6 +697,12 @@ ScriptsOnlyBuild:
     assemblyName: com.unity.multiplayer-hlapi.Runtime.dll
     namespaceName: UnityEngine.Networking
     className: NetworkTransformVisualizer
+  - hash:
+      serializedVersion: 2
+      Hash: b8120e76d8babda7571663b7e0304bb7
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: DiscordController
   - hash:
       serializedVersion: 2
       Hash: d4020bafcd3ccbb5601a6e6c8ac78be0
@@ -1074,10 +1083,10 @@ ScriptsOnlyBuild:
     className: PlayableTrack
   - hash:
       serializedVersion: 2
-      Hash: b8120e76d8babda7571663b7e0304bb7
+      Hash: ba94e3b4150be3440aa9405ce477d684
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
-    className: DiscordController
+    className: title
   platform: 19
   scenePathNames:
   - Assets/Scenes/title.unity
@@ -1086,4 +1095,4 @@ ScriptsOnlyBuild:
   - Assets/Scenes/howto.unity
   - Assets/Scenes/staffroll.unity
   playerPath: "C:/Users/fanta/Documents/MIE/sotuken/Otakku Gyamon/bin/\u304A\u3046\u3061\u306B\u5E30\u308B\u307E\u3067\u304C\u30AE\u30E3\u30E2\u30F3\u3067\u3059
-    Ver.1.04 build.5.exe"
+    Ver.1.05 build.6.exe"

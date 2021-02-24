@@ -215,7 +215,6 @@ public class pvp_game_load : MonoBehaviour
         visiblefieldid = true;
         playedse = false;
 
-
         komapreview(user, 0, 0, true);
     }
 
@@ -2357,7 +2356,6 @@ public class pvp_game_load : MonoBehaviour
 
         if (reset)
         {
-            komapreview_obj.GetComponent<Image>().material = null;
             komapreview_obj.GetComponent<Image>().material = null;
         }
         else
